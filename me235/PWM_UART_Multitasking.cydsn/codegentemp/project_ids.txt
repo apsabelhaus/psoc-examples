@@ -1,0 +1,5 @@
+C:\Program Files (x86)\Cypress\PSoC Creator\3.1\PSoC Creator\psoc\content\default\CyAnnotationLibrary\CyAnnotationLibrary.cylib\CyAnnotationLibrary.cyprj|04876110-4f68-47c8-aac1-c83ef9db0b4e
+C:\Program Files (x86)\Cypress\PSoC Creator\3.1\PSoC Creator\psoc\content\cycomponentlibraryupdates\CyComponentLibraryUpdates.cylib\CyComponentLibraryUpdates.cyprj|93416261-49d5-4b21-93db-fe2d16667482
+C:\Program Files (x86)\Cypress\PSoC Creator\3.1\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CyComponentLibrary.cyprj|69dc7655-4d65-4fd2-afa9-aa88e31055e8
+C:\Program Files (x86)\Cypress\PSoC Creator\3.1\PSoC Creator\psoc\content\cyprimitives\CyPrimitives.cylib\CyPrimitives.cyprj|fe149112-54b5-4556-963d-72a6563103f9
+D:\WindowsGitHub\psoc-examples\me235\PWM_UART_Multitasking.cydsn\PWM_UART_Multitasking.cyprj|4ea3c679-14e8-4448-bd30-89b81ea0b2b8
