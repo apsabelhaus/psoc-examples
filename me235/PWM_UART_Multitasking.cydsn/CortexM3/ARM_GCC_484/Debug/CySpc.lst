@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 1
 
 
    1              		.syntax unified
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
   20:.\Generated_Source\PSoC5/CySpc.c **** #define CY_SPC_KEY_TWO(x)                   ((uint8) (((uint16) 0xD3u) + ((uint16) (x))))
   21:.\Generated_Source\PSoC5/CySpc.c **** 
   22:.\Generated_Source\PSoC5/CySpc.c **** /* Command Codes */
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 2
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 2
 
 
   23:.\Generated_Source\PSoC5/CySpc.c **** #define CY_SPC_CMD_LD_BYTE                  (0x00u)
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
   77:.\Generated_Source\PSoC5/CySpc.c **** *******************************************************************************/
   78:.\Generated_Source\PSoC5/CySpc.c **** void CySpcStart(void) 
   79:.\Generated_Source\PSoC5/CySpc.c **** {
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 3
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 3
 
 
   36              		.loc 1 79 0
@@ -178,7 +178,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
   81 0040 B0430040 		.word	1073759152
   82              		.cfi_endproc
   83              	.LFE0:
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 4
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 4
 
 
   84              		.size	CySpcStart, .-CySpcStart
@@ -238,7 +238,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  110:.\Generated_Source\PSoC5/CySpc.c ****     CY_SPC_PM_STBY_REG &= ((uint8)(~PM_SPC_PM_EN));
  117              		.loc 1 110 0
  118 001e 084B     		ldr	r3, .L5+4
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 5
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 5
 
 
  119 0020 074A     		ldr	r2, .L5+4
@@ -298,7 +298,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  134:.\Generated_Source\PSoC5/CySpc.c **** *******************************************************************************/
  135:.\Generated_Source\PSoC5/CySpc.c **** uint8 CySpcReadData(uint8 buffer[], uint8 size) 
  136:.\Generated_Source\PSoC5/CySpc.c **** {
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 6
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 6
 
 
  150              		.loc 1 136 0
@@ -358,7 +358,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  193 0036 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
  194 0038 0133     		adds	r3, r3, #1
  195 003a FB73     		strb	r3, [r7, #15]
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 7
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 7
 
 
  196              	.L8:
@@ -418,7 +418,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  169:.\Generated_Source\PSoC5/CySpc.c **** *   Number bytes to load.
  170:.\Generated_Source\PSoC5/CySpc.c **** *
  171:.\Generated_Source\PSoC5/CySpc.c **** * Return:
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 8
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 8
 
 
  172:.\Generated_Source\PSoC5/CySpc.c **** *  CYRET_STARTED
@@ -478,7 +478,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  262 002a 0F2B     		cmp	r3, #15
  263 002c 43D8     		bhi	.L18
  264              	.L17:
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 9
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 9
 
 
  190:.\Generated_Source\PSoC5/CySpc.c ****     {
@@ -538,7 +538,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  307 0078 D2B2     		uxtb	r2, r2
  308 007a 1A70     		strb	r2, [r3]
  202:.\Generated_Source\PSoC5/CySpc.c ****                 CY_SPC_CPU_DATA_REG = ((uint8)(size - 1u));
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 10
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 10
 
 
  309              		.loc 1 202 0
@@ -598,7 +598,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  346 00ae 0423     		movs	r3, #4
  347 00b0 FB60     		str	r3, [r7, #12]
  191:.\Generated_Source\PSoC5/CySpc.c ****         if(CY_SPC_IDLE)
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 11
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 11
 
 
  348              		.loc 1 191 0
@@ -658,7 +658,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  237:.\Generated_Source\PSoC5/CySpc.c **** *  array with the modified data.
  238:.\Generated_Source\PSoC5/CySpc.c **** *
  239:.\Generated_Source\PSoC5/CySpc.c **** * Parameters:
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 12
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 12
 
 
  240:.\Generated_Source\PSoC5/CySpc.c **** *  uint8 array:
@@ -718,7 +718,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  409              		.loc 1 266 0
  410 0022 194B     		ldr	r3, .L38+4
  411 0024 B622     		movs	r2, #182
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 13
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 13
 
 
  412 0026 1A70     		strb	r2, [r3]
@@ -778,7 +778,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  453 0066 F2D3     		bcc	.L34
  454 0068 04E0     		b	.L36
  455              	.L32:
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 14
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 14
 
 
  278:.\Generated_Source\PSoC5/CySpc.c ****             }
@@ -838,7 +838,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  298:.\Generated_Source\PSoC5/CySpc.c **** *  Loads a row of data into the row latch of a Flash/EEPROM array.
  299:.\Generated_Source\PSoC5/CySpc.c **** *
  300:.\Generated_Source\PSoC5/CySpc.c **** *  The only data that are going to be changed should be passed. The function
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 15
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 15
 
 
  301:.\Generated_Source\PSoC5/CySpc.c **** *  will handle unmodified data preservation based on DWR settings and input
@@ -898,7 +898,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  334:.\Generated_Source\PSoC5/CySpc.c ****     #endif /* (CYDEV_ECC_ENABLE == 0) */
  335:.\Generated_Source\PSoC5/CySpc.c **** 
  336:.\Generated_Source\PSoC5/CySpc.c ****     /* Make sure the SPC is ready to accept command */
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 16
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 16
 
 
  337:.\Generated_Source\PSoC5/CySpc.c ****     if(CY_SPC_IDLE)
@@ -958,7 +958,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  361:.\Generated_Source\PSoC5/CySpc.c ****                 *******************************************************************/
  362:.\Generated_Source\PSoC5/CySpc.c ****                 if ((size == CYDEV_ECC_ROW_SIZE) && (array <= CY_SPC_LAST_FLASH_ARRAYID))
  363:.\Generated_Source\PSoC5/CySpc.c ****                 {
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 17
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 17
 
 
  364:.\Generated_Source\PSoC5/CySpc.c ****                     offset = CYDEV_FLS_BASE +
@@ -1018,7 +1018,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  394:.\Generated_Source\PSoC5/CySpc.c ****                 /*******************************************************************
  395:.\Generated_Source\PSoC5/CySpc.c ****                 * If size parameter equals size of the flash row and selected array
  396:.\Generated_Source\PSoC5/CySpc.c ****                 * identification corresponds to the flash array (but not to EEPROM
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 18
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 18
 
 
  397:.\Generated_Source\PSoC5/CySpc.c ****                 * array) then data are going to be written to the flash data
@@ -1078,7 +1078,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  408:.\Generated_Source\PSoC5/CySpc.c ****                     for (i = 0u; i < CYDEV_ECC_ROW_SIZE; i++)
  600              		.loc 1 408 0 is_stmt 0 discriminator 1
  601 00a2 7B8B     		ldrh	r3, [r7, #26]
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 19
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 19
 
 
  602 00a4 1F2B     		cmp	r3, #31
@@ -1138,7 +1138,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  632              		.section	.text.CySpcWriteRow,"ax",%progbits
  633              		.align	2
  634              		.global	CySpcWriteRow
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 20
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 20
 
 
  635              		.thumb
@@ -1198,7 +1198,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  656              		.loc 1 467 0
  657 000e 0723     		movs	r3, #7
  658 0010 FB60     		str	r3, [r7, #12]
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 21
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 21
 
 
  468:.\Generated_Source\PSoC5/CySpc.c **** 
@@ -1258,7 +1258,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  699 0056 D2B2     		uxtb	r2, r2
  700 0058 1A70     		strb	r2, [r3]
  482:.\Generated_Source\PSoC5/CySpc.c ****             CY_SPC_CPU_DATA_REG = tempPolarity;
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 22
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 22
 
 
  701              		.loc 1 482 0
@@ -1318,7 +1318,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  741              		.thumb_func
  742              		.type	CySpcEraseSector, %function
  743              	CySpcEraseSector:
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 23
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 23
 
 
  744              	.LFB7:
@@ -1378,7 +1378,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  524:.\Generated_Source\PSoC5/CySpc.c ****     {
  525:.\Generated_Source\PSoC5/CySpc.c ****         CY_SPC_CPU_DATA_REG = CY_SPC_KEY_ONE;
  771              		.loc 1 525 0
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 24
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 24
 
 
  772 0020 124B     		ldr	r3, .L66+4
@@ -1438,7 +1438,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  543:.\Generated_Source\PSoC5/CySpc.c ****     }
  544:.\Generated_Source\PSoC5/CySpc.c **** 
  545:.\Generated_Source\PSoC5/CySpc.c ****     return(status);
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 25
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 25
 
 
  809              		.loc 1 545 0
@@ -1498,7 +1498,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  834              		.loc 1 574 0
  835              		.cfi_startproc
  836              		@ args = 0, pretend = 0, frame = 16
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 26
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 26
 
 
  837              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -1558,7 +1558,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  878 003c 084B     		ldr	r3, .L74+4
  879 003e FA79     		ldrb	r2, [r7, #7]
  880 0040 1A70     		strb	r2, [r3]
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 27
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 27
 
 
  881 0042 04E0     		b	.L72
@@ -1618,7 +1618,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  606:.\Generated_Source\PSoC5/CySpc.c **** * Summary:
  607:.\Generated_Source\PSoC5/CySpc.c **** *  Locks the SPC so it can not be used by someone else:
  608:.\Generated_Source\PSoC5/CySpc.c **** *   - Saves wait-pipeline enable state and enable pipeline (PSoC5)
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 28
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 28
 
 
  609:.\Generated_Source\PSoC5/CySpc.c **** *
@@ -1678,7 +1678,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  632:.\Generated_Source\PSoC5/CySpc.c **** 
  633:.\Generated_Source\PSoC5/CySpc.c ****             if(0u != (CY_SPC_CPU_WAITPIPE_REG & CY_SPC_CPU_WAITPIPE_BYPASS))
  948              		.loc 1 633 0
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 29
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 29
 
 
  949 0024 0E4B     		ldr	r3, .L79+4
@@ -1738,7 +1738,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  652:.\Generated_Source\PSoC5/CySpc.c ****     return(status);
  985              		.loc 1 652 0
  986 0050 7B68     		ldr	r3, [r7, #4]
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 30
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 30
 
 
  653:.\Generated_Source\PSoC5/CySpc.c **** }
@@ -1798,7 +1798,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  672:.\Generated_Source\PSoC5/CySpc.c ****     uint8 interruptState;
  673:.\Generated_Source\PSoC5/CySpc.c **** 
  674:.\Generated_Source\PSoC5/CySpc.c ****     /* Enter critical section */
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 31
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 31
 
 
  675:.\Generated_Source\PSoC5/CySpc.c ****     interruptState = CyEnterCriticalSection();
@@ -1858,7 +1858,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  1058 002e 064B     		ldr	r3, .L83+4
  1059 0030 0022     		movs	r2, #0
  1060 0032 1A60     		str	r2, [r3]
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 32
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 32
 
 
  1061              	.L82:
@@ -1918,7 +1918,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  1090              		@ args = 0, pretend = 0, frame = 8
  1091              		@ frame_needed = 1, uses_anonymous_args = 0
  1092              		@ link register save eliminated.
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 33
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 33
 
 
  1093 0000 80B4     		push	{r7}
@@ -1978,7 +1978,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  1131 0032 1846     		mov	r0, r3
  1132 0034 0C37     		adds	r7, r7, #12
  1133 0036 BD46     		mov	sp, r7
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 34
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 34
 
 
  1134              		@ sp needed
@@ -2038,7 +2038,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  1188 0051 05       		.byte	0x5
  1189 0052 49020000 		.4byte	.LASF6
  1190 0056 02       		.uleb128 0x2
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 35
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 35
 
 
  1191 0057 08       		.byte	0x8
@@ -2098,7 +2098,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  1245 00c6 CA000000 		.4byte	0xca
  1246 00ca 06       		.uleb128 0x6
  1247 00cb 81000000 		.4byte	0x81
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 36
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 36
 
 
  1248 00cf 02       		.uleb128 0x2
@@ -2158,7 +2158,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  1302 013e 60010000 		.4byte	0x160
  1303 0142 02       		.uleb128 0x2
  1304 0143 91       		.byte	0x91
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 37
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 37
 
 
  1305 0144 6C       		.sleb128 -20
@@ -2218,7 +2218,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  1359 01a8 68       		.sleb128 -24
  1360 01a9 0A       		.uleb128 0xa
  1361 01aa 94000000 		.4byte	.LASF23
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 38
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 38
 
 
  1362 01ae 01       		.byte	0x1
@@ -2278,7 +2278,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  1416 0215 10       		.uleb128 0x10
  1417 0216 94000000 		.4byte	.LASF23
  1418 021a 01       		.byte	0x1
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 39
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 39
 
 
  1419 021b 0201     		.2byte	0x102
@@ -2338,7 +2338,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  1473 0286 91       		.byte	0x91
  1474 0287 60       		.sleb128 -32
  1475 0288 10       		.uleb128 0x10
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 40
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 40
 
 
  1476 0289 94000000 		.4byte	.LASF23
@@ -2398,7 +2398,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  1530 02f4 76000000 		.4byte	0x76
  1531 02f8 02       		.uleb128 0x2
  1532 02f9 91       		.byte	0x91
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 41
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 41
 
 
  1533 02fa 6C       		.sleb128 -20
@@ -2458,7 +2458,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  1587 0366 01       		.byte	0x1
  1588 0367 0802     		.2byte	0x208
  1589 0369 A1000000 		.4byte	0xa1
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 42
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 42
 
 
  1590 036d 02       		.uleb128 0x2
@@ -2518,7 +2518,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  1644 03df 02       		.uleb128 0x2
  1645 03e0 91       		.byte	0x91
  1646 03e1 73       		.sleb128 -13
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 43
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 43
 
 
  1647 03e2 00       		.byte	0
@@ -2578,7 +2578,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  1701 0455 00       		.byte	0
  1702              		.section	.debug_abbrev,"",%progbits
  1703              	.Ldebug_abbrev0:
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 44
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 44
 
 
  1704 0000 01       		.uleb128 0x1
@@ -2638,7 +2638,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  1758 0036 05       		.uleb128 0x5
  1759 0037 16       		.uleb128 0x16
  1760 0038 00       		.byte	0
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 45
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 45
 
 
  1761 0039 03       		.uleb128 0x3
@@ -2698,7 +2698,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  1815 0070 18       		.uleb128 0x18
  1816 0071 00       		.byte	0
  1817 0072 00       		.byte	0
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 46
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 46
 
 
  1818 0073 09       		.uleb128 0x9
@@ -2758,7 +2758,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  1872 00aa 18       		.uleb128 0x18
  1873 00ab 00       		.byte	0
  1874 00ac 00       		.byte	0
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 47
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 47
 
 
  1875 00ad 0C       		.uleb128 0xc
@@ -2818,7 +2818,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  1929 00e4 27       		.uleb128 0x27
  1930 00e5 19       		.uleb128 0x19
  1931 00e6 49       		.uleb128 0x49
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 48
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 48
 
 
  1932 00e7 13       		.uleb128 0x13
@@ -2878,7 +2878,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  1986 011e 02       		.uleb128 0x2
  1987 011f 18       		.uleb128 0x18
  1988 0120 00       		.byte	0
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 49
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 49
 
 
  1989 0121 00       		.byte	0
@@ -2938,7 +2938,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  2043 0158 27       		.uleb128 0x27
  2044 0159 19       		.uleb128 0x19
  2045 015a 11       		.uleb128 0x11
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 50
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 50
 
 
  2046 015b 01       		.uleb128 0x1
@@ -2998,7 +2998,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  2100 0054 64000000 		.4byte	.LFE8-.LFB8
  2101 0058 00000000 		.4byte	.LFB9
  2102 005c 68000000 		.4byte	.LFE9-.LFB9
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 51
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 51
 
 
  2103 0060 00000000 		.4byte	.LFB10
@@ -3058,7 +3058,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  2146              	.LASF19:
  2147 0022 43795370 		.ascii	"CySpcStart\000"
  2147      63537461 
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 52
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 52
 
 
  2147      727400
@@ -3118,7 +3118,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  2170      6E00
  2171              	.LASF9:
  2172 00ee 75696E74 		.ascii	"uint8\000"
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 53
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 53
 
 
  2172      3800
@@ -3178,7 +3178,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  2198      6720756E 
  2198      7369676E 
  2198      65642069 
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 54
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 54
 
 
  2199              	.LASF34:
@@ -3238,7 +3238,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 1
  2219              	.LASF31:
  2220 026e 6F666673 		.ascii	"offset\000"
  2220      657400
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEuSqTb.s 			page 55
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXT9KUW.s 			page 55
 
 
  2221              	.LASF2:

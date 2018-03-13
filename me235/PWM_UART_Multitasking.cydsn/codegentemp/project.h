@@ -23,6 +23,9 @@
 #include <Clock_PWM.h>
 #include <Pin_Servo_Control_aliases.h>
 #include <Pin_Servo_Control.h>
+#include <UART_for_USB.h>
+#include <Interrupt_UART_Receive.h>
+#include <UART_for_USB_IntClock.h>
 #include <core_cm3_psoc5.h>
 #include <core_cm3.h>
 #include <CyDmac.h>
