@@ -12,10 +12,19 @@
 
 int main()
 {
-    /* Place your initialization/startup code here (e.g. MyInst_Start()) */
-
-    /* CyGlobalIntEnable; */ /* Uncomment this line to enable global interrupts. */
+    
+    // Start the interrupt for the UART
+    CyGlobalIntEnable;
+    Interrupt_UART_Receive_StartEx( Interrupt_Handler_UART_Receive );
+    
+    // Start the UART itself
+    UART_for_USB_Start();
+    
+    // Start the PWM component
     PWM_Servo_Start();
+    
+    // Send an initial message over the UART / USB com port
+    UART_for_USB_PutString("PWM on. Please set the period: \r\n");
     
     for(;;)
     {

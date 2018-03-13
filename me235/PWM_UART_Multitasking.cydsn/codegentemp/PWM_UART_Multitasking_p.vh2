@@ -1,5 +1,5 @@
 -- Project:   PWM_UART_Multitasking
--- Generated: 03/13/2018 11:10:47
+-- Generated: 03/13/2018 12:01:21
 -- PSoC Creator  3.1 SP3
 
 ENTITY PWM_UART_Multitasking IS
@@ -41,6 +41,7 @@ ARCHITECTURE __DEFAULT__ OF PWM_UART_Multitasking IS
     SIGNAL Pin_Servo_Control(0)__PA : bit;
     SIGNAL Rx_1(0)__PA : bit;
     SIGNAL Tx_1(0)__PA : bit;
+    SIGNAL \PWM_Servo:PWMUDB:cmp1_eq\ : bit;
     SIGNAL \PWM_Servo:PWMUDB:cmp1_less\ : bit;
     SIGNAL \PWM_Servo:PWMUDB:control_0\ : bit;
     SIGNAL \PWM_Servo:PWMUDB:control_1\ : bit;
@@ -518,13 +519,14 @@ BEGIN
 
     Net_270:macrocell
         GENERIC MAP(
-            eqn_main => "(main_0 * main_1)",
+            eqn_main => "(main_0 * main_1) + (main_0 * main_2)",
             clk_inv => '0')
         PORT MAP(
             q => Net_270,
             clock_0 => Net_44,
             main_0 => \PWM_Servo:PWMUDB:runmode_enable\,
-            main_1 => \PWM_Servo:PWMUDB:cmp1_less\);
+            main_1 => \PWM_Servo:PWMUDB:cmp1_eq\,
+            main_2 => \PWM_Servo:PWMUDB:cmp1_less\);
 
     Net_373:macrocell
         GENERIC MAP(
@@ -844,12 +846,13 @@ BEGIN
 
     \PWM_Servo:PWMUDB:prevCompare1\:macrocell
         GENERIC MAP(
-            eqn_main => "(main_0)",
+            eqn_main => "(!main_0 * !main_1)",
             clk_inv => '0')
         PORT MAP(
             q => \PWM_Servo:PWMUDB:prevCompare1\,
-            main_0 => \PWM_Servo:PWMUDB:cmp1_less\,
-            clock_0 => Net_44);
+            clock_0 => Net_44,
+            main_0 => \PWM_Servo:PWMUDB:cmp1_eq\,
+            main_1 => \PWM_Servo:PWMUDB:cmp1_less\);
 
     \PWM_Servo:PWMUDB:runmode_enable\:macrocell
         GENERIC MAP(
@@ -935,6 +938,7 @@ BEGIN
             clock => Net_44,
             cs_addr_2 => \PWM_Servo:PWMUDB:tc_i\,
             cs_addr_1 => \PWM_Servo:PWMUDB:runmode_enable\,
+            ce0_comb => \PWM_Servo:PWMUDB:cmp1_eq\,
             cl0_comb => \PWM_Servo:PWMUDB:cmp1_less\,
             z0_comb => \PWM_Servo:PWMUDB:tc_i\,
             f1_blk_stat_comb => \PWM_Servo:PWMUDB:status_3\,
@@ -955,13 +959,14 @@ BEGIN
 
     \PWM_Servo:PWMUDB:status_0\:macrocell
         GENERIC MAP(
-            eqn_main => "(!main_0 * main_1)",
+            eqn_main => "(!main_0 * main_1) + (!main_0 * main_2)",
             clk_inv => '0')
         PORT MAP(
             q => \PWM_Servo:PWMUDB:status_0\,
             clock_0 => Net_44,
             main_0 => \PWM_Servo:PWMUDB:prevCompare1\,
-            main_1 => \PWM_Servo:PWMUDB:cmp1_less\);
+            main_1 => \PWM_Servo:PWMUDB:cmp1_eq\,
+            main_2 => \PWM_Servo:PWMUDB:cmp1_less\);
 
     \PWM_Servo:PWMUDB:status_2\:macrocell
         GENERIC MAP(
