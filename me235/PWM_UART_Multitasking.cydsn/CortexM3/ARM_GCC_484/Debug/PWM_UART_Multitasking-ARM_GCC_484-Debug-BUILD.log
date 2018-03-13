@@ -1,17 +1,50 @@
---------------- Build Started: 03/13/2018 12:18:01 Project: PWM_UART_Multitasking, Configuration: ARM GCC 4.8.4 Debug ---------------
+--------------- Build Started: 03/13/2018 14:00:37 Project: PWM_UART_Multitasking, Configuration: ARM GCC 4.8.4 Debug ---------------
 The code generation step is up to date.
 arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -Wno-main -I. -I.\Generated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_484\Debug/uart_helper_fcns.lst -g -D DEBUG -Wall -ffunction-sections -O0 -c .\uart_helper_fcns.c -o .\CortexM3\ARM_GCC_484\Debug\uart_helper_fcns.o
+.\uart_helper_fcns.c:111:5: warning: data definition has no type or storage class [enabled by default]
+     PWM_Servo_WritePeriod( received_byte );
+     ^
+.\uart_helper_fcns.c:111:5: warning: type defaults to 'int' in declaration of 'PWM_Servo_WritePeriod' [-Wimplicit-int]
+.\uart_helper_fcns.c:111:5: warning: parameter names (without types) in function declaration [enabled by default]
+.\uart_helper_fcns.c:111:5: error: conflicting types for 'PWM_Servo_WritePeriod'
+In file included from .\Generated_Source\PSoC5/project.h:22:0,
+                 from .\uart_helper_fcns.h:43,
+                 from .\uart_helper_fcns.c:19:
+.\Generated_Source\PSoC5/PWM_Servo.h:190:9: note: previous declaration of 'PWM_Servo_WritePeriod' was here
+ void    PWM_Servo_WritePeriod(uint16 period)
+         ^
+.\uart_helper_fcns.c:116:5: error: initializer element is not constant
+     uint16 period_written = PWM_Servo_ReadPeriod();
+     ^
+.\uart_helper_fcns.c:119:35: error: expected ')' before string constant
+     sprintf( transmission_buffer, "PWM now has a period of: %i \r\n", period_written);
+                                   ^
+.\uart_helper_fcns.c:121:5: warning: data definition has no type or storage class [enabled by default]
+     UART_for_USB_PutString( transmission_buffer );    
+     ^
+.\uart_helper_fcns.c:121:5: warning: type defaults to 'int' in declaration of 'UART_for_USB_PutString' [-Wimplicit-int]
+.\uart_helper_fcns.c:121:5: warning: parameter names (without types) in function declaration [enabled by default]
+.\uart_helper_fcns.c:121:5: error: conflicting types for 'UART_for_USB_PutString'
+In file included from .\Generated_Source\PSoC5/project.h:26:0,
+                 from .\uart_helper_fcns.h:43,
+                 from .\uart_helper_fcns.c:19:
+.\Generated_Source\PSoC5/UART_for_USB.h:139:10: note: previous declaration of 'UART_for_USB_PutString' was here
+     void UART_for_USB_PutString(const char8 string[]) ;
+          ^
+.\uart_helper_fcns.c:123:29: error: expected declaration specifiers or '...' before string constant
+     UART_for_USB_PutString( "Type a number between 100 and 200 (min and max period for a 100 kHz clock).\r\n");
+                             ^
+.\uart_helper_fcns.c:124:1: error: expected identifier or '(' before '}' token
+ }
+ ^
+.\uart_helper_fcns.c:36:13: warning: 'transmission_buffer' defined but not used [-Wunused-variable]
+ static char transmission_buffer[TRANSMISSION_LENGTH];
+             ^
 .\uart_helper_fcns.c:46:15: warning: 'period' defined but not used [-Wunused-variable]
  static uint16 period = 0;
                ^
 .\uart_helper_fcns.c:50:14: warning: 'num_chars_received' defined but not used [-Wunused-variable]
  static uint8 num_chars_received = 0;
               ^
-arm-none-eabi-ar.exe -rs .\CortexM3\ARM_GCC_484\Debug\PWM_UART_Multitasking.a .\CortexM3\ARM_GCC_484\Debug\cyfitter_cfg.o .\CortexM3\ARM_GCC_484\Debug\PWM_Servo.o .\CortexM3\ARM_GCC_484\Debug\PWM_Servo_PM.o .\CortexM3\ARM_GCC_484\Debug\Clock_PWM.o .\CortexM3\ARM_GCC_484\Debug\Pin_Servo_Control.o .\CortexM3\ARM_GCC_484\Debug\CyBootAsmGnu.o .\CortexM3\ARM_GCC_484\Debug\CyDmac.o .\CortexM3\ARM_GCC_484\Debug\CyFlash.o .\CortexM3\ARM_GCC_484\Debug\CyLib.o .\CortexM3\ARM_GCC_484\Debug\cyPm.o .\CortexM3\ARM_GCC_484\Debug\CySpc.o .\CortexM3\ARM_GCC_484\Debug\cyutils.o .\CortexM3\ARM_GCC_484\Debug\UART_for_USB.o .\CortexM3\ARM_GCC_484\Debug\UART_for_USB_PM.o .\CortexM3\ARM_GCC_484\Debug\UART_for_USB_INT.o .\CortexM3\ARM_GCC_484\Debug\UART_for_USB_BOOT.o .\CortexM3\ARM_GCC_484\Debug\Interrupt_UART_Receive.o .\CortexM3\ARM_GCC_484\Debug\UART_for_USB_IntClock.o
-arm-none-eabi-ar.exe: creating .\CortexM3\ARM_GCC_484\Debug\PWM_UART_Multitasking.a
-arm-none-eabi-gcc.exe -Wl,--start-group -o .\CortexM3\ARM_GCC_484\Debug\PWM_UART_Multitasking.elf .\CortexM3\ARM_GCC_484\Debug\main.o .\CortexM3\ARM_GCC_484\Debug\uart_helper_fcns.o .\CortexM3\ARM_GCC_484\Debug\cymetadata.o .\CortexM3\ARM_GCC_484\Debug\Cm3Start.o .\CortexM3\ARM_GCC_484\Debug\PWM_UART_Multitasking.a "C:\Program Files (x86)\Cypress\PSoC Creator\3.1\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CortexM3\ARM_GCC_484\Debug\CyComponentLibrary.a" -mthumb -march=armv7-m -mfix-cortex-m3-ldrd -Wl,-Map,.\CortexM3\ARM_GCC_484\Debug/PWM_UART_Multitasking.map -T .\Generated_Source\PSoC5\cm3gcc.ld -g -specs=nano.specs "-u _printf_float" "" -Wl,--gc-sections -Wl,--end-group
-cyelftool.exe -C D:\WindowsGitHub\psoc-examples\me235\PWM_UART_Multitasking.cydsn\CortexM3\ARM_GCC_484\Debug\PWM_UART_Multitasking.elf --flash_size 262144 --flash_row_size 256
-cyelftool.exe -S D:\WindowsGitHub\psoc-examples\me235\PWM_UART_Multitasking.cydsn\CortexM3\ARM_GCC_484\Debug\PWM_UART_Multitasking.elf
-Flash used: 5158 of 262144 bytes (2.0 %).
-SRAM used: 2629 of 65536 bytes (4.0 %). Stack: 2048 bytes. Heap: 128 bytes.
---------------- Build Succeeded: 03/13/2018 12:18:02 ---------------
+The command 'arm-none-eabi-gcc.exe' failed with exit code '1'.
+--------------- Build Failed: 03/13/2018 14:00:38 ---------------

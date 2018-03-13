@@ -64,7 +64,38 @@ CY_ISR( Interrupt_Handler_UART_Receive){
     // Luckily enough, C allows us to "switch" on uint8s, since characters are also numbers via the ASCII table.
     switch( received_byte )
     {
-        //    
+        // Look up switch-case statements.
+        // We're going to take advantage of the "flow" of switch-case to do the same thing for characters 10, 12, 13,
+        // which could all be newlines, by not "break"-ing until the end of the third case.
+        case 10:
+            // flow downward, no specific code for 10
+        case 12:
+            // flow downward, no specific code for 12
+        case 13:
+            // This code will run if any of 10, 12, 13 are input (any type of new line.)
+            // Since the PSoC received a new line...
+            write_PWM_and_UART();
+            // This helper will also reset the period we're tracking, and the num chars received.
+            // By "break"-ing, the next case is not executed.
+            break;
+        default:
+            // The "default" case is "anything else." Assume it's a number.
+            // TO-DO: validate (does C use assertions???) that we're only receiving a byte that's a 0-9 number,
+            // e.g. between 48 and 57.
+            // First, multiply the received number by its decimal place (e.g. num chars received.)
+            // This may look unusual. Remember that the >> operator raises the left argument to the power-of-two of the right argument.
+            // For example, we're multiplying by 10, so that' x * 10 = x*8 + x*2 = x * (2^3) + x * (2^1).
+            // Drew's head hurt when trying to bitshift-multiply by 10^n instead of just 10, so a for loop lazily raises the values for me.
+            /*
+            uint8 i; 
+            for( i=0; i <= num_chars_received; i++) {
+                // note the less than or equal to. Think: why need this here?
+                period += (received_byte << 3) + (received_byte << 1);
+            }
+            */
+            break;
+        }
+            
     }
     
     // We're going to assume that the character we receive is an integer, 
@@ -90,6 +121,12 @@ CY_ISR( Interrupt_Handler_UART_Receive){
     UART_for_USB_PutString( transmission_buffer );    
     // (4) Send another little string prompting the next input.
     UART_for_USB_PutString( "Type a number between 100 and 200 (min and max period for a 100 kHz clock).\r\n");
+}
+
+// Helper function that does the writing to the PWM and UART.
+// makes the ISR code easier to understand.
+void write_PWM_and_UART(){
+    
 }
 
 /* [] END OF FILE */

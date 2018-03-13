@@ -49,6 +49,11 @@
 // THIS IS ONLY A DECLARATION. The definition is in the .c file.
 CY_ISR( Interrupt_Handler_UART_Receive);
 
+// Another helper that does the writing to the PWM and UART upon receipt of a newline,
+// making the ISR cleaner.
+// We don't need to pass in the period here since it's a global variable
+// DREW TO-DO: move the global variables into the header file not in the c file
+void write_PWM_and_UART();
 
 #endif //UART_HELPER_FCNS_H
 
