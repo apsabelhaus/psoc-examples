@@ -1,0 +1,66 @@
+--------------- Rebuild Started: 03/14/2018 13:35:27 Project: PWM_UART_Multitasking, Configuration: ARM GCC 4.8.4 Debug ---------------
+cydsfit.exe -.appdatapath "C:\Users\andre\AppData\Local\Cypress Semiconductor\PSoC Creator\3.1" -.fdsnotice -.fdswarpdepfile=warp_dependencies.txt -.fdselabdepfile=elab_dependencies.txt -.fdsbldfile=generated_files.txt -p D:\WindowsGitHub\psoc-examples\me235\PWM_UART_Multitasking.cydsn\PWM_UART_Multitasking.cyprj -d CY8C5888LTI-LP097 -s D:\WindowsGitHub\psoc-examples\me235\PWM_UART_Multitasking.cydsn\Generated_Source\PSoC5 -- -yv2 -q10 -ygs -o2 -v3 -.fftcfgtype=LE
+Elaborating Design...
+HDL Generation ...
+Synthesis ...
+Place and Route ...
+Tech mapping ...
+Analog Placement ...
+Analog Routing ...
+Analog Code Generation ...
+Digital Placement ...
+Digital Routing ...
+Bitstream Generation ...
+Static timing analysis ...
+API Generation ...
+Dependency Generation ...
+Clean Temporary Files ...
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -Wno-main -I. -I.\Generated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_484\Debug/main.lst -g -D DEBUG -Wall -ffunction-sections -O0 -c .\main.c -o .\CortexM3\ARM_GCC_484\Debug\main.o
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -Wno-main -I. -I.\Generated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_484\Debug/uart_helper_fcns.lst -g -D DEBUG -Wall -ffunction-sections -O0 -c .\uart_helper_fcns.c -o .\CortexM3\ARM_GCC_484\Debug\uart_helper_fcns.o
+.\uart_helper_fcns.c:111:5: warning: data definition has no type or storage class [enabled by default]
+     PWM_Servo_WritePeriod( received_byte );
+     ^
+.\uart_helper_fcns.c:111:5: warning: type defaults to 'int' in declaration of 'PWM_Servo_WritePeriod' [-Wimplicit-int]
+.\uart_helper_fcns.c:111:5: warning: parameter names (without types) in function declaration [enabled by default]
+.\uart_helper_fcns.c:111:5: error: conflicting types for 'PWM_Servo_WritePeriod'
+In file included from .\Generated_Source\PSoC5/project.h:22:0,
+                 from .\uart_helper_fcns.h:43,
+                 from .\uart_helper_fcns.c:19:
+.\Generated_Source\PSoC5/PWM_Servo.h:190:9: note: previous declaration of 'PWM_Servo_WritePeriod' was here
+ void    PWM_Servo_WritePeriod(uint16 period)
+         ^
+.\uart_helper_fcns.c:116:5: error: initializer element is not constant
+     uint16 period_written = PWM_Servo_ReadPeriod();
+     ^
+.\uart_helper_fcns.c:119:35: error: expected ')' before string constant
+     sprintf( transmission_buffer, "PWM now has a period of: %i \r\n", period_written);
+                                   ^
+.\uart_helper_fcns.c:121:5: warning: data definition has no type or storage class [enabled by default]
+     UART_for_USB_PutString( transmission_buffer );    
+     ^
+.\uart_helper_fcns.c:121:5: warning: type defaults to 'int' in declaration of 'UART_for_USB_PutString' [-Wimplicit-int]
+.\uart_helper_fcns.c:121:5: warning: parameter names (without types) in function declaration [enabled by default]
+.\uart_helper_fcns.c:121:5: error: conflicting types for 'UART_for_USB_PutString'
+In file included from .\Generated_Source\PSoC5/project.h:26:0,
+                 from .\uart_helper_fcns.h:43,
+                 from .\uart_helper_fcns.c:19:
+.\Generated_Source\PSoC5/UART_for_USB.h:139:10: note: previous declaration of 'UART_for_USB_PutString' was here
+     void UART_for_USB_PutString(const char8 string[]) ;
+          ^
+.\uart_helper_fcns.c:123:29: error: expected declaration specifiers or '...' before string constant
+     UART_for_USB_PutString( "Type a number between 100 and 200 (min and max period for a 100 kHz clock).\r\n");
+                             ^
+.\uart_helper_fcns.c:124:1: error: expected identifier or '(' before '}' token
+ }
+ ^
+.\uart_helper_fcns.c:36:13: warning: 'transmission_buffer' defined but not used [-Wunused-variable]
+ static char transmission_buffer[TRANSMISSION_LENGTH];
+             ^
+.\uart_helper_fcns.c:46:15: warning: 'period' defined but not used [-Wunused-variable]
+ static uint16 period = 0;
+               ^
+.\uart_helper_fcns.c:50:14: warning: 'num_chars_received' defined but not used [-Wunused-variable]
+ static uint8 num_chars_received = 0;
+              ^
+The command 'arm-none-eabi-gcc.exe' failed with exit code '1'.
+--------------- Rebuild Failed: 03/14/2018 13:35:46 ---------------
