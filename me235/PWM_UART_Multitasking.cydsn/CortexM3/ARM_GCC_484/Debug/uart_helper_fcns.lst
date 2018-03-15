@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccI9Ha1w.s 			page 1
+ARM GAS  C:\Users\andre\AppData\Local\Temp\cc4IagEi.s 			page 1
 
 
    1              		.syntax unified
@@ -36,34 +36,37 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccI9Ha1w.s 			page 1
   25              	num_chars_received:
   26 0100 00       		.space	1
   27 0101 00       		.align	1
-  28              	period:
+  28              	data:
   29 0102 0000     		.space	2
-  30              		.section	.rodata
-  31              		.align	2
-  32              	.LC0:
-  33 0000 53746F70 		.ascii	"Stopping PWM.\015\012\000"
-  33      70696E67 
-  33      2050574D 
-  33      2E0D0A00 
-  34              		.align	2
-  35              	.LC1:
-  36 0010 52657374 		.ascii	"Restarting PWM.\015\012\000"
-  36      61727469 
-  36      6E672050 
-  36      574D2E0D 
-  36      0A00
-  37              		.section	.text.Interrupt_Handler_UART_Receive,"ax",%progbits
-  38              		.align	2
-  39              		.global	Interrupt_Handler_UART_Receive
-  40              		.thumb
-  41              		.thumb_func
-  42              		.type	Interrupt_Handler_UART_Receive, %function
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccI9Ha1w.s 			page 2
+  30              	mode:
+  31 0104 00       		.space	1
+  32 0105 000000   		.section	.rodata
+  33              		.align	2
+  34              	.LC0:
+  35 0000 0D0A5374 		.ascii	"\015\012Stopping PWM.\015\012\000"
+  35      6F707069 
+  35      6E672050 
+  35      574D2E0D 
+  35      0A00
+  36 0012 0000     		.align	2
+  37              	.LC1:
+  38 0014 0D0A5265 		.ascii	"\015\012Restarting PWM.\015\012\000"
+  38      73746172 
+  38      74696E67 
+  38      2050574D 
+  38      2E0D0A00 
+  39              		.section	.text.Interrupt_Handler_UART_Receive,"ax",%progbits
+  40              		.align	2
+  41              		.global	Interrupt_Handler_UART_Receive
+ARM GAS  C:\Users\andre\AppData\Local\Temp\cc4IagEi.s 			page 2
 
 
-  43              	Interrupt_Handler_UART_Receive:
-  44              	.LFB56:
-  45              		.file 1 ".\\uart_helper_fcns.c"
+  42              		.thumb
+  43              		.thumb_func
+  44              		.type	Interrupt_Handler_UART_Receive, %function
+  45              	Interrupt_Handler_UART_Receive:
+  46              	.LFB56:
+  47              		.file 1 ".\\uart_helper_fcns.c"
    1:.\uart_helper_fcns.c **** /* ========================================
    2:.\uart_helper_fcns.c ****  *
    3:.\uart_helper_fcns.c ****  * Copyright Andrew P. Sabelhaus, 2018 
@@ -92,7 +95,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccI9Ha1w.s 			page 1
   26:.\uart_helper_fcns.c **** // a string of this length. E.g. 16 gives us 16 characters, including any integers represented as c
   27:.\uart_helper_fcns.c **** // This solves exactly the same problem as in the supplement to tutorial 6!!!
   28:.\uart_helper_fcns.c **** // Drew used 128 here, like with receive, because it's 
-  29:.\uart_helper_fcns.c **** // "big enough." Compare to the size of the period of the PWM, as returned from ReadPeriod(), 
+  29:.\uart_helper_fcns.c **** // "big enough." Compare to the size of the data of the PWM, as returned from Readdata(), 
   30:.\uart_helper_fcns.c **** // and the string of text I put down below.
   31:.\uart_helper_fcns.c **** // How many bytes (characters) will we expect to need to send back? How many are "taken up" by the 
   32:.\uart_helper_fcns.c **** #define TRANSMIT_LENGTH 128
@@ -112,914 +115,1096 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccI9Ha1w.s 			page 1
   46:.\uart_helper_fcns.c **** 
   47:.\uart_helper_fcns.c **** // Since the UART only sends single bytes, we encounter a problem with setting numerical values.
   48:.\uart_helper_fcns.c **** // Specifically, the byte send is interpreted as a character, NOT a number.
-  49:.\uart_helper_fcns.c **** // See the ASCII table for a bit more intuition: for example, to set a period between 100 and 200, 
+  49:.\uart_helper_fcns.c **** // See the ASCII table for a bit more intuition: for example, to set a data between 100 and 200, we
   50:.\uart_helper_fcns.c **** // type in the characters between 'd' and 'weird L bar thing that isn't on Drew's keyboard. 
   51:.\uart_helper_fcns.c **** // https://www.asciitable.com/
+ARM GAS  C:\Users\andre\AppData\Local\Temp\cc4IagEi.s 			page 3
+
+
   52:.\uart_helper_fcns.c **** // That's not OK. Instead, let's take in each character, store it in a buffer.
   53:.\uart_helper_fcns.c **** // The num_chars_received integer allows us to index into the string buffer (since it's an array of
   54:.\uart_helper_fcns.c **** static uint8 num_chars_received = 0;
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccI9Ha1w.s 			page 3
-
-
   55:.\uart_helper_fcns.c **** 
   56:.\uart_helper_fcns.c **** // In the example that Drew got from George, we used a character to split
   57:.\uart_helper_fcns.c **** 
-  58:.\uart_helper_fcns.c **** // the period, as recorded in the helpers below. By declaring with global scope, we
+  58:.\uart_helper_fcns.c **** // the data, as recorded in the helpers below. By declaring with global scope, we
   59:.\uart_helper_fcns.c **** // increase efficiency.
-  60:.\uart_helper_fcns.c **** static uint16 period = 0;
+  60:.\uart_helper_fcns.c **** static uint16 data = 0;
   61:.\uart_helper_fcns.c **** 
-  62:.\uart_helper_fcns.c **** // Definition of the UART ISR
-  63:.\uart_helper_fcns.c **** // We use the same line for the function definition, with the CY_ISR macro.
-  64:.\uart_helper_fcns.c **** // Compare this to tutorial 6, with "pythagorean"
-  65:.\uart_helper_fcns.c **** CY_ISR( Interrupt_Handler_UART_Receive){
-  46              		.loc 1 65 0
-  47              		.cfi_startproc
-  48              		@ args = 0, pretend = 0, frame = 8
-  49              		@ frame_needed = 1, uses_anonymous_args = 0
-  50 0000 80B5     		push	{r7, lr}
-  51              		.cfi_def_cfa_offset 8
-  52              		.cfi_offset 7, -8
-  53              		.cfi_offset 14, -4
-  54 0002 82B0     		sub	sp, sp, #8
-  55              		.cfi_def_cfa_offset 16
-  56 0004 00AF     		add	r7, sp, #0
-  57              		.cfi_def_cfa_register 7
-  66:.\uart_helper_fcns.c ****     // We assume this ISR is called when a byte is received.
-  67:.\uart_helper_fcns.c ****     // See how the IDE doesn't give any errors, as long as we include project.h here.
-  68:.\uart_helper_fcns.c ****     uint8 received_byte = UART_for_USB_GetChar();
-  58              		.loc 1 68 0
-  59 0006 FFF7FEFF 		bl	UART_for_USB_GetChar
-  60 000a 0346     		mov	r3, r0
-  61 000c FB71     		strb	r3, [r7, #7]
-  69:.\uart_helper_fcns.c ****     
-  70:.\uart_helper_fcns.c ****     //DEBUGGING
-  71:.\uart_helper_fcns.c ****     /*
-  72:.\uart_helper_fcns.c ****     UART_for_USB_PutString( "Received a character: ");
-  73:.\uart_helper_fcns.c ****     UART_for_USB_PutChar( received_byte );
-  74:.\uart_helper_fcns.c ****     UART_for_USB_PutString("\r\n");
-  75:.\uart_helper_fcns.c ****     */
-  76:.\uart_helper_fcns.c ****     
-  77:.\uart_helper_fcns.c ****     // Next, we need to deal with what was received, in the following way.
-  78:.\uart_helper_fcns.c ****     // If a new line is received (the \n character, or ASCII values 10 or 12 or 13 depending on if 
-  79:.\uart_helper_fcns.c ****     // then finally set the period.
-  80:.\uart_helper_fcns.c ****     // Otherwise, add to the uint16 we're keeping track of.
-  81:.\uart_helper_fcns.c ****     // Luckily enough, C allows us to "switch" on uint8s, since characters are also numbers via the
-  82:.\uart_helper_fcns.c ****     switch( received_byte )
-  62              		.loc 1 82 0
-  63 000e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
-  64 0010 0D2B     		cmp	r3, #13
-  65 0012 09D0     		beq	.L3
-  66 0014 0D2B     		cmp	r3, #13
-  67 0016 02DC     		bgt	.L4
-  68 0018 0A2B     		cmp	r3, #10
-  69 001a 05D0     		beq	.L3
-  70 001c 1EE0     		b	.L2
-  71              	.L4:
-  72 001e 652B     		cmp	r3, #101
-  73 0020 13D0     		beq	.L5
-  74 0022 782B     		cmp	r3, #120
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccI9Ha1w.s 			page 4
+  62:.\uart_helper_fcns.c **** // We're also going to let people adjust the duty cycle (compare value).
+  63:.\uart_helper_fcns.c **** // So, we need to store a character representing the mode.
+  64:.\uart_helper_fcns.c **** static char mode;
+  65:.\uart_helper_fcns.c **** 
+  66:.\uart_helper_fcns.c **** // Definition of the UART ISR
+  67:.\uart_helper_fcns.c **** // We use the same line for the function definition, with the CY_ISR macro.
+  68:.\uart_helper_fcns.c **** // Compare this to tutorial 6, with "pythagorean"
+  69:.\uart_helper_fcns.c **** CY_ISR( Interrupt_Handler_UART_Receive){
+  48              		.loc 1 69 0
+  49              		.cfi_startproc
+  50              		@ args = 0, pretend = 0, frame = 8
+  51              		@ frame_needed = 1, uses_anonymous_args = 0
+  52 0000 80B5     		push	{r7, lr}
+  53              		.cfi_def_cfa_offset 8
+  54              		.cfi_offset 7, -8
+  55              		.cfi_offset 14, -4
+  56 0002 82B0     		sub	sp, sp, #8
+  57              		.cfi_def_cfa_offset 16
+  58 0004 00AF     		add	r7, sp, #0
+  59              		.cfi_def_cfa_register 7
+  70:.\uart_helper_fcns.c ****     // We assume this ISR is called when a byte is received.
+  71:.\uart_helper_fcns.c ****     // See how the IDE doesn't give any errors, as long as we include project.h here.
+  72:.\uart_helper_fcns.c ****     uint8 received_byte = UART_for_USB_GetChar();
+  60              		.loc 1 72 0
+  61 0006 FFF7FEFF 		bl	UART_for_USB_GetChar
+  62 000a 0346     		mov	r3, r0
+  63 000c FB71     		strb	r3, [r7, #7]
+  73:.\uart_helper_fcns.c ****     
+  74:.\uart_helper_fcns.c ****     // In order for this to be clear, let's repeat the character back to the terminal.
+  75:.\uart_helper_fcns.c ****     // This way, it 'looks like' we're typing into the terminal!
+  76:.\uart_helper_fcns.c ****     UART_for_USB_PutChar( received_byte );
+  64              		.loc 1 76 0
+  65 000e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+  66 0010 1846     		mov	r0, r3
+  67 0012 FFF7FEFF 		bl	UART_for_USB_PutChar
+  77:.\uart_helper_fcns.c ****     
+  78:.\uart_helper_fcns.c ****     //DEBUGGING
+  79:.\uart_helper_fcns.c ****     /*
+  80:.\uart_helper_fcns.c ****     UART_for_USB_PutString( "Received a character: ");
+  81:.\uart_helper_fcns.c ****     UART_for_USB_PutChar( received_byte );
+  82:.\uart_helper_fcns.c ****     UART_for_USB_PutString("\r\n");
+  83:.\uart_helper_fcns.c ****     */
+  84:.\uart_helper_fcns.c ****     
+  85:.\uart_helper_fcns.c ****     // Next, we need to deal with what was received, in the following way.
+  86:.\uart_helper_fcns.c ****     // If a new line is received (the \n character, or ASCII values 10 or 12 or 13 depending on if 
+  87:.\uart_helper_fcns.c ****     // then finally set the data.
+  88:.\uart_helper_fcns.c ****     // Otherwise, add to the uint16 we're keeping track of.
+ARM GAS  C:\Users\andre\AppData\Local\Temp\cc4IagEi.s 			page 4
 
 
-  75 0024 08D0     		beq	.L6
-  76 0026 19E0     		b	.L2
-  77              	.L3:
-  83:.\uart_helper_fcns.c ****     {
-  84:.\uart_helper_fcns.c ****         // Students: look up switch-case statements. to understand this more.
-  85:.\uart_helper_fcns.c ****         // We're going to take advantage of the "flow" of switch-case to do the same thing for char
-  86:.\uart_helper_fcns.c ****         // which could all be newlines, by not "break"-ing until the end of the third case.
-  87:.\uart_helper_fcns.c ****         case '\r':
-  88:.\uart_helper_fcns.c ****             // flow downward, no specific code for carriage return
-  89:.\uart_helper_fcns.c ****         case '\n':
-  90:.\uart_helper_fcns.c ****             // This code will run if the received byte is either a carriage return or a newline.
-  91:.\uart_helper_fcns.c ****             // Since the PSoC received a new line...
-  92:.\uart_helper_fcns.c ****             // First, terminate the string. This is for the use of sscanf below.
-  93:.\uart_helper_fcns.c ****             receive_buffer[num_chars_received] = '\0';
-  78              		.loc 1 93 0
-  79 0028 144B     		ldr	r3, .L8
-  80 002a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
-  81 002c 144A     		ldr	r2, .L8+4
-  82 002e 0021     		movs	r1, #0
-  83 0030 D154     		strb	r1, [r2, r3]
-  94:.\uart_helper_fcns.c ****             Write_PWM_and_UART();
-  84              		.loc 1 94 0
-  85 0032 FFF7FEFF 		bl	Write_PWM_and_UART
-  95:.\uart_helper_fcns.c ****             // This helper will also reset the period we're tracking, and the num chars received.
-  96:.\uart_helper_fcns.c ****             // By "break"-ing, the next case is not executed.
-  97:.\uart_helper_fcns.c ****             break;
-  86              		.loc 1 97 0
-  87 0036 1DE0     		b	.L1
-  88              	.L6:
-  98:.\uart_helper_fcns.c ****         case 'x':
-  99:.\uart_helper_fcns.c ****             // Added functionality: if the user types an x, then the PWM stops.
- 100:.\uart_helper_fcns.c ****             UART_for_USB_PutString("Stopping PWM.\r\n");
-  89              		.loc 1 100 0
-  90 0038 1248     		ldr	r0, .L8+8
-  91 003a FFF7FEFF 		bl	UART_for_USB_PutString
- 101:.\uart_helper_fcns.c ****             PWM_Servo_Stop();
-  92              		.loc 1 101 0
-  93 003e FFF7FEFF 		bl	PWM_Servo_Stop
- 102:.\uart_helper_fcns.c ****             // Reset the buffer. We'll just start writing from the start again.
- 103:.\uart_helper_fcns.c ****             num_chars_received = 0;
-  94              		.loc 1 103 0
-  95 0042 0E4B     		ldr	r3, .L8
-  96 0044 0022     		movs	r2, #0
-  97 0046 1A70     		strb	r2, [r3]
- 104:.\uart_helper_fcns.c ****             break;
-  98              		.loc 1 104 0
-  99 0048 14E0     		b	.L1
- 100              	.L5:
- 105:.\uart_helper_fcns.c ****         case 'e':
- 106:.\uart_helper_fcns.c ****             // Similarly, type e to enable.
- 107:.\uart_helper_fcns.c ****             UART_for_USB_PutString("Restarting PWM.\r\n");
- 101              		.loc 1 107 0
- 102 004a 0F48     		ldr	r0, .L8+12
- 103 004c FFF7FEFF 		bl	UART_for_USB_PutString
- 108:.\uart_helper_fcns.c ****             PWM_Servo_Start();
- 104              		.loc 1 108 0
- 105 0050 FFF7FEFF 		bl	PWM_Servo_Start
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccI9Ha1w.s 			page 5
+  89:.\uart_helper_fcns.c ****     // Luckily enough, C allows us to "switch" on uint8s, since characters are also numbers via the
+  90:.\uart_helper_fcns.c ****     switch( received_byte )
+  68              		.loc 1 90 0
+  69 0016 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+  70 0018 0D2B     		cmp	r3, #13
+  71 001a 09D0     		beq	.L3
+  72 001c 0D2B     		cmp	r3, #13
+  73 001e 02DC     		bgt	.L4
+  74 0020 0A2B     		cmp	r3, #10
+  75 0022 05D0     		beq	.L3
+  76 0024 1EE0     		b	.L2
+  77              	.L4:
+  78 0026 652B     		cmp	r3, #101
+  79 0028 13D0     		beq	.L5
+  80 002a 782B     		cmp	r3, #120
+  81 002c 08D0     		beq	.L6
+  82 002e 19E0     		b	.L2
+  83              	.L3:
+  91:.\uart_helper_fcns.c ****     {
+  92:.\uart_helper_fcns.c ****         // Students: look up switch-case statements. to understand this more.
+  93:.\uart_helper_fcns.c ****         // We're going to take advantage of the "flow" of switch-case to do the same thing for char
+  94:.\uart_helper_fcns.c ****         // which could all be newlines, by not "break"-ing until the end of the third case.
+  95:.\uart_helper_fcns.c ****         case '\r':
+  96:.\uart_helper_fcns.c ****             // flow downward, no specific code for carriage return
+  97:.\uart_helper_fcns.c ****         case '\n':
+  98:.\uart_helper_fcns.c ****             // This code will run if the received byte is either a carriage return or a newline.
+  99:.\uart_helper_fcns.c ****             // Since the PSoC received a new line...
+ 100:.\uart_helper_fcns.c ****             // First, terminate the string. This is for the use of sscanf below.
+ 101:.\uart_helper_fcns.c ****             receive_buffer[num_chars_received] = '\0';
+  84              		.loc 1 101 0
+  85 0030 144B     		ldr	r3, .L8
+  86 0032 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  87 0034 144A     		ldr	r2, .L8+4
+  88 0036 0021     		movs	r1, #0
+  89 0038 D154     		strb	r1, [r2, r3]
+ 102:.\uart_helper_fcns.c ****             Write_PWM_and_UART();
+  90              		.loc 1 102 0
+  91 003a FFF7FEFF 		bl	Write_PWM_and_UART
+ 103:.\uart_helper_fcns.c ****             // This helper will also reset the data we're tracking, and the num chars received.
+ 104:.\uart_helper_fcns.c ****             // By "break"-ing, the next case is not executed.
+ 105:.\uart_helper_fcns.c ****             break;
+  92              		.loc 1 105 0
+  93 003e 1DE0     		b	.L1
+  94              	.L6:
+ 106:.\uart_helper_fcns.c ****         case 'x':
+ 107:.\uart_helper_fcns.c ****             // Added functionality: if the user types an x, then the PWM stops.
+ 108:.\uart_helper_fcns.c ****             UART_for_USB_PutString("\r\nStopping PWM.\r\n");
+  95              		.loc 1 108 0
+  96 0040 1248     		ldr	r0, .L8+8
+  97 0042 FFF7FEFF 		bl	UART_for_USB_PutString
+ 109:.\uart_helper_fcns.c ****             PWM_Servo_Stop();
+  98              		.loc 1 109 0
+  99 0046 FFF7FEFF 		bl	PWM_Servo_Stop
+ 110:.\uart_helper_fcns.c ****             // Reset the buffer. We'll just start writing from the start again.
+ 111:.\uart_helper_fcns.c ****             num_chars_received = 0;
+ 100              		.loc 1 111 0
+ 101 004a 0E4B     		ldr	r3, .L8
+ARM GAS  C:\Users\andre\AppData\Local\Temp\cc4IagEi.s 			page 5
 
 
- 109:.\uart_helper_fcns.c ****             // Reset the buffer. We'll just start writing from the start again.
- 110:.\uart_helper_fcns.c ****             num_chars_received = 0;
- 106              		.loc 1 110 0
- 107 0054 094B     		ldr	r3, .L8
- 108 0056 0022     		movs	r2, #0
- 109 0058 1A70     		strb	r2, [r3]
- 111:.\uart_helper_fcns.c ****             break;
- 110              		.loc 1 111 0
- 111 005a 0BE0     		b	.L1
- 112              	.L2:
- 112:.\uart_helper_fcns.c ****         default:
- 113:.\uart_helper_fcns.c ****             // The "default" case is "anything else", which is "store another character."
- 114:.\uart_helper_fcns.c ****             // Add to the received buffer.
- 115:.\uart_helper_fcns.c ****             receive_buffer[num_chars_received] = received_byte;
- 113              		.loc 1 115 0
- 114 005c 074B     		ldr	r3, .L8
- 115 005e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 116 0060 074A     		ldr	r2, .L8+4
- 117 0062 F979     		ldrb	r1, [r7, #7]
- 118 0064 D154     		strb	r1, [r2, r3]
- 116:.\uart_helper_fcns.c ****             // We need to increment the counter. i++ does this without an equals sign for assignmen
- 117:.\uart_helper_fcns.c ****             num_chars_received++;
- 119              		.loc 1 117 0
- 120 0066 054B     		ldr	r3, .L8
- 121 0068 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 122 006a 0133     		adds	r3, r3, #1
- 123 006c DAB2     		uxtb	r2, r3
- 124 006e 034B     		ldr	r3, .L8
- 125 0070 1A70     		strb	r2, [r3]
- 118:.\uart_helper_fcns.c ****             break;
- 126              		.loc 1 118 0
- 127 0072 00BF     		nop
- 128              	.L1:
- 119:.\uart_helper_fcns.c ****         // end of case statement.
- 120:.\uart_helper_fcns.c ****     }
- 121:.\uart_helper_fcns.c ****     
- 122:.\uart_helper_fcns.c ****     // We're going to assume that the character we receive is an integer, 
- 123:.\uart_helper_fcns.c ****     // representing the period.
- 124:.\uart_helper_fcns.c ****     // For a transmission of 8 bits, we can only set the period between 0 and 255.
- 125:.\uart_helper_fcns.c ****     // This is OK for how we've configured the PWM for our servo: 
- 126:.\uart_helper_fcns.c ****     // our period can only be between 100 and 200 anyway (1 ms for min angle, 2 ms for max angle).
- 127:.\uart_helper_fcns.c ****     // To get better resolution here, you'll need to do a handful of things:
- 128:.\uart_helper_fcns.c ****     // (1) change the clock of the PWM so that we'll need a uint16 to represent 1 ms to 2 ms of "on
- 129:.\uart_helper_fcns.c ****     // (2) receive two bytes (as uint8) from the UART, keep track of the first one
- 130:.\uart_helper_fcns.c ****     // (3) once two are received, combine them into a uint16
- 131:.\uart_helper_fcns.c ****     // (4) write the uint16 to the PWM's period, as with the code below.    
- 132:.\uart_helper_fcns.c ****     
- 133:.\uart_helper_fcns.c ****     
- 134:.\uart_helper_fcns.c ****     
- 135:.\uart_helper_fcns.c **** }
- 129              		.loc 1 135 0
- 130 0074 0837     		adds	r7, r7, #8
- 131 0076 BD46     		mov	sp, r7
- 132              		@ sp needed
- 133 0078 80BD     		pop	{r7, pc}
- 134              	.L9:
- 135 007a 00BF     		.align	2
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccI9Ha1w.s 			page 6
+ 102 004c 0022     		movs	r2, #0
+ 103 004e 1A70     		strb	r2, [r3]
+ 112:.\uart_helper_fcns.c ****             break;
+ 104              		.loc 1 112 0
+ 105 0050 14E0     		b	.L1
+ 106              	.L5:
+ 113:.\uart_helper_fcns.c ****         case 'e':
+ 114:.\uart_helper_fcns.c ****             // Similarly, type e to enable.
+ 115:.\uart_helper_fcns.c ****             UART_for_USB_PutString("\r\nRestarting PWM.\r\n");
+ 107              		.loc 1 115 0
+ 108 0052 0F48     		ldr	r0, .L8+12
+ 109 0054 FFF7FEFF 		bl	UART_for_USB_PutString
+ 116:.\uart_helper_fcns.c ****             PWM_Servo_Start();
+ 110              		.loc 1 116 0
+ 111 0058 FFF7FEFF 		bl	PWM_Servo_Start
+ 117:.\uart_helper_fcns.c ****             // Reset the buffer. We'll just start writing from the start again.
+ 118:.\uart_helper_fcns.c ****             num_chars_received = 0;
+ 112              		.loc 1 118 0
+ 113 005c 094B     		ldr	r3, .L8
+ 114 005e 0022     		movs	r2, #0
+ 115 0060 1A70     		strb	r2, [r3]
+ 119:.\uart_helper_fcns.c ****             break;
+ 116              		.loc 1 119 0
+ 117 0062 0BE0     		b	.L1
+ 118              	.L2:
+ 120:.\uart_helper_fcns.c ****         default:
+ 121:.\uart_helper_fcns.c ****             // The "default" case is "anything else", which is "store another character."
+ 122:.\uart_helper_fcns.c ****             // Add to the received buffer.
+ 123:.\uart_helper_fcns.c ****             receive_buffer[num_chars_received] = received_byte;
+ 119              		.loc 1 123 0
+ 120 0064 074B     		ldr	r3, .L8
+ 121 0066 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 122 0068 074A     		ldr	r2, .L8+4
+ 123 006a F979     		ldrb	r1, [r7, #7]
+ 124 006c D154     		strb	r1, [r2, r3]
+ 124:.\uart_helper_fcns.c ****             // We need to increment the counter. i++ does this without an equals sign for assignmen
+ 125:.\uart_helper_fcns.c ****             num_chars_received++;
+ 125              		.loc 1 125 0
+ 126 006e 054B     		ldr	r3, .L8
+ 127 0070 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 128 0072 0133     		adds	r3, r3, #1
+ 129 0074 DAB2     		uxtb	r2, r3
+ 130 0076 034B     		ldr	r3, .L8
+ 131 0078 1A70     		strb	r2, [r3]
+ 126:.\uart_helper_fcns.c ****             break;
+ 132              		.loc 1 126 0
+ 133 007a 00BF     		nop
+ 134              	.L1:
+ 127:.\uart_helper_fcns.c ****         // end of case statement.
+ 128:.\uart_helper_fcns.c ****     }
+ 129:.\uart_helper_fcns.c ****     
+ 130:.\uart_helper_fcns.c ****     // We're going to assume that the character we receive is an integer, 
+ 131:.\uart_helper_fcns.c ****     // representing the data.
+ 132:.\uart_helper_fcns.c ****     // For a transmission of 8 bits, we can only set the data between 0 and 255.
+ 133:.\uart_helper_fcns.c ****     // This is OK for how we've configured the PWM for our servo: 
+ 134:.\uart_helper_fcns.c ****     // our data can only be between 100 and 200 anyway (1 ms for min angle, 2 ms for max angle).
+ 135:.\uart_helper_fcns.c ****     // To get better resolution here, you'll need to do a handful of things:
+ARM GAS  C:\Users\andre\AppData\Local\Temp\cc4IagEi.s 			page 6
 
 
- 136              	.L8:
- 137 007c 00010000 		.word	num_chars_received
- 138 0080 80000000 		.word	receive_buffer
- 139 0084 00000000 		.word	.LC0
- 140 0088 10000000 		.word	.LC1
- 141              		.cfi_endproc
- 142              	.LFE56:
- 143              		.size	Interrupt_Handler_UART_Receive, .-Interrupt_Handler_UART_Receive
- 144              		.section	.rodata
- 145 0022 0000     		.align	2
- 146              	.LC2:
- 147 0024 703A2568 		.ascii	"p:%hu\000"
- 147      7500
- 148 002a 0000     		.align	2
- 149              	.LC3:
- 150 002c 52656365 		.ascii	"Received the string: \000"
- 150      69766564 
- 150      20746865 
- 150      20737472 
- 150      696E673A 
- 151 0042 0000     		.align	2
- 152              	.LC4:
- 153 0044 0D0A00   		.ascii	"\015\012\000"
- 154 0047 00       		.align	2
- 155              	.LC5:
- 156 0048 50574D20 		.ascii	"PWM now has a period of: %i \015\012\000"
- 156      6E6F7720 
- 156      68617320 
- 156      61207065 
- 156      72696F64 
- 157 0067 00       		.align	2
- 158              	.LC6:
- 159 0068 53657420 		.ascii	"Set the period by typing p: then a new period, betw"
- 159      74686520 
- 159      70657269 
- 159      6F642062 
- 159      79207479 
- 160 009b 65656E20 		.ascii	"een 100 and 200 (min and max period for a servo on "
- 160      31303020 
- 160      616E6420 
- 160      32303020 
- 160      286D696E 
- 161 00ce 61203130 		.ascii	"a 100 kHz clock).\015\012\000"
- 161      30206B48 
- 161      7A20636C 
- 161      6F636B29 
- 161      2E0D0A00 
- 162 00e2 0000     		.section	.text.Write_PWM_and_UART,"ax",%progbits
- 163              		.align	2
- 164              		.global	Write_PWM_and_UART
- 165              		.thumb
- 166              		.thumb_func
- 167              		.type	Write_PWM_and_UART, %function
- 168              	Write_PWM_and_UART:
- 169              	.LFB57:
- 136:.\uart_helper_fcns.c **** 
- 137:.\uart_helper_fcns.c **** // Helper function that does the writing to the PWM and UART.
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccI9Ha1w.s 			page 7
-
-
- 138:.\uart_helper_fcns.c **** // makes the ISR code easier to understand.
- 139:.\uart_helper_fcns.c **** void Write_PWM_and_UART(){
- 170              		.loc 1 139 0
- 171              		.cfi_startproc
- 172              		@ args = 0, pretend = 0, frame = 8
- 173              		@ frame_needed = 1, uses_anonymous_args = 0
- 174 0000 80B5     		push	{r7, lr}
- 175              		.cfi_def_cfa_offset 8
- 176              		.cfi_offset 7, -8
- 177              		.cfi_offset 14, -4
- 178 0002 82B0     		sub	sp, sp, #8
- 179              		.cfi_def_cfa_offset 16
- 180 0004 00AF     		add	r7, sp, #0
- 181              		.cfi_def_cfa_register 7
- 140:.\uart_helper_fcns.c ****     // OK, so now, we have a string in the receive buffer of the form "p:somenumber".
+ 136:.\uart_helper_fcns.c ****     // (1) change the clock of the PWM so that we'll need a uint16 to represent 1 ms to 2 ms of "on
+ 137:.\uart_helper_fcns.c ****     // (2) receive two bytes (as uint8) from the UART, keep track of the first one
+ 138:.\uart_helper_fcns.c ****     // (3) once two are received, combine them into a uint16
+ 139:.\uart_helper_fcns.c ****     // (4) write the uint16 to the PWM's data, as with the code below.    
+ 140:.\uart_helper_fcns.c ****     
  141:.\uart_helper_fcns.c ****     
- 142:.\uart_helper_fcns.c ****     // Read in the integer after the p:
- 143:.\uart_helper_fcns.c ****     sscanf( receive_buffer, "p:%hu", &period);
- 182              		.loc 1 143 0
- 183 0006 1648     		ldr	r0, .L11
- 184 0008 1649     		ldr	r1, .L11+4
- 185 000a 174A     		ldr	r2, .L11+8
- 186 000c FFF7FEFF 		bl	sscanf
- 144:.\uart_helper_fcns.c ****     // DEBUGGING
- 145:.\uart_helper_fcns.c ****     UART_for_USB_PutString("Received the string: ");
- 187              		.loc 1 145 0
- 188 0010 1648     		ldr	r0, .L11+12
- 189 0012 FFF7FEFF 		bl	UART_for_USB_PutString
- 146:.\uart_helper_fcns.c ****     UART_for_USB_PutString( receive_buffer );
- 190              		.loc 1 146 0
- 191 0016 1248     		ldr	r0, .L11
- 192 0018 FFF7FEFF 		bl	UART_for_USB_PutString
- 147:.\uart_helper_fcns.c ****     UART_for_USB_PutString("\r\n");
- 193              		.loc 1 147 0
- 194 001c 1448     		ldr	r0, .L11+16
- 195 001e FFF7FEFF 		bl	UART_for_USB_PutString
- 148:.\uart_helper_fcns.c ****     
- 149:.\uart_helper_fcns.c ****     // TO-DO: checking on output of sscanf to confirm the user wrote a p:
- 150:.\uart_helper_fcns.c ****     // sscanf requires the address-of (&) for the variable to be written.
- 151:.\uart_helper_fcns.c ****     // Now, set the period, 
- 152:.\uart_helper_fcns.c ****     PWM_Servo_WritePeriod( period );
- 196              		.loc 1 152 0
- 197 0022 114B     		ldr	r3, .L11+8
- 198 0024 1B88     		ldrh	r3, [r3]
- 199 0026 1846     		mov	r0, r3
- 200 0028 FFF7FEFF 		bl	PWM_Servo_WritePeriod
+ 142:.\uart_helper_fcns.c ****     
+ 143:.\uart_helper_fcns.c **** }
+ 135              		.loc 1 143 0
+ 136 007c 0837     		adds	r7, r7, #8
+ 137 007e BD46     		mov	sp, r7
+ 138              		@ sp needed
+ 139 0080 80BD     		pop	{r7, pc}
+ 140              	.L9:
+ 141 0082 00BF     		.align	2
+ 142              	.L8:
+ 143 0084 00010000 		.word	num_chars_received
+ 144 0088 80000000 		.word	receive_buffer
+ 145 008c 00000000 		.word	.LC0
+ 146 0090 14000000 		.word	.LC1
+ 147              		.cfi_endproc
+ 148              	.LFE56:
+ 149              		.size	Interrupt_Handler_UART_Receive, .-Interrupt_Handler_UART_Receive
+ 150              		.section	.rodata
+ 151              		.align	2
+ 152              	.LC2:
+ 153 0028 2563203A 		.ascii	"%c : %hu\000"
+ 153      20256875 
+ 153      00
+ 154 0031 000000   		.align	2
+ 155              	.LC3:
+ 156 0034 4572726F 		.ascii	"Error! incorrect data. Did you type a number after "
+ 156      72212069 
+ 156      6E636F72 
+ 156      72656374 
+ 156      20646174 
+ 157 0067 61202870 		.ascii	"a (p or d), a colon, and the spaces between?\015\012"
+ 157      206F7220 
+ 157      64292C20 
+ 157      6120636F 
+ 157      6C6F6E2C 
+ 158 0095 00       		.ascii	"\000"
+ 159 0096 0000     		.align	2
+ 160              	.LC4:
+ 161 0098 52656365 		.ascii	"Received the string: \000"
+ 161      69766564 
+ 161      20746865 
+ 161      20737472 
+ 161      696E673A 
+ 162 00ae 0000     		.align	2
+ 163              	.LC5:
+ 164 00b0 0D0A00   		.ascii	"\015\012\000"
+ 165 00b3 00       		.align	2
+ 166              	.LC6:
+ 167 00b4 50574D20 		.ascii	"PWM now has a period of: %i \015\012\000"
+ 167      6E6F7720 
+ 167      68617320 
+ARM GAS  C:\Users\andre\AppData\Local\Temp\cc4IagEi.s 			page 7
+
+
+ 167      61207065 
+ 167      72696F64 
+ 168 00d3 00       		.align	2
+ 169              	.LC7:
+ 170 00d4 50574D20 		.ascii	"PWM now has a duty cycle (in clock ticks) of: %i \015"
+ 170      6E6F7720 
+ 170      68617320 
+ 170      61206475 
+ 170      74792063 
+ 171 0106 0A00     		.ascii	"\012\000"
+ 172              		.align	2
+ 173              	.LC8:
+ 174 0108 4572726F 		.ascii	"Error! You didn't type a p or d. \015\012\000"
+ 174      72212059 
+ 174      6F752064 
+ 174      69646E27 
+ 174      74207479 
+ 175              		.section	.text.Write_PWM_and_UART,"ax",%progbits
+ 176              		.align	2
+ 177              		.global	Write_PWM_and_UART
+ 178              		.thumb
+ 179              		.thumb_func
+ 180              		.type	Write_PWM_and_UART, %function
+ 181              	Write_PWM_and_UART:
+ 182              	.LFB57:
+ 144:.\uart_helper_fcns.c **** 
+ 145:.\uart_helper_fcns.c **** // Helper function that does the writing to the PWM and UART.
+ 146:.\uart_helper_fcns.c **** // makes the ISR code easier to understand.
+ 147:.\uart_helper_fcns.c **** void Write_PWM_and_UART(){
+ 183              		.loc 1 147 0
+ 184              		.cfi_startproc
+ 185              		@ args = 0, pretend = 0, frame = 8
+ 186              		@ frame_needed = 1, uses_anonymous_args = 0
+ 187 0000 B0B5     		push	{r4, r5, r7, lr}
+ 188              		.cfi_def_cfa_offset 16
+ 189              		.cfi_offset 4, -16
+ 190              		.cfi_offset 5, -12
+ 191              		.cfi_offset 7, -8
+ 192              		.cfi_offset 14, -4
+ 193 0002 82B0     		sub	sp, sp, #8
+ 194              		.cfi_def_cfa_offset 24
+ 195 0004 00AF     		add	r7, sp, #0
+ 196              		.cfi_def_cfa_register 7
+ 148:.\uart_helper_fcns.c ****     // OK, so now, we have a string in the receive buffer of the form "(p/d):somenumber".
+ 149:.\uart_helper_fcns.c ****     // Get the mode:
+ 150:.\uart_helper_fcns.c ****     //sscanf( receive_buffer, "%c:", &mode);
+ 151:.\uart_helper_fcns.c ****     //DEBUGGING
+ 152:.\uart_helper_fcns.c ****     //UART_for_USB_PutChar(mode);
  153:.\uart_helper_fcns.c ****     
- 154:.\uart_helper_fcns.c ****     // and send back the period that was just written, for confirmation.
- 155:.\uart_helper_fcns.c ****     // In C, to concatenate a number (integer) and a string (characters), you need to...
- 156:.\uart_helper_fcns.c ****     // (1) store the result, as confirmed by the PWM component.
- 157:.\uart_helper_fcns.c ****     uint16 period_written = PWM_Servo_ReadPeriod();
- 201              		.loc 1 157 0
- 202 002c FFF7FEFF 		bl	PWM_Servo_ReadPeriod
- 203 0030 0346     		mov	r3, r0
- 204 0032 FB80     		strh	r3, [r7, #6]	@ movhi
- 158:.\uart_helper_fcns.c ****     // (2) Concatenate this period with a string of characters describing what we did
- 159:.\uart_helper_fcns.c ****     // Requires stdio.h (standard input/output) for the sprintf function.
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccI9Ha1w.s 			page 8
+ 154:.\uart_helper_fcns.c ****     // Read in the integer after the p:
+ 155:.\uart_helper_fcns.c ****     // The %hu specifier is for unsigned shorts (16 bit integers)
+ 156:.\uart_helper_fcns.c ****     // Let's receive back the number of integers returned from sscanf
+ 157:.\uart_helper_fcns.c ****     int num_var_filled;
+ 158:.\uart_helper_fcns.c ****     num_var_filled = sscanf( receive_buffer, "%c : %hu", &mode, &data);
+ 197              		.loc 1 158 0
+ 198 0006 2E48     		ldr	r0, .L17
+ 199 0008 2E49     		ldr	r1, .L17+4
+ARM GAS  C:\Users\andre\AppData\Local\Temp\cc4IagEi.s 			page 8
 
 
- 160:.\uart_helper_fcns.c ****     sprintf( transmit_buffer, "PWM now has a period of: %i \r\n", period_written);
- 205              		.loc 1 160 0
- 206 0034 FB88     		ldrh	r3, [r7, #6]
- 207 0036 0F48     		ldr	r0, .L11+20
- 208 0038 0F49     		ldr	r1, .L11+24
- 209 003a 1A46     		mov	r2, r3
- 210 003c FFF7FEFF 		bl	sprintf
- 161:.\uart_helper_fcns.c ****     // (3) send the byte back to your PC
- 162:.\uart_helper_fcns.c ****     UART_for_USB_PutString( transmit_buffer );    
+ 200 000a 2F4A     		ldr	r2, .L17+8
+ 201 000c 2F4B     		ldr	r3, .L17+12
+ 202 000e FFF7FEFF 		bl	sscanf
+ 203 0012 7860     		str	r0, [r7, #4]
+ 159:.\uart_helper_fcns.c ****     // Need to check: was anything received? Equivalently, did sscanf find exactly one uint16?
+ 160:.\uart_helper_fcns.c ****     if( num_var_filled != 2){
+ 204              		.loc 1 160 0
+ 205 0014 7B68     		ldr	r3, [r7, #4]
+ 206 0016 022B     		cmp	r3, #2
+ 207 0018 05D0     		beq	.L11
+ 161:.\uart_helper_fcns.c ****         UART_for_USB_PutString("Error! incorrect data. Did you type a number after a (p or d), a co
+ 208              		.loc 1 161 0
+ 209 001a 2D48     		ldr	r0, .L17+16
+ 210 001c FFF7FEFF 		bl	UART_for_USB_PutString
+ 162:.\uart_helper_fcns.c ****         data = 0;
  211              		.loc 1 162 0
- 212 0040 0C48     		ldr	r0, .L11+20
- 213 0042 FFF7FEFF 		bl	UART_for_USB_PutString
- 163:.\uart_helper_fcns.c ****     // (4) Send another little string prompting the next input.
- 164:.\uart_helper_fcns.c ****     UART_for_USB_PutString( "Set the period by typing p: then a new period, between 100 and 200 (mi
- 214              		.loc 1 164 0
- 215 0046 0D48     		ldr	r0, .L11+28
- 216 0048 FFF7FEFF 		bl	UART_for_USB_PutString
- 165:.\uart_helper_fcns.c ****     // Reset the indexing into the array
- 166:.\uart_helper_fcns.c ****     num_chars_received = 0;
- 217              		.loc 1 166 0
- 218 004c 0C4B     		ldr	r3, .L11+32
- 219 004e 0022     		movs	r2, #0
- 220 0050 1A70     		strb	r2, [r3]
- 167:.\uart_helper_fcns.c ****     // and just in case let's do the period too.
- 168:.\uart_helper_fcns.c ****     period = 0;
- 221              		.loc 1 168 0
- 222 0052 054B     		ldr	r3, .L11+8
- 223 0054 0022     		movs	r2, #0
- 224 0056 1A80     		strh	r2, [r3]	@ movhi
- 169:.\uart_helper_fcns.c ****     // Note that we don't have to reset the buffer here, since sscanf only reads up until the first
- 170:.\uart_helper_fcns.c **** }
+ 212 0020 2A4B     		ldr	r3, .L17+12
+ 213 0022 0022     		movs	r2, #0
+ 214 0024 1A80     		strh	r2, [r3]	@ movhi
+ 215              	.L11:
+ 163:.\uart_helper_fcns.c ****     }
+ 164:.\uart_helper_fcns.c ****     // DEBUGGING
+ 165:.\uart_helper_fcns.c ****     UART_for_USB_PutString("Received the string: ");
+ 216              		.loc 1 165 0
+ 217 0026 2B48     		ldr	r0, .L17+20
+ 218 0028 FFF7FEFF 		bl	UART_for_USB_PutString
+ 166:.\uart_helper_fcns.c ****     UART_for_USB_PutString( receive_buffer );
+ 219              		.loc 1 166 0
+ 220 002c 2448     		ldr	r0, .L17
+ 221 002e FFF7FEFF 		bl	UART_for_USB_PutString
+ 167:.\uart_helper_fcns.c ****     UART_for_USB_PutString("\r\n");
+ 222              		.loc 1 167 0
+ 223 0032 2948     		ldr	r0, .L17+24
+ 224 0034 FFF7FEFF 		bl	UART_for_USB_PutString
+ 168:.\uart_helper_fcns.c ****     
+ 169:.\uart_helper_fcns.c ****     // Depending on the mode, write either the data or the duty cycle:
+ 170:.\uart_helper_fcns.c ****     switch( mode )
  225              		.loc 1 170 0
- 226 0058 0837     		adds	r7, r7, #8
- 227 005a BD46     		mov	sp, r7
- 228              		@ sp needed
- 229 005c 80BD     		pop	{r7, pc}
- 230              	.L12:
- 231 005e 00BF     		.align	2
- 232              	.L11:
- 233 0060 80000000 		.word	receive_buffer
- 234 0064 24000000 		.word	.LC2
- 235 0068 02010000 		.word	period
- 236 006c 2C000000 		.word	.LC3
- 237 0070 44000000 		.word	.LC4
- 238 0074 00000000 		.word	transmit_buffer
- 239 0078 48000000 		.word	.LC5
- 240 007c 68000000 		.word	.LC6
- 241 0080 00010000 		.word	num_chars_received
- 242              		.cfi_endproc
- 243              	.LFE57:
- 244              		.size	Write_PWM_and_UART, .-Write_PWM_and_UART
- 245              		.text
- 246              	.Letext0:
- 247              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\3.1\\psoc creator\\import\\gnu_cs\\arm\\4
- 248              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\3.1\\psoc creator\\import\\gnu_cs\\arm\\4
- 249              		.file 4 ".\\Generated_Source\\PSoC5/cytypes.h"
- 250              		.file 5 ".\\Generated_Source\\PSoC5/core_cm3.h"
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccI9Ha1w.s 			page 9
+ 226 0038 234B     		ldr	r3, .L17+8
+ 227 003a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 228 003c 642B     		cmp	r3, #100
+ 229 003e 11D0     		beq	.L13
+ 230 0040 702B     		cmp	r3, #112
+ 231 0042 1FD1     		bne	.L16
+ 232              	.LBB2:
+ 171:.\uart_helper_fcns.c ****     {
+ 172:.\uart_helper_fcns.c ****         case 'p':
+ 173:.\uart_helper_fcns.c ****             // Now, set the data, 
+ 174:.\uart_helper_fcns.c ****             PWM_Servo_WritePeriod( data );
+ 233              		.loc 1 174 0
+ 234 0044 214B     		ldr	r3, .L17+12
+ 235 0046 1B88     		ldrh	r3, [r3]
+ 236 0048 1846     		mov	r0, r3
+ 237 004a FFF7FEFF 		bl	PWM_Servo_WritePeriod
+ 175:.\uart_helper_fcns.c ****             // and send back the data that was just written, for confirmation.
+ 176:.\uart_helper_fcns.c ****             // In C, to concatenate a number (integer) and a string (characters), you need to...
+ 177:.\uart_helper_fcns.c ****             // (1) store the result, as confirmed by the PWM component.
+ARM GAS  C:\Users\andre\AppData\Local\Temp\cc4IagEi.s 			page 9
 
 
- 251              		.section	.debug_info,"",%progbits
- 252              	.Ldebug_info0:
- 253 0000 5D010000 		.4byte	0x15d
- 254 0004 0400     		.2byte	0x4
- 255 0006 00000000 		.4byte	.Ldebug_abbrev0
- 256 000a 04       		.byte	0x4
- 257 000b 01       		.uleb128 0x1
- 258 000c 35010000 		.4byte	.LASF23
- 259 0010 01       		.byte	0x1
- 260 0011 10020000 		.4byte	.LASF24
- 261 0015 6C000000 		.4byte	.LASF25
- 262 0019 00000000 		.4byte	.Ldebug_ranges0+0
- 263 001d 00000000 		.4byte	0
- 264 0021 00000000 		.4byte	.Ldebug_line0
- 265 0025 02       		.uleb128 0x2
- 266 0026 01       		.byte	0x1
- 267 0027 06       		.byte	0x6
- 268 0028 29010000 		.4byte	.LASF0
- 269 002c 02       		.uleb128 0x2
- 270 002d 01       		.byte	0x1
- 271 002e 08       		.byte	0x8
- 272 002f BD000000 		.4byte	.LASF1
- 273 0033 02       		.uleb128 0x2
- 274 0034 02       		.byte	0x2
- 275 0035 05       		.byte	0x5
- 276 0036 C1010000 		.4byte	.LASF2
- 277 003a 02       		.uleb128 0x2
- 278 003b 02       		.byte	0x2
- 279 003c 07       		.byte	0x7
- 280 003d 0E000000 		.4byte	.LASF3
- 281 0041 03       		.uleb128 0x3
- 282 0042 B1010000 		.4byte	.LASF9
- 283 0046 02       		.byte	0x2
- 284 0047 37       		.byte	0x37
- 285 0048 4C000000 		.4byte	0x4c
- 286 004c 02       		.uleb128 0x2
- 287 004d 04       		.byte	0x4
- 288 004e 05       		.byte	0x5
- 289 004f E3000000 		.4byte	.LASF4
- 290 0053 02       		.uleb128 0x2
- 291 0054 04       		.byte	0x4
- 292 0055 07       		.byte	0x7
- 293 0056 43000000 		.4byte	.LASF5
- 294 005a 02       		.uleb128 0x2
- 295 005b 08       		.byte	0x8
- 296 005c 05       		.byte	0x5
- 297 005d 00000000 		.4byte	.LASF6
- 298 0061 02       		.uleb128 0x2
- 299 0062 08       		.byte	0x8
- 300 0063 07       		.byte	0x7
- 301 0064 55000000 		.4byte	.LASF7
- 302 0068 04       		.uleb128 0x4
- 303 0069 04       		.byte	0x4
- 304 006a 05       		.byte	0x5
- 305 006b 696E7400 		.ascii	"int\000"
- 306 006f 02       		.uleb128 0x2
- 307 0070 04       		.byte	0x4
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccI9Ha1w.s 			page 10
+ 178:.\uart_helper_fcns.c ****             uint16 period_written = PWM_Servo_ReadPeriod();
+ 238              		.loc 1 178 0
+ 239 004e FFF7FEFF 		bl	PWM_Servo_ReadPeriod
+ 240 0052 0346     		mov	r3, r0
+ 241 0054 7B80     		strh	r3, [r7, #2]	@ movhi
+ 179:.\uart_helper_fcns.c ****             // (2) Concatenate this data with a string of characters describing what we did
+ 180:.\uart_helper_fcns.c ****             // Requires stdio.h (standard input/output) for the sprintf function.
+ 181:.\uart_helper_fcns.c ****             sprintf( transmit_buffer, "PWM now has a period of: %i \r\n", period_written);
+ 242              		.loc 1 181 0
+ 243 0056 7B88     		ldrh	r3, [r7, #2]
+ 244 0058 2048     		ldr	r0, .L17+28
+ 245 005a 2149     		ldr	r1, .L17+32
+ 246 005c 1A46     		mov	r2, r3
+ 247 005e FFF7FEFF 		bl	sprintf
+ 182:.\uart_helper_fcns.c ****             break;
+ 248              		.loc 1 182 0
+ 249 0062 1DE0     		b	.L15
+ 250              	.L13:
+ 183:.\uart_helper_fcns.c ****         case 'd':
+ 184:.\uart_helper_fcns.c ****             // Instead, set the compare value, the duty cycle in clock ticks.
+ 185:.\uart_helper_fcns.c ****             PWM_Servo_WriteCompare( data );
+ 251              		.loc 1 185 0
+ 252 0064 194B     		ldr	r3, .L17+12
+ 253 0066 1B88     		ldrh	r3, [r3]
+ 254 0068 1846     		mov	r0, r3
+ 255 006a FFF7FEFF 		bl	PWM_Servo_WriteCompare
+ 186:.\uart_helper_fcns.c ****             // Like with the period:
+ 187:.\uart_helper_fcns.c ****             uint16 duty_written = PWM_Servo_ReadCompare();
+ 256              		.loc 1 187 0
+ 257 006e FFF7FEFF 		bl	PWM_Servo_ReadCompare
+ 258 0072 0346     		mov	r3, r0
+ 259 0074 3B80     		strh	r3, [r7]	@ movhi
+ 188:.\uart_helper_fcns.c ****             sprintf( transmit_buffer, "PWM now has a duty cycle (in clock ticks) of: %i \r\n", duty
+ 260              		.loc 1 188 0
+ 261 0076 3B88     		ldrh	r3, [r7]
+ 262 0078 1848     		ldr	r0, .L17+28
+ 263 007a 1A49     		ldr	r1, .L17+36
+ 264 007c 1A46     		mov	r2, r3
+ 265 007e FFF7FEFF 		bl	sprintf
+ 189:.\uart_helper_fcns.c ****             break;
+ 266              		.loc 1 189 0
+ 267 0082 0DE0     		b	.L15
+ 268              	.L16:
+ 190:.\uart_helper_fcns.c ****         default:
+ 191:.\uart_helper_fcns.c ****             sprintf( transmit_buffer, "Error! You didn't type a p or d. \r\n");
+ 269              		.loc 1 191 0
+ 270 0084 154A     		ldr	r2, .L17+28
+ 271 0086 184B     		ldr	r3, .L17+40
+ 272 0088 1446     		mov	r4, r2
+ 273 008a 1D46     		mov	r5, r3
+ 274 008c 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 275 008e 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 276 0090 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 277 0092 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 278 0094 2B68     		ldr	r3, [r5]
+ 279 0096 2360     		str	r3, [r4]
+ 192:.\uart_helper_fcns.c ****             mode = 0;
+ARM GAS  C:\Users\andre\AppData\Local\Temp\cc4IagEi.s 			page 10
 
 
- 308 0071 07       		.byte	0x7
- 309 0072 21000000 		.4byte	.LASF8
- 310 0076 03       		.uleb128 0x3
- 311 0077 EC000000 		.4byte	.LASF10
- 312 007b 03       		.byte	0x3
- 313 007c 41       		.byte	0x41
- 314 007d 41000000 		.4byte	0x41
- 315 0081 03       		.uleb128 0x3
- 316 0082 2E000000 		.4byte	.LASF11
- 317 0086 04       		.byte	0x4
- 318 0087 A1       		.byte	0xa1
- 319 0088 2C000000 		.4byte	0x2c
- 320 008c 03       		.uleb128 0x3
- 321 008d CB010000 		.4byte	.LASF12
- 322 0091 04       		.byte	0x4
- 323 0092 A2       		.byte	0xa2
- 324 0093 3A000000 		.4byte	0x3a
- 325 0097 02       		.uleb128 0x2
- 326 0098 04       		.byte	0x4
- 327 0099 04       		.byte	0x4
- 328 009a BB010000 		.4byte	.LASF13
- 329 009e 02       		.uleb128 0x2
- 330 009f 08       		.byte	0x8
- 331 00a0 04       		.byte	0x4
- 332 00a1 07010000 		.4byte	.LASF14
- 333 00a5 02       		.uleb128 0x2
- 334 00a6 01       		.byte	0x1
- 335 00a7 08       		.byte	0x8
- 336 00a8 CB000000 		.4byte	.LASF15
- 337 00ac 02       		.uleb128 0x2
- 338 00ad 04       		.byte	0x4
- 339 00ae 07       		.byte	0x7
- 340 00af 07020000 		.4byte	.LASF16
- 341 00b3 05       		.uleb128 0x5
- 342 00b4 D2010000 		.4byte	.LASF26
- 343 00b8 01       		.byte	0x1
- 344 00b9 41       		.byte	0x41
- 345 00ba 00000000 		.4byte	.LFB56
- 346 00be 8C000000 		.4byte	.LFE56-.LFB56
- 347 00c2 01       		.uleb128 0x1
- 348 00c3 9C       		.byte	0x9c
- 349 00c4 D7000000 		.4byte	0xd7
- 350 00c8 06       		.uleb128 0x6
- 351 00c9 0E010000 		.4byte	.LASF17
- 352 00cd 01       		.byte	0x1
- 353 00ce 44       		.byte	0x44
- 354 00cf 81000000 		.4byte	0x81
- 355 00d3 02       		.uleb128 0x2
- 356 00d4 91       		.byte	0x91
- 357 00d5 77       		.sleb128 -9
- 358 00d6 00       		.byte	0
- 359 00d7 07       		.uleb128 0x7
- 360 00d8 F4000000 		.4byte	.LASF27
- 361 00dc 01       		.byte	0x1
- 362 00dd 8B       		.byte	0x8b
- 363 00de 00000000 		.4byte	.LFB57
- 364 00e2 84000000 		.4byte	.LFE57-.LFB57
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccI9Ha1w.s 			page 11
+ 280              		.loc 1 192 0
+ 281 0098 0B4B     		ldr	r3, .L17+8
+ 282 009a 0022     		movs	r2, #0
+ 283 009c 1A70     		strb	r2, [r3]
+ 193:.\uart_helper_fcns.c ****             break;
+ 284              		.loc 1 193 0
+ 285 009e 00BF     		nop
+ 286              	.L15:
+ 287              	.LBE2:
+ 194:.\uart_helper_fcns.c ****     }
+ 195:.\uart_helper_fcns.c ****     
+ 196:.\uart_helper_fcns.c ****     // sscanf requires the address-of (&) for the variable to be written.
+ 197:.\uart_helper_fcns.c ****     
+ 198:.\uart_helper_fcns.c ****     
+ 199:.\uart_helper_fcns.c ****     // (3) send the byte back to your PC
+ 200:.\uart_helper_fcns.c ****     UART_for_USB_PutString( transmit_buffer );    
+ 288              		.loc 1 200 0
+ 289 00a0 0E48     		ldr	r0, .L17+28
+ 290 00a2 FFF7FEFF 		bl	UART_for_USB_PutString
+ 201:.\uart_helper_fcns.c ****     // to make this easier to read, send another newline.
+ 202:.\uart_helper_fcns.c ****     UART_for_USB_PutString("\r\n");
+ 291              		.loc 1 202 0
+ 292 00a6 0C48     		ldr	r0, .L17+24
+ 293 00a8 FFF7FEFF 		bl	UART_for_USB_PutString
+ 203:.\uart_helper_fcns.c ****     // (4) Send another little string prompting the next input.
+ 204:.\uart_helper_fcns.c ****     //UART_for_USB_PutString( " by typing p: then a new data, between 100 and 200 (min and max data
+ 205:.\uart_helper_fcns.c ****     // Reset the indexing into the array
+ 206:.\uart_helper_fcns.c ****     num_chars_received = 0;
+ 294              		.loc 1 206 0
+ 295 00ac 0F4B     		ldr	r3, .L17+44
+ 296 00ae 0022     		movs	r2, #0
+ 297 00b0 1A70     		strb	r2, [r3]
+ 207:.\uart_helper_fcns.c ****     // and just in case let's do the data too.
+ 208:.\uart_helper_fcns.c ****     data = 0;
+ 298              		.loc 1 208 0
+ 299 00b2 064B     		ldr	r3, .L17+12
+ 300 00b4 0022     		movs	r2, #0
+ 301 00b6 1A80     		strh	r2, [r3]	@ movhi
+ 209:.\uart_helper_fcns.c ****     // Note that we don't have to reset the buffer here, since sscanf only reads up until the first
+ 210:.\uart_helper_fcns.c **** }
+ 302              		.loc 1 210 0
+ 303 00b8 0837     		adds	r7, r7, #8
+ 304 00ba BD46     		mov	sp, r7
+ 305              		@ sp needed
+ 306 00bc B0BD     		pop	{r4, r5, r7, pc}
+ 307              	.L18:
+ 308 00be 00BF     		.align	2
+ 309              	.L17:
+ 310 00c0 80000000 		.word	receive_buffer
+ 311 00c4 28000000 		.word	.LC2
+ 312 00c8 04010000 		.word	mode
+ 313 00cc 02010000 		.word	data
+ 314 00d0 34000000 		.word	.LC3
+ 315 00d4 98000000 		.word	.LC4
+ 316 00d8 B0000000 		.word	.LC5
+ 317 00dc 00000000 		.word	transmit_buffer
+ 318 00e0 B4000000 		.word	.LC6
+ARM GAS  C:\Users\andre\AppData\Local\Temp\cc4IagEi.s 			page 11
 
 
- 365 00e6 01       		.uleb128 0x1
- 366 00e7 9C       		.byte	0x9c
- 367 00e8 FB000000 		.4byte	0xfb
- 368 00ec 06       		.uleb128 0x6
- 369 00ed F8010000 		.4byte	.LASF18
- 370 00f1 01       		.byte	0x1
- 371 00f2 9D       		.byte	0x9d
- 372 00f3 8C000000 		.4byte	0x8c
- 373 00f7 02       		.uleb128 0x2
- 374 00f8 91       		.byte	0x91
- 375 00f9 76       		.sleb128 -10
- 376 00fa 00       		.byte	0
- 377 00fb 08       		.uleb128 0x8
- 378 00fc A5000000 		.4byte	0xa5
- 379 0100 0B010000 		.4byte	0x10b
- 380 0104 09       		.uleb128 0x9
- 381 0105 AC000000 		.4byte	0xac
- 382 0109 7F       		.byte	0x7f
- 383 010a 00       		.byte	0
- 384 010b 06       		.uleb128 0x6
- 385 010c AD000000 		.4byte	.LASF19
- 386 0110 01       		.byte	0x1
- 387 0111 2B       		.byte	0x2b
- 388 0112 FB000000 		.4byte	0xfb
- 389 0116 05       		.uleb128 0x5
- 390 0117 03       		.byte	0x3
- 391 0118 00000000 		.4byte	transmit_buffer
- 392 011c 06       		.uleb128 0x6
- 393 011d 34000000 		.4byte	.LASF20
- 394 0121 01       		.byte	0x1
- 395 0122 2D       		.byte	0x2d
- 396 0123 FB000000 		.4byte	0xfb
- 397 0127 05       		.uleb128 0x5
- 398 0128 03       		.byte	0x3
- 399 0129 80000000 		.4byte	receive_buffer
- 400 012d 06       		.uleb128 0x6
- 401 012e D0000000 		.4byte	.LASF21
- 402 0132 01       		.byte	0x1
- 403 0133 36       		.byte	0x36
- 404 0134 81000000 		.4byte	0x81
- 405 0138 05       		.uleb128 0x5
- 406 0139 03       		.byte	0x3
- 407 013a 00010000 		.4byte	num_chars_received
- 408 013e 06       		.uleb128 0x6
- 409 013f F1010000 		.4byte	.LASF22
- 410 0143 01       		.byte	0x1
- 411 0144 3C       		.byte	0x3c
- 412 0145 8C000000 		.4byte	0x8c
- 413 0149 05       		.uleb128 0x5
- 414 014a 03       		.byte	0x3
- 415 014b 02010000 		.4byte	period
- 416 014f 0A       		.uleb128 0xa
- 417 0150 1C010000 		.4byte	.LASF28
- 418 0154 05       		.byte	0x5
- 419 0155 1606     		.2byte	0x616
- 420 0157 5B010000 		.4byte	0x15b
- 421 015b 0B       		.uleb128 0xb
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccI9Ha1w.s 			page 12
+ 319 00e4 D4000000 		.word	.LC7
+ 320 00e8 08010000 		.word	.LC8
+ 321 00ec 00010000 		.word	num_chars_received
+ 322              		.cfi_endproc
+ 323              	.LFE57:
+ 324              		.size	Write_PWM_and_UART, .-Write_PWM_and_UART
+ 325              		.text
+ 326              	.Letext0:
+ 327              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\3.1\\psoc creator\\import\\gnu_cs\\arm\\4
+ 328              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\3.1\\psoc creator\\import\\gnu_cs\\arm\\4
+ 329              		.file 4 ".\\Generated_Source\\PSoC5/cytypes.h"
+ 330              		.file 5 ".\\Generated_Source\\PSoC5/core_cm3.h"
+ 331              		.section	.debug_info,"",%progbits
+ 332              	.Ldebug_info0:
+ 333 0000 94010000 		.4byte	0x194
+ 334 0004 0400     		.2byte	0x4
+ 335 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 336 000a 04       		.byte	0x4
+ 337 000b 01       		.uleb128 0x1
+ 338 000c 65000000 		.4byte	.LASF26
+ 339 0010 01       		.byte	0x1
+ 340 0011 1F020000 		.4byte	.LASF27
+ 341 0015 E1000000 		.4byte	.LASF28
+ 342 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 343 001d 00000000 		.4byte	0
+ 344 0021 00000000 		.4byte	.Ldebug_line0
+ 345 0025 02       		.uleb128 0x2
+ 346 0026 01       		.byte	0x1
+ 347 0027 06       		.byte	0x6
+ 348 0028 2B000000 		.4byte	.LASF0
+ 349 002c 02       		.uleb128 0x2
+ 350 002d 01       		.byte	0x1
+ 351 002e 08       		.byte	0x8
+ 352 002f 44000000 		.4byte	.LASF1
+ 353 0033 02       		.uleb128 0x2
+ 354 0034 02       		.byte	0x2
+ 355 0035 05       		.byte	0x5
+ 356 0036 06020000 		.4byte	.LASF2
+ 357 003a 02       		.uleb128 0x2
+ 358 003b 02       		.byte	0x2
+ 359 003c 07       		.byte	0x7
+ 360 003d 22010000 		.4byte	.LASF3
+ 361 0041 03       		.uleb128 0x3
+ 362 0042 00000000 		.4byte	.LASF9
+ 363 0046 02       		.byte	0x2
+ 364 0047 37       		.byte	0x37
+ 365 0048 4C000000 		.4byte	0x4c
+ 366 004c 02       		.uleb128 0x2
+ 367 004d 04       		.byte	0x4
+ 368 004e 05       		.byte	0x5
+ 369 004f 16020000 		.4byte	.LASF4
+ 370 0053 02       		.uleb128 0x2
+ 371 0054 04       		.byte	0x4
+ 372 0055 07       		.byte	0x7
+ 373 0056 83010000 		.4byte	.LASF5
+ 374 005a 02       		.uleb128 0x2
+ 375 005b 08       		.byte	0x8
+ARM GAS  C:\Users\andre\AppData\Local\Temp\cc4IagEi.s 			page 12
 
 
- 422 015c 76000000 		.4byte	0x76
- 423 0160 00       		.byte	0
- 424              		.section	.debug_abbrev,"",%progbits
- 425              	.Ldebug_abbrev0:
- 426 0000 01       		.uleb128 0x1
- 427 0001 11       		.uleb128 0x11
- 428 0002 01       		.byte	0x1
- 429 0003 25       		.uleb128 0x25
- 430 0004 0E       		.uleb128 0xe
- 431 0005 13       		.uleb128 0x13
- 432 0006 0B       		.uleb128 0xb
- 433 0007 03       		.uleb128 0x3
- 434 0008 0E       		.uleb128 0xe
- 435 0009 1B       		.uleb128 0x1b
- 436 000a 0E       		.uleb128 0xe
- 437 000b 55       		.uleb128 0x55
- 438 000c 17       		.uleb128 0x17
- 439 000d 11       		.uleb128 0x11
- 440 000e 01       		.uleb128 0x1
- 441 000f 10       		.uleb128 0x10
- 442 0010 17       		.uleb128 0x17
- 443 0011 00       		.byte	0
- 444 0012 00       		.byte	0
- 445 0013 02       		.uleb128 0x2
- 446 0014 24       		.uleb128 0x24
- 447 0015 00       		.byte	0
- 448 0016 0B       		.uleb128 0xb
- 449 0017 0B       		.uleb128 0xb
- 450 0018 3E       		.uleb128 0x3e
- 451 0019 0B       		.uleb128 0xb
- 452 001a 03       		.uleb128 0x3
- 453 001b 0E       		.uleb128 0xe
- 454 001c 00       		.byte	0
- 455 001d 00       		.byte	0
- 456 001e 03       		.uleb128 0x3
- 457 001f 16       		.uleb128 0x16
- 458 0020 00       		.byte	0
- 459 0021 03       		.uleb128 0x3
- 460 0022 0E       		.uleb128 0xe
- 461 0023 3A       		.uleb128 0x3a
- 462 0024 0B       		.uleb128 0xb
- 463 0025 3B       		.uleb128 0x3b
- 464 0026 0B       		.uleb128 0xb
- 465 0027 49       		.uleb128 0x49
- 466 0028 13       		.uleb128 0x13
- 467 0029 00       		.byte	0
- 468 002a 00       		.byte	0
- 469 002b 04       		.uleb128 0x4
- 470 002c 24       		.uleb128 0x24
- 471 002d 00       		.byte	0
- 472 002e 0B       		.uleb128 0xb
- 473 002f 0B       		.uleb128 0xb
- 474 0030 3E       		.uleb128 0x3e
- 475 0031 0B       		.uleb128 0xb
- 476 0032 03       		.uleb128 0x3
- 477 0033 08       		.uleb128 0x8
- 478 0034 00       		.byte	0
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccI9Ha1w.s 			page 13
+ 376 005c 05       		.byte	0x5
+ 377 005d F3010000 		.4byte	.LASF6
+ 378 0061 02       		.uleb128 0x2
+ 379 0062 08       		.byte	0x8
+ 380 0063 07       		.byte	0x7
+ 381 0064 A9010000 		.4byte	.LASF7
+ 382 0068 04       		.uleb128 0x4
+ 383 0069 04       		.byte	0x4
+ 384 006a 05       		.byte	0x5
+ 385 006b 696E7400 		.ascii	"int\000"
+ 386 006f 02       		.uleb128 0x2
+ 387 0070 04       		.byte	0x4
+ 388 0071 07       		.byte	0x7
+ 389 0072 9C010000 		.4byte	.LASF8
+ 390 0076 03       		.uleb128 0x3
+ 391 0077 E2010000 		.4byte	.LASF10
+ 392 007b 03       		.byte	0x3
+ 393 007c 41       		.byte	0x41
+ 394 007d 41000000 		.4byte	0x41
+ 395 0081 03       		.uleb128 0x3
+ 396 0082 10020000 		.4byte	.LASF11
+ 397 0086 04       		.byte	0x4
+ 398 0087 A1       		.byte	0xa1
+ 399 0088 2C000000 		.4byte	0x2c
+ 400 008c 03       		.uleb128 0x3
+ 401 008d 95010000 		.4byte	.LASF12
+ 402 0091 04       		.byte	0x4
+ 403 0092 A2       		.byte	0xa2
+ 404 0093 3A000000 		.4byte	0x3a
+ 405 0097 02       		.uleb128 0x2
+ 406 0098 04       		.byte	0x4
+ 407 0099 04       		.byte	0x4
+ 408 009a 20000000 		.4byte	.LASF13
+ 409 009e 02       		.uleb128 0x2
+ 410 009f 08       		.byte	0x8
+ 411 00a0 04       		.byte	0x4
+ 412 00a1 19000000 		.4byte	.LASF14
+ 413 00a5 02       		.uleb128 0x2
+ 414 00a6 01       		.byte	0x1
+ 415 00a7 08       		.byte	0x8
+ 416 00a8 01020000 		.4byte	.LASF15
+ 417 00ac 02       		.uleb128 0x2
+ 418 00ad 04       		.byte	0x4
+ 419 00ae 07       		.byte	0x7
+ 420 00af EA010000 		.4byte	.LASF16
+ 421 00b3 05       		.uleb128 0x5
+ 422 00b4 51010000 		.4byte	.LASF29
+ 423 00b8 01       		.byte	0x1
+ 424 00b9 45       		.byte	0x45
+ 425 00ba 00000000 		.4byte	.LFB56
+ 426 00be 94000000 		.4byte	.LFE56-.LFB56
+ 427 00c2 01       		.uleb128 0x1
+ 428 00c3 9C       		.byte	0x9c
+ 429 00c4 D7000000 		.4byte	0xd7
+ 430 00c8 06       		.uleb128 0x6
+ 431 00c9 D4010000 		.4byte	.LASF17
+ 432 00cd 01       		.byte	0x1
+ARM GAS  C:\Users\andre\AppData\Local\Temp\cc4IagEi.s 			page 13
 
 
- 479 0035 00       		.byte	0
- 480 0036 05       		.uleb128 0x5
- 481 0037 2E       		.uleb128 0x2e
- 482 0038 01       		.byte	0x1
- 483 0039 3F       		.uleb128 0x3f
- 484 003a 19       		.uleb128 0x19
- 485 003b 03       		.uleb128 0x3
- 486 003c 0E       		.uleb128 0xe
- 487 003d 3A       		.uleb128 0x3a
- 488 003e 0B       		.uleb128 0xb
- 489 003f 3B       		.uleb128 0x3b
- 490 0040 0B       		.uleb128 0xb
- 491 0041 27       		.uleb128 0x27
- 492 0042 19       		.uleb128 0x19
- 493 0043 11       		.uleb128 0x11
- 494 0044 01       		.uleb128 0x1
- 495 0045 12       		.uleb128 0x12
- 496 0046 06       		.uleb128 0x6
- 497 0047 40       		.uleb128 0x40
- 498 0048 18       		.uleb128 0x18
- 499 0049 9642     		.uleb128 0x2116
- 500 004b 19       		.uleb128 0x19
- 501 004c 01       		.uleb128 0x1
- 502 004d 13       		.uleb128 0x13
- 503 004e 00       		.byte	0
- 504 004f 00       		.byte	0
- 505 0050 06       		.uleb128 0x6
- 506 0051 34       		.uleb128 0x34
- 507 0052 00       		.byte	0
- 508 0053 03       		.uleb128 0x3
- 509 0054 0E       		.uleb128 0xe
- 510 0055 3A       		.uleb128 0x3a
- 511 0056 0B       		.uleb128 0xb
- 512 0057 3B       		.uleb128 0x3b
- 513 0058 0B       		.uleb128 0xb
- 514 0059 49       		.uleb128 0x49
- 515 005a 13       		.uleb128 0x13
- 516 005b 02       		.uleb128 0x2
- 517 005c 18       		.uleb128 0x18
- 518 005d 00       		.byte	0
- 519 005e 00       		.byte	0
- 520 005f 07       		.uleb128 0x7
- 521 0060 2E       		.uleb128 0x2e
- 522 0061 01       		.byte	0x1
- 523 0062 3F       		.uleb128 0x3f
- 524 0063 19       		.uleb128 0x19
- 525 0064 03       		.uleb128 0x3
- 526 0065 0E       		.uleb128 0xe
- 527 0066 3A       		.uleb128 0x3a
- 528 0067 0B       		.uleb128 0xb
- 529 0068 3B       		.uleb128 0x3b
- 530 0069 0B       		.uleb128 0xb
- 531 006a 11       		.uleb128 0x11
- 532 006b 01       		.uleb128 0x1
- 533 006c 12       		.uleb128 0x12
- 534 006d 06       		.uleb128 0x6
- 535 006e 40       		.uleb128 0x40
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccI9Ha1w.s 			page 14
+ 433 00ce 48       		.byte	0x48
+ 434 00cf 81000000 		.4byte	0x81
+ 435 00d3 02       		.uleb128 0x2
+ 436 00d4 91       		.byte	0x91
+ 437 00d5 77       		.sleb128 -9
+ 438 00d6 00       		.byte	0
+ 439 00d7 07       		.uleb128 0x7
+ 440 00d8 52000000 		.4byte	.LASF30
+ 441 00dc 01       		.byte	0x1
+ 442 00dd 93       		.byte	0x93
+ 443 00de 00000000 		.4byte	.LFB57
+ 444 00e2 F0000000 		.4byte	.LFE57-.LFB57
+ 445 00e6 01       		.uleb128 0x1
+ 446 00e7 9C       		.byte	0x9c
+ 447 00e8 21010000 		.4byte	0x121
+ 448 00ec 06       		.uleb128 0x6
+ 449 00ed C5010000 		.4byte	.LASF18
+ 450 00f1 01       		.byte	0x1
+ 451 00f2 9D       		.byte	0x9d
+ 452 00f3 68000000 		.4byte	0x68
+ 453 00f7 02       		.uleb128 0x2
+ 454 00f8 91       		.byte	0x91
+ 455 00f9 6C       		.sleb128 -20
+ 456 00fa 08       		.uleb128 0x8
+ 457 00fb 44000000 		.4byte	.LBB2
+ 458 00ff 5C000000 		.4byte	.LBE2-.LBB2
+ 459 0103 06       		.uleb128 0x6
+ 460 0104 0A000000 		.4byte	.LASF19
+ 461 0108 01       		.byte	0x1
+ 462 0109 B2       		.byte	0xb2
+ 463 010a 8C000000 		.4byte	0x8c
+ 464 010e 02       		.uleb128 0x2
+ 465 010f 91       		.byte	0x91
+ 466 0110 6A       		.sleb128 -22
+ 467 0111 06       		.uleb128 0x6
+ 468 0112 37000000 		.4byte	.LASF20
+ 469 0116 01       		.byte	0x1
+ 470 0117 BB       		.byte	0xbb
+ 471 0118 8C000000 		.4byte	0x8c
+ 472 011c 02       		.uleb128 0x2
+ 473 011d 91       		.byte	0x91
+ 474 011e 68       		.sleb128 -24
+ 475 011f 00       		.byte	0
+ 476 0120 00       		.byte	0
+ 477 0121 09       		.uleb128 0x9
+ 478 0122 A5000000 		.4byte	0xa5
+ 479 0126 31010000 		.4byte	0x131
+ 480 012a 0A       		.uleb128 0xa
+ 481 012b AC000000 		.4byte	0xac
+ 482 012f 7F       		.byte	0x7f
+ 483 0130 00       		.byte	0
+ 484 0131 06       		.uleb128 0x6
+ 485 0132 34020000 		.4byte	.LASF21
+ 486 0136 01       		.byte	0x1
+ 487 0137 2B       		.byte	0x2b
+ 488 0138 21010000 		.4byte	0x121
+ 489 013c 05       		.uleb128 0x5
+ARM GAS  C:\Users\andre\AppData\Local\Temp\cc4IagEi.s 			page 14
 
 
- 536 006f 18       		.uleb128 0x18
- 537 0070 9642     		.uleb128 0x2116
- 538 0072 19       		.uleb128 0x19
- 539 0073 01       		.uleb128 0x1
- 540 0074 13       		.uleb128 0x13
- 541 0075 00       		.byte	0
- 542 0076 00       		.byte	0
- 543 0077 08       		.uleb128 0x8
- 544 0078 01       		.uleb128 0x1
- 545 0079 01       		.byte	0x1
- 546 007a 49       		.uleb128 0x49
- 547 007b 13       		.uleb128 0x13
- 548 007c 01       		.uleb128 0x1
- 549 007d 13       		.uleb128 0x13
- 550 007e 00       		.byte	0
- 551 007f 00       		.byte	0
- 552 0080 09       		.uleb128 0x9
- 553 0081 21       		.uleb128 0x21
- 554 0082 00       		.byte	0
- 555 0083 49       		.uleb128 0x49
- 556 0084 13       		.uleb128 0x13
- 557 0085 2F       		.uleb128 0x2f
- 558 0086 0B       		.uleb128 0xb
- 559 0087 00       		.byte	0
- 560 0088 00       		.byte	0
- 561 0089 0A       		.uleb128 0xa
- 562 008a 34       		.uleb128 0x34
- 563 008b 00       		.byte	0
- 564 008c 03       		.uleb128 0x3
- 565 008d 0E       		.uleb128 0xe
- 566 008e 3A       		.uleb128 0x3a
- 567 008f 0B       		.uleb128 0xb
- 568 0090 3B       		.uleb128 0x3b
- 569 0091 05       		.uleb128 0x5
- 570 0092 49       		.uleb128 0x49
- 571 0093 13       		.uleb128 0x13
- 572 0094 3F       		.uleb128 0x3f
- 573 0095 19       		.uleb128 0x19
- 574 0096 3C       		.uleb128 0x3c
- 575 0097 19       		.uleb128 0x19
- 576 0098 00       		.byte	0
- 577 0099 00       		.byte	0
- 578 009a 0B       		.uleb128 0xb
- 579 009b 35       		.uleb128 0x35
- 580 009c 00       		.byte	0
- 581 009d 49       		.uleb128 0x49
- 582 009e 13       		.uleb128 0x13
- 583 009f 00       		.byte	0
- 584 00a0 00       		.byte	0
- 585 00a1 00       		.byte	0
- 586              		.section	.debug_aranges,"",%progbits
- 587 0000 24000000 		.4byte	0x24
- 588 0004 0200     		.2byte	0x2
- 589 0006 00000000 		.4byte	.Ldebug_info0
- 590 000a 04       		.byte	0x4
- 591 000b 00       		.byte	0
- 592 000c 0000     		.2byte	0
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccI9Ha1w.s 			page 15
+ 490 013d 03       		.byte	0x3
+ 491 013e 00000000 		.4byte	transmit_buffer
+ 492 0142 06       		.uleb128 0x6
+ 493 0143 35010000 		.4byte	.LASF22
+ 494 0147 01       		.byte	0x1
+ 495 0148 2D       		.byte	0x2d
+ 496 0149 21010000 		.4byte	0x121
+ 497 014d 05       		.uleb128 0x5
+ 498 014e 03       		.byte	0x3
+ 499 014f 80000000 		.4byte	receive_buffer
+ 500 0153 06       		.uleb128 0x6
+ 501 0154 70010000 		.4byte	.LASF23
+ 502 0158 01       		.byte	0x1
+ 503 0159 36       		.byte	0x36
+ 504 015a 81000000 		.4byte	0x81
+ 505 015e 05       		.uleb128 0x5
+ 506 015f 03       		.byte	0x3
+ 507 0160 00010000 		.4byte	num_chars_received
+ 508 0164 06       		.uleb128 0x6
+ 509 0165 26000000 		.4byte	.LASF24
+ 510 0169 01       		.byte	0x1
+ 511 016a 3C       		.byte	0x3c
+ 512 016b 8C000000 		.4byte	0x8c
+ 513 016f 05       		.uleb128 0x5
+ 514 0170 03       		.byte	0x3
+ 515 0171 02010000 		.4byte	data
+ 516 0175 06       		.uleb128 0x6
+ 517 0176 C0010000 		.4byte	.LASF25
+ 518 017a 01       		.byte	0x1
+ 519 017b 40       		.byte	0x40
+ 520 017c A5000000 		.4byte	0xa5
+ 521 0180 05       		.uleb128 0x5
+ 522 0181 03       		.byte	0x3
+ 523 0182 04010000 		.4byte	mode
+ 524 0186 0B       		.uleb128 0xb
+ 525 0187 44010000 		.4byte	.LASF31
+ 526 018b 05       		.byte	0x5
+ 527 018c 1606     		.2byte	0x616
+ 528 018e 92010000 		.4byte	0x192
+ 529 0192 0C       		.uleb128 0xc
+ 530 0193 76000000 		.4byte	0x76
+ 531 0197 00       		.byte	0
+ 532              		.section	.debug_abbrev,"",%progbits
+ 533              	.Ldebug_abbrev0:
+ 534 0000 01       		.uleb128 0x1
+ 535 0001 11       		.uleb128 0x11
+ 536 0002 01       		.byte	0x1
+ 537 0003 25       		.uleb128 0x25
+ 538 0004 0E       		.uleb128 0xe
+ 539 0005 13       		.uleb128 0x13
+ 540 0006 0B       		.uleb128 0xb
+ 541 0007 03       		.uleb128 0x3
+ 542 0008 0E       		.uleb128 0xe
+ 543 0009 1B       		.uleb128 0x1b
+ 544 000a 0E       		.uleb128 0xe
+ 545 000b 55       		.uleb128 0x55
+ 546 000c 17       		.uleb128 0x17
+ARM GAS  C:\Users\andre\AppData\Local\Temp\cc4IagEi.s 			page 15
 
 
- 593 000e 0000     		.2byte	0
- 594 0010 00000000 		.4byte	.LFB56
- 595 0014 8C000000 		.4byte	.LFE56-.LFB56
- 596 0018 00000000 		.4byte	.LFB57
- 597 001c 84000000 		.4byte	.LFE57-.LFB57
- 598 0020 00000000 		.4byte	0
- 599 0024 00000000 		.4byte	0
- 600              		.section	.debug_ranges,"",%progbits
- 601              	.Ldebug_ranges0:
- 602 0000 00000000 		.4byte	.LFB56
- 603 0004 8C000000 		.4byte	.LFE56
- 604 0008 00000000 		.4byte	.LFB57
- 605 000c 84000000 		.4byte	.LFE57
- 606 0010 00000000 		.4byte	0
- 607 0014 00000000 		.4byte	0
- 608              		.section	.debug_line,"",%progbits
- 609              	.Ldebug_line0:
- 610 0000 A6010000 		.section	.debug_str,"MS",%progbits,1
- 610      02005D01 
- 610      00000201 
- 610      FB0E0D00 
- 610      01010101 
- 611              	.LASF6:
- 612 0000 6C6F6E67 		.ascii	"long long int\000"
- 612      206C6F6E 
- 612      6720696E 
- 612      7400
- 613              	.LASF3:
- 614 000e 73686F72 		.ascii	"short unsigned int\000"
- 614      7420756E 
- 614      7369676E 
- 614      65642069 
- 614      6E7400
- 615              	.LASF8:
- 616 0021 756E7369 		.ascii	"unsigned int\000"
- 616      676E6564 
- 616      20696E74 
- 616      00
- 617              	.LASF11:
- 618 002e 75696E74 		.ascii	"uint8\000"
- 618      3800
- 619              	.LASF20:
- 620 0034 72656365 		.ascii	"receive_buffer\000"
- 620      6976655F 
- 620      62756666 
- 620      657200
- 621              	.LASF5:
- 622 0043 6C6F6E67 		.ascii	"long unsigned int\000"
- 622      20756E73 
- 622      69676E65 
- 622      6420696E 
- 622      7400
- 623              	.LASF7:
- 624 0055 6C6F6E67 		.ascii	"long long unsigned int\000"
- 624      206C6F6E 
- 624      6720756E 
- 624      7369676E 
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccI9Ha1w.s 			page 16
+ 547 000d 11       		.uleb128 0x11
+ 548 000e 01       		.uleb128 0x1
+ 549 000f 10       		.uleb128 0x10
+ 550 0010 17       		.uleb128 0x17
+ 551 0011 00       		.byte	0
+ 552 0012 00       		.byte	0
+ 553 0013 02       		.uleb128 0x2
+ 554 0014 24       		.uleb128 0x24
+ 555 0015 00       		.byte	0
+ 556 0016 0B       		.uleb128 0xb
+ 557 0017 0B       		.uleb128 0xb
+ 558 0018 3E       		.uleb128 0x3e
+ 559 0019 0B       		.uleb128 0xb
+ 560 001a 03       		.uleb128 0x3
+ 561 001b 0E       		.uleb128 0xe
+ 562 001c 00       		.byte	0
+ 563 001d 00       		.byte	0
+ 564 001e 03       		.uleb128 0x3
+ 565 001f 16       		.uleb128 0x16
+ 566 0020 00       		.byte	0
+ 567 0021 03       		.uleb128 0x3
+ 568 0022 0E       		.uleb128 0xe
+ 569 0023 3A       		.uleb128 0x3a
+ 570 0024 0B       		.uleb128 0xb
+ 571 0025 3B       		.uleb128 0x3b
+ 572 0026 0B       		.uleb128 0xb
+ 573 0027 49       		.uleb128 0x49
+ 574 0028 13       		.uleb128 0x13
+ 575 0029 00       		.byte	0
+ 576 002a 00       		.byte	0
+ 577 002b 04       		.uleb128 0x4
+ 578 002c 24       		.uleb128 0x24
+ 579 002d 00       		.byte	0
+ 580 002e 0B       		.uleb128 0xb
+ 581 002f 0B       		.uleb128 0xb
+ 582 0030 3E       		.uleb128 0x3e
+ 583 0031 0B       		.uleb128 0xb
+ 584 0032 03       		.uleb128 0x3
+ 585 0033 08       		.uleb128 0x8
+ 586 0034 00       		.byte	0
+ 587 0035 00       		.byte	0
+ 588 0036 05       		.uleb128 0x5
+ 589 0037 2E       		.uleb128 0x2e
+ 590 0038 01       		.byte	0x1
+ 591 0039 3F       		.uleb128 0x3f
+ 592 003a 19       		.uleb128 0x19
+ 593 003b 03       		.uleb128 0x3
+ 594 003c 0E       		.uleb128 0xe
+ 595 003d 3A       		.uleb128 0x3a
+ 596 003e 0B       		.uleb128 0xb
+ 597 003f 3B       		.uleb128 0x3b
+ 598 0040 0B       		.uleb128 0xb
+ 599 0041 27       		.uleb128 0x27
+ 600 0042 19       		.uleb128 0x19
+ 601 0043 11       		.uleb128 0x11
+ 602 0044 01       		.uleb128 0x1
+ 603 0045 12       		.uleb128 0x12
+ARM GAS  C:\Users\andre\AppData\Local\Temp\cc4IagEi.s 			page 16
 
 
- 624      65642069 
- 625              	.LASF25:
- 626 006c 443A5C57 		.ascii	"D:\\WindowsGitHub\\psoc-examples\\me235\\PWM_UART_M"
- 626      696E646F 
- 626      77734769 
- 626      74487562 
- 626      5C70736F 
- 627 009b 756C7469 		.ascii	"ultitasking.cydsn\000"
- 627      7461736B 
- 627      696E672E 
- 627      63796473 
- 627      6E00
- 628              	.LASF19:
- 629 00ad 7472616E 		.ascii	"transmit_buffer\000"
- 629      736D6974 
- 629      5F627566 
- 629      66657200 
- 630              	.LASF1:
- 631 00bd 756E7369 		.ascii	"unsigned char\000"
- 631      676E6564 
- 631      20636861 
- 631      7200
- 632              	.LASF15:
- 633 00cb 63686172 		.ascii	"char\000"
- 633      00
- 634              	.LASF21:
- 635 00d0 6E756D5F 		.ascii	"num_chars_received\000"
- 635      63686172 
- 635      735F7265 
- 635      63656976 
- 635      656400
- 636              	.LASF4:
- 637 00e3 6C6F6E67 		.ascii	"long int\000"
- 637      20696E74 
- 637      00
- 638              	.LASF10:
- 639 00ec 696E7433 		.ascii	"int32_t\000"
- 639      325F7400 
- 640              	.LASF27:
- 641 00f4 57726974 		.ascii	"Write_PWM_and_UART\000"
- 641      655F5057 
- 641      4D5F616E 
- 641      645F5541 
- 641      525400
- 642              	.LASF14:
- 643 0107 646F7562 		.ascii	"double\000"
- 643      6C6500
- 644              	.LASF17:
- 645 010e 72656365 		.ascii	"received_byte\000"
- 645      69766564 
- 645      5F627974 
- 645      6500
- 646              	.LASF28:
- 647 011c 49544D5F 		.ascii	"ITM_RxBuffer\000"
- 647      52784275 
- 647      66666572 
- 647      00
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccI9Ha1w.s 			page 17
+ 604 0046 06       		.uleb128 0x6
+ 605 0047 40       		.uleb128 0x40
+ 606 0048 18       		.uleb128 0x18
+ 607 0049 9642     		.uleb128 0x2116
+ 608 004b 19       		.uleb128 0x19
+ 609 004c 01       		.uleb128 0x1
+ 610 004d 13       		.uleb128 0x13
+ 611 004e 00       		.byte	0
+ 612 004f 00       		.byte	0
+ 613 0050 06       		.uleb128 0x6
+ 614 0051 34       		.uleb128 0x34
+ 615 0052 00       		.byte	0
+ 616 0053 03       		.uleb128 0x3
+ 617 0054 0E       		.uleb128 0xe
+ 618 0055 3A       		.uleb128 0x3a
+ 619 0056 0B       		.uleb128 0xb
+ 620 0057 3B       		.uleb128 0x3b
+ 621 0058 0B       		.uleb128 0xb
+ 622 0059 49       		.uleb128 0x49
+ 623 005a 13       		.uleb128 0x13
+ 624 005b 02       		.uleb128 0x2
+ 625 005c 18       		.uleb128 0x18
+ 626 005d 00       		.byte	0
+ 627 005e 00       		.byte	0
+ 628 005f 07       		.uleb128 0x7
+ 629 0060 2E       		.uleb128 0x2e
+ 630 0061 01       		.byte	0x1
+ 631 0062 3F       		.uleb128 0x3f
+ 632 0063 19       		.uleb128 0x19
+ 633 0064 03       		.uleb128 0x3
+ 634 0065 0E       		.uleb128 0xe
+ 635 0066 3A       		.uleb128 0x3a
+ 636 0067 0B       		.uleb128 0xb
+ 637 0068 3B       		.uleb128 0x3b
+ 638 0069 0B       		.uleb128 0xb
+ 639 006a 11       		.uleb128 0x11
+ 640 006b 01       		.uleb128 0x1
+ 641 006c 12       		.uleb128 0x12
+ 642 006d 06       		.uleb128 0x6
+ 643 006e 40       		.uleb128 0x40
+ 644 006f 18       		.uleb128 0x18
+ 645 0070 9642     		.uleb128 0x2116
+ 646 0072 19       		.uleb128 0x19
+ 647 0073 01       		.uleb128 0x1
+ 648 0074 13       		.uleb128 0x13
+ 649 0075 00       		.byte	0
+ 650 0076 00       		.byte	0
+ 651 0077 08       		.uleb128 0x8
+ 652 0078 0B       		.uleb128 0xb
+ 653 0079 01       		.byte	0x1
+ 654 007a 11       		.uleb128 0x11
+ 655 007b 01       		.uleb128 0x1
+ 656 007c 12       		.uleb128 0x12
+ 657 007d 06       		.uleb128 0x6
+ 658 007e 00       		.byte	0
+ 659 007f 00       		.byte	0
+ 660 0080 09       		.uleb128 0x9
+ARM GAS  C:\Users\andre\AppData\Local\Temp\cc4IagEi.s 			page 17
 
 
- 648              	.LASF0:
- 649 0129 7369676E 		.ascii	"signed char\000"
- 649      65642063 
- 649      68617200 
- 650              	.LASF23:
- 651 0135 474E5520 		.ascii	"GNU C 4.8.4 20140526 (release) [ARM/embedded-4_8-br"
- 651      4320342E 
- 651      382E3420 
- 651      32303134 
- 651      30353236 
- 652 0168 616E6368 		.ascii	"anch revision 211358] -mcpu=cortex-m3 -mthumb -g -O"
- 652      20726576 
- 652      6973696F 
- 652      6E203231 
- 652      31333538 
- 653 019b 30202D66 		.ascii	"0 -ffunction-sections\000"
- 653      66756E63 
- 653      74696F6E 
- 653      2D736563 
- 653      74696F6E 
- 654              	.LASF9:
- 655 01b1 5F5F696E 		.ascii	"__int32_t\000"
- 655      7433325F 
- 655      7400
- 656              	.LASF13:
- 657 01bb 666C6F61 		.ascii	"float\000"
- 657      7400
- 658              	.LASF2:
- 659 01c1 73686F72 		.ascii	"short int\000"
- 659      7420696E 
- 659      7400
- 660              	.LASF12:
- 661 01cb 75696E74 		.ascii	"uint16\000"
- 661      313600
- 662              	.LASF26:
- 663 01d2 496E7465 		.ascii	"Interrupt_Handler_UART_Receive\000"
- 663      72727570 
- 663      745F4861 
- 663      6E646C65 
- 663      725F5541 
- 664              	.LASF22:
- 665 01f1 70657269 		.ascii	"period\000"
- 665      6F6400
- 666              	.LASF18:
- 667 01f8 70657269 		.ascii	"period_written\000"
- 667      6F645F77 
- 667      72697474 
- 667      656E00
- 668              	.LASF16:
- 669 0207 73697A65 		.ascii	"sizetype\000"
- 669      74797065 
- 669      00
- 670              	.LASF24:
- 671 0210 2E5C7561 		.ascii	".\\uart_helper_fcns.c\000"
- 671      72745F68 
- 671      656C7065 
- 671      725F6663 
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccI9Ha1w.s 			page 18
+ 661 0081 01       		.uleb128 0x1
+ 662 0082 01       		.byte	0x1
+ 663 0083 49       		.uleb128 0x49
+ 664 0084 13       		.uleb128 0x13
+ 665 0085 01       		.uleb128 0x1
+ 666 0086 13       		.uleb128 0x13
+ 667 0087 00       		.byte	0
+ 668 0088 00       		.byte	0
+ 669 0089 0A       		.uleb128 0xa
+ 670 008a 21       		.uleb128 0x21
+ 671 008b 00       		.byte	0
+ 672 008c 49       		.uleb128 0x49
+ 673 008d 13       		.uleb128 0x13
+ 674 008e 2F       		.uleb128 0x2f
+ 675 008f 0B       		.uleb128 0xb
+ 676 0090 00       		.byte	0
+ 677 0091 00       		.byte	0
+ 678 0092 0B       		.uleb128 0xb
+ 679 0093 34       		.uleb128 0x34
+ 680 0094 00       		.byte	0
+ 681 0095 03       		.uleb128 0x3
+ 682 0096 0E       		.uleb128 0xe
+ 683 0097 3A       		.uleb128 0x3a
+ 684 0098 0B       		.uleb128 0xb
+ 685 0099 3B       		.uleb128 0x3b
+ 686 009a 05       		.uleb128 0x5
+ 687 009b 49       		.uleb128 0x49
+ 688 009c 13       		.uleb128 0x13
+ 689 009d 3F       		.uleb128 0x3f
+ 690 009e 19       		.uleb128 0x19
+ 691 009f 3C       		.uleb128 0x3c
+ 692 00a0 19       		.uleb128 0x19
+ 693 00a1 00       		.byte	0
+ 694 00a2 00       		.byte	0
+ 695 00a3 0C       		.uleb128 0xc
+ 696 00a4 35       		.uleb128 0x35
+ 697 00a5 00       		.byte	0
+ 698 00a6 49       		.uleb128 0x49
+ 699 00a7 13       		.uleb128 0x13
+ 700 00a8 00       		.byte	0
+ 701 00a9 00       		.byte	0
+ 702 00aa 00       		.byte	0
+ 703              		.section	.debug_aranges,"",%progbits
+ 704 0000 24000000 		.4byte	0x24
+ 705 0004 0200     		.2byte	0x2
+ 706 0006 00000000 		.4byte	.Ldebug_info0
+ 707 000a 04       		.byte	0x4
+ 708 000b 00       		.byte	0
+ 709 000c 0000     		.2byte	0
+ 710 000e 0000     		.2byte	0
+ 711 0010 00000000 		.4byte	.LFB56
+ 712 0014 94000000 		.4byte	.LFE56-.LFB56
+ 713 0018 00000000 		.4byte	.LFB57
+ 714 001c F0000000 		.4byte	.LFE57-.LFB57
+ 715 0020 00000000 		.4byte	0
+ 716 0024 00000000 		.4byte	0
+ 717              		.section	.debug_ranges,"",%progbits
+ARM GAS  C:\Users\andre\AppData\Local\Temp\cc4IagEi.s 			page 18
 
 
- 671      6E732E63 
- 672              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.8.4 20140526 (release) [ARM/embedded-4_8-br
+ 718              	.Ldebug_ranges0:
+ 719 0000 00000000 		.4byte	.LFB56
+ 720 0004 94000000 		.4byte	.LFE56
+ 721 0008 00000000 		.4byte	.LFB57
+ 722 000c F0000000 		.4byte	.LFE57
+ 723 0010 00000000 		.4byte	0
+ 724 0014 00000000 		.4byte	0
+ 725              		.section	.debug_line,"",%progbits
+ 726              	.Ldebug_line0:
+ 727 0000 B5010000 		.section	.debug_str,"MS",%progbits,1
+ 727      02005D01 
+ 727      00000201 
+ 727      FB0E0D00 
+ 727      01010101 
+ 728              	.LASF9:
+ 729 0000 5F5F696E 		.ascii	"__int32_t\000"
+ 729      7433325F 
+ 729      7400
+ 730              	.LASF19:
+ 731 000a 70657269 		.ascii	"period_written\000"
+ 731      6F645F77 
+ 731      72697474 
+ 731      656E00
+ 732              	.LASF14:
+ 733 0019 646F7562 		.ascii	"double\000"
+ 733      6C6500
+ 734              	.LASF13:
+ 735 0020 666C6F61 		.ascii	"float\000"
+ 735      7400
+ 736              	.LASF24:
+ 737 0026 64617461 		.ascii	"data\000"
+ 737      00
+ 738              	.LASF0:
+ 739 002b 7369676E 		.ascii	"signed char\000"
+ 739      65642063 
+ 739      68617200 
+ 740              	.LASF20:
+ 741 0037 64757479 		.ascii	"duty_written\000"
+ 741      5F777269 
+ 741      7474656E 
+ 741      00
+ 742              	.LASF1:
+ 743 0044 756E7369 		.ascii	"unsigned char\000"
+ 743      676E6564 
+ 743      20636861 
+ 743      7200
+ 744              	.LASF30:
+ 745 0052 57726974 		.ascii	"Write_PWM_and_UART\000"
+ 745      655F5057 
+ 745      4D5F616E 
+ 745      645F5541 
+ 745      525400
+ 746              	.LASF26:
+ 747 0065 474E5520 		.ascii	"GNU C 4.8.4 20140526 (release) [ARM/embedded-4_8-br"
+ 747      4320342E 
+ 747      382E3420 
+ 747      32303134 
+ARM GAS  C:\Users\andre\AppData\Local\Temp\cc4IagEi.s 			page 19
+
+
+ 747      30353236 
+ 748 0098 616E6368 		.ascii	"anch revision 211358] -mcpu=cortex-m3 -mthumb -g -O"
+ 748      20726576 
+ 748      6973696F 
+ 748      6E203231 
+ 748      31333538 
+ 749 00cb 30202D66 		.ascii	"0 -ffunction-sections\000"
+ 749      66756E63 
+ 749      74696F6E 
+ 749      2D736563 
+ 749      74696F6E 
+ 750              	.LASF28:
+ 751 00e1 443A5C57 		.ascii	"D:\\WindowsGitHub\\psoc-examples\\me235\\PWM_UART_M"
+ 751      696E646F 
+ 751      77734769 
+ 751      74487562 
+ 751      5C70736F 
+ 752 0110 756C7469 		.ascii	"ultitasking.cydsn\000"
+ 752      7461736B 
+ 752      696E672E 
+ 752      63796473 
+ 752      6E00
+ 753              	.LASF3:
+ 754 0122 73686F72 		.ascii	"short unsigned int\000"
+ 754      7420756E 
+ 754      7369676E 
+ 754      65642069 
+ 754      6E7400
+ 755              	.LASF22:
+ 756 0135 72656365 		.ascii	"receive_buffer\000"
+ 756      6976655F 
+ 756      62756666 
+ 756      657200
+ 757              	.LASF31:
+ 758 0144 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 758      52784275 
+ 758      66666572 
+ 758      00
+ 759              	.LASF29:
+ 760 0151 496E7465 		.ascii	"Interrupt_Handler_UART_Receive\000"
+ 760      72727570 
+ 760      745F4861 
+ 760      6E646C65 
+ 760      725F5541 
+ 761              	.LASF23:
+ 762 0170 6E756D5F 		.ascii	"num_chars_received\000"
+ 762      63686172 
+ 762      735F7265 
+ 762      63656976 
+ 762      656400
+ 763              	.LASF5:
+ 764 0183 6C6F6E67 		.ascii	"long unsigned int\000"
+ 764      20756E73 
+ 764      69676E65 
+ 764      6420696E 
+ 764      7400
+ 765              	.LASF12:
+ARM GAS  C:\Users\andre\AppData\Local\Temp\cc4IagEi.s 			page 20
+
+
+ 766 0195 75696E74 		.ascii	"uint16\000"
+ 766      313600
+ 767              	.LASF8:
+ 768 019c 756E7369 		.ascii	"unsigned int\000"
+ 768      676E6564 
+ 768      20696E74 
+ 768      00
+ 769              	.LASF7:
+ 770 01a9 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 770      206C6F6E 
+ 770      6720756E 
+ 770      7369676E 
+ 770      65642069 
+ 771              	.LASF25:
+ 772 01c0 6D6F6465 		.ascii	"mode\000"
+ 772      00
+ 773              	.LASF18:
+ 774 01c5 6E756D5F 		.ascii	"num_var_filled\000"
+ 774      7661725F 
+ 774      66696C6C 
+ 774      656400
+ 775              	.LASF17:
+ 776 01d4 72656365 		.ascii	"received_byte\000"
+ 776      69766564 
+ 776      5F627974 
+ 776      6500
+ 777              	.LASF10:
+ 778 01e2 696E7433 		.ascii	"int32_t\000"
+ 778      325F7400 
+ 779              	.LASF16:
+ 780 01ea 73697A65 		.ascii	"sizetype\000"
+ 780      74797065 
+ 780      00
+ 781              	.LASF6:
+ 782 01f3 6C6F6E67 		.ascii	"long long int\000"
+ 782      206C6F6E 
+ 782      6720696E 
+ 782      7400
+ 783              	.LASF15:
+ 784 0201 63686172 		.ascii	"char\000"
+ 784      00
+ 785              	.LASF2:
+ 786 0206 73686F72 		.ascii	"short int\000"
+ 786      7420696E 
+ 786      7400
+ 787              	.LASF11:
+ 788 0210 75696E74 		.ascii	"uint8\000"
+ 788      3800
+ 789              	.LASF4:
+ 790 0216 6C6F6E67 		.ascii	"long int\000"
+ 790      20696E74 
+ 790      00
+ 791              	.LASF27:
+ 792 021f 2E5C7561 		.ascii	".\\uart_helper_fcns.c\000"
+ 792      72745F68 
+ 792      656C7065 
+ 792      725F6663 
+ARM GAS  C:\Users\andre\AppData\Local\Temp\cc4IagEi.s 			page 21
+
+
+ 792      6E732E63 
+ 793              	.LASF21:
+ 794 0234 7472616E 		.ascii	"transmit_buffer\000"
+ 794      736D6974 
+ 794      5F627566 
+ 794      66657200 
+ 795              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.8.4 20140526 (release) [ARM/embedded-4_8-br

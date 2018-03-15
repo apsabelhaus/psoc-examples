@@ -26,9 +26,9 @@
 // a string of this length. E.g. 16 gives us 16 characters, including any integers represented as characters.
 // This solves exactly the same problem as in the supplement to tutorial 6!!!
 // Drew used 128 here, like with receive, because it's 
-// "big enough." Compare to the size of the period of the PWM, as returned from ReadPeriod(), 
+// "big enough." Compare to the size of the data of the PWM, as returned from Readdata(), 
 // and the string of text I put down below.
-// How many bytes (characters) will we expect to need to send back? How many are "taken up" by the PWM period?
+// How many bytes (characters) will we expect to need to send back? How many are "taken up" by the PWM data?
 #define TRANSMIT_LENGTH 128
 // We're also going to keep a buffer of received characters, since multiple bytes are needed.
 // The size of this here is the number of characters you can type into TeraTerm before pressing enter.
@@ -46,7 +46,7 @@ static char receive_buffer[RECEIVE_LENGTH];
 
 // Since the UART only sends single bytes, we encounter a problem with setting numerical values.
 // Specifically, the byte send is interpreted as a character, NOT a number.
-// See the ASCII table for a bit more intuition: for example, to set a period between 100 and 200, we'd need to 
+// See the ASCII table for a bit more intuition: for example, to set a data between 100 and 200, we'd need to 
 // type in the characters between 'd' and 'weird L bar thing that isn't on Drew's keyboard. 
 // https://www.asciitable.com/
 // That's not OK. Instead, let's take in each character, store it in a buffer.
@@ -55,9 +55,13 @@ static uint8 num_chars_received = 0;
 
 // In the example that Drew got from George, we used a character to split
 
-// the period, as recorded in the helpers below. By declaring with global scope, we
+// the data, as recorded in the helpers below. By declaring with global scope, we
 // increase efficiency.
-static uint16 period = 0;
+static uint16 data = 0;
+
+// We're also going to let people adjust the duty cycle (compare value).
+// So, we need to store a character representing the mode.
+static char mode;
 
 // Definition of the UART ISR
 // We use the same line for the function definition, with the CY_ISR macro.
@@ -66,6 +70,10 @@ CY_ISR( Interrupt_Handler_UART_Receive){
     // We assume this ISR is called when a byte is received.
     // See how the IDE doesn't give any errors, as long as we include project.h here.
     uint8 received_byte = UART_for_USB_GetChar();
+    
+    // In order for this to be clear, let's repeat the character back to the terminal.
+    // This way, it 'looks like' we're typing into the terminal!
+    UART_for_USB_PutChar( received_byte );
     
     //DEBUGGING
     /*
@@ -76,7 +84,7 @@ CY_ISR( Interrupt_Handler_UART_Receive){
     
     // Next, we need to deal with what was received, in the following way.
     // If a new line is received (the \n character, or ASCII values 10 or 12 or 13 depending on if your computer is Windows/Linux/Mac),
-    // then finally set the period.
+    // then finally set the data.
     // Otherwise, add to the uint16 we're keeping track of.
     // Luckily enough, C allows us to "switch" on uint8s, since characters are also numbers via the ASCII table.
     switch( received_byte )
@@ -92,19 +100,19 @@ CY_ISR( Interrupt_Handler_UART_Receive){
             // First, terminate the string. This is for the use of sscanf below.
             receive_buffer[num_chars_received] = '\0';
             Write_PWM_and_UART();
-            // This helper will also reset the period we're tracking, and the num chars received.
+            // This helper will also reset the data we're tracking, and the num chars received.
             // By "break"-ing, the next case is not executed.
             break;
         case 'x':
             // Added functionality: if the user types an x, then the PWM stops.
-            UART_for_USB_PutString("Stopping PWM.\r\n");
+            UART_for_USB_PutString("\r\nStopping PWM.\r\n");
             PWM_Servo_Stop();
             // Reset the buffer. We'll just start writing from the start again.
             num_chars_received = 0;
             break;
         case 'e':
             // Similarly, type e to enable.
-            UART_for_USB_PutString("Restarting PWM.\r\n");
+            UART_for_USB_PutString("\r\nRestarting PWM.\r\n");
             PWM_Servo_Start();
             // Reset the buffer. We'll just start writing from the start again.
             num_chars_received = 0;
@@ -120,15 +128,15 @@ CY_ISR( Interrupt_Handler_UART_Receive){
     }
     
     // We're going to assume that the character we receive is an integer, 
-    // representing the period.
-    // For a transmission of 8 bits, we can only set the period between 0 and 255.
+    // representing the data.
+    // For a transmission of 8 bits, we can only set the data between 0 and 255.
     // This is OK for how we've configured the PWM for our servo: 
-    // our period can only be between 100 and 200 anyway (1 ms for min angle, 2 ms for max angle).
+    // our data can only be between 100 and 200 anyway (1 ms for min angle, 2 ms for max angle).
     // To get better resolution here, you'll need to do a handful of things:
     // (1) change the clock of the PWM so that we'll need a uint16 to represent 1 ms to 2 ms of "on"
     // (2) receive two bytes (as uint8) from the UART, keep track of the first one
     // (3) once two are received, combine them into a uint16
-    // (4) write the uint16 to the PWM's period, as with the code below.    
+    // (4) write the uint16 to the PWM's data, as with the code below.    
     
     
     
@@ -137,35 +145,67 @@ CY_ISR( Interrupt_Handler_UART_Receive){
 // Helper function that does the writing to the PWM and UART.
 // makes the ISR code easier to understand.
 void Write_PWM_and_UART(){
-    // OK, so now, we have a string in the receive buffer of the form "p:somenumber".
+    // OK, so now, we have a string in the receive buffer of the form "(p/d):somenumber".
+    // Get the mode:
+    //sscanf( receive_buffer, "%c:", &mode);
+    //DEBUGGING
+    //UART_for_USB_PutChar(mode);
     
     // Read in the integer after the p:
     // The %hu specifier is for unsigned shorts (16 bit integers)
-    sscanf( receive_buffer, "p:%hu", &period);
+    // Let's receive back the number of integers returned from sscanf
+    int num_var_filled;
+    num_var_filled = sscanf( receive_buffer, "%c : %hu", &mode, &data);
+    // Need to check: was anything received? Equivalently, did sscanf find exactly one uint16?
+    if( num_var_filled != 2){
+        UART_for_USB_PutString("Error! incorrect data. Did you type a number after a (p or d), a colon, and the spaces between?\r\n");
+        data = 0;
+    }
     // DEBUGGING
     UART_for_USB_PutString("Received the string: ");
     UART_for_USB_PutString( receive_buffer );
     UART_for_USB_PutString("\r\n");
     
-    // sscanf requires the address-of (&) for the variable to be written.
-    // Now, set the period, 
-    PWM_Servo_WritePeriod( period );
+    // Depending on the mode, write either the data or the duty cycle:
+    switch( mode )
+    {
+        case 'p':
+            // Now, set the data, 
+            PWM_Servo_WritePeriod( data );
+            // and send back the data that was just written, for confirmation.
+            // In C, to concatenate a number (integer) and a string (characters), you need to...
+            // (1) store the result, as confirmed by the PWM component.
+            uint16 period_written = PWM_Servo_ReadPeriod();
+            // (2) Concatenate this data with a string of characters describing what we did
+            // Requires stdio.h (standard input/output) for the sprintf function.
+            sprintf( transmit_buffer, "PWM now has a period of: %i \r\n", period_written);
+            break;
+        case 'd':
+            // Instead, set the compare value, the duty cycle in clock ticks.
+            PWM_Servo_WriteCompare( data );
+            // Like with the period:
+            uint16 duty_written = PWM_Servo_ReadCompare();
+            sprintf( transmit_buffer, "PWM now has a duty cycle (in clock ticks) of: %i \r\n", duty_written);
+            break;
+        default:
+            sprintf( transmit_buffer, "Error! You didn't type a p or d. \r\n");
+            mode = 0;
+            break;
+    }
     
-    // and send back the period that was just written, for confirmation.
-    // In C, to concatenate a number (integer) and a string (characters), you need to...
-    // (1) store the result, as confirmed by the PWM component.
-    uint16 period_written = PWM_Servo_ReadPeriod();
-    // (2) Concatenate this period with a string of characters describing what we did
-    // Requires stdio.h (standard input/output) for the sprintf function.
-    sprintf( transmit_buffer, "PWM now has a period of: %i \r\n", period_written);
+    // sscanf requires the address-of (&) for the variable to be written.
+    
+    
     // (3) send the byte back to your PC
     UART_for_USB_PutString( transmit_buffer );    
+    // to make this easier to read, send another newline.
+    UART_for_USB_PutString("\r\n");
     // (4) Send another little string prompting the next input.
-    UART_for_USB_PutString( "Set the period by typing p: then a new period, between 100 and 200 (min and max period for a servo on a 100 kHz clock).\r\n");
+    //UART_for_USB_PutString( " by typing p: then a new data, between 100 and 200 (min and max data for a servo on a 100 kHz clock).\r\n");
     // Reset the indexing into the array
     num_chars_received = 0;
-    // and just in case let's do the period too.
-    period = 0;
+    // and just in case let's do the data too.
+    data = 0;
     // Note that we don't have to reset the buffer here, since sscanf only reads up until the first '\0'.
 }
 

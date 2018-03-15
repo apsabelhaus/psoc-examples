@@ -1,4 +1,4 @@
---------------- Build Started: 03/14/2018 17:42:16 Project: PWM_UART_Multitasking, Configuration: ARM GCC 4.8.4 Debug ---------------
+--------------- Build Started: 03/14/2018 18:24:11 Project: PWM_UART_Multitasking, Configuration: ARM GCC 4.8.4 Debug ---------------
 The code generation step is up to date.
 arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -Wno-main -I. -I.\Generated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_484\Debug/uart_helper_fcns.lst -g -D DEBUG -Wall -ffunction-sections -O0 -c .\uart_helper_fcns.c -o .\CortexM3\ARM_GCC_484\Debug\uart_helper_fcns.o
 arm-none-eabi-ar.exe -rs .\CortexM3\ARM_GCC_484\Debug\PWM_UART_Multitasking.a .\CortexM3\ARM_GCC_484\Debug\cyfitter_cfg.o .\CortexM3\ARM_GCC_484\Debug\PWM_Servo.o .\CortexM3\ARM_GCC_484\Debug\PWM_Servo_PM.o .\CortexM3\ARM_GCC_484\Debug\Clock_PWM.o .\CortexM3\ARM_GCC_484\Debug\Pin_Servo_Control.o .\CortexM3\ARM_GCC_484\Debug\CyBootAsmGnu.o .\CortexM3\ARM_GCC_484\Debug\CyDmac.o .\CortexM3\ARM_GCC_484\Debug\CyFlash.o .\CortexM3\ARM_GCC_484\Debug\CyLib.o .\CortexM3\ARM_GCC_484\Debug\cyPm.o .\CortexM3\ARM_GCC_484\Debug\CySpc.o .\CortexM3\ARM_GCC_484\Debug\cyutils.o .\CortexM3\ARM_GCC_484\Debug\UART_for_USB.o .\CortexM3\ARM_GCC_484\Debug\UART_for_USB_PM.o .\CortexM3\ARM_GCC_484\Debug\UART_for_USB_INT.o .\CortexM3\ARM_GCC_484\Debug\UART_for_USB_BOOT.o .\CortexM3\ARM_GCC_484\Debug\Interrupt_UART_Receive.o .\CortexM3\ARM_GCC_484\Debug\UART_for_USB_IntClock.o
@@ -6,6 +6,6 @@ arm-none-eabi-ar.exe: creating .\CortexM3\ARM_GCC_484\Debug\PWM_UART_Multitaskin
 arm-none-eabi-gcc.exe -Wl,--start-group -o .\CortexM3\ARM_GCC_484\Debug\PWM_UART_Multitasking.elf .\CortexM3\ARM_GCC_484\Debug\main.o .\CortexM3\ARM_GCC_484\Debug\uart_helper_fcns.o .\CortexM3\ARM_GCC_484\Debug\cymetadata.o .\CortexM3\ARM_GCC_484\Debug\Cm3Start.o .\CortexM3\ARM_GCC_484\Debug\PWM_UART_Multitasking.a "C:\Program Files (x86)\Cypress\PSoC Creator\3.1\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CortexM3\ARM_GCC_484\Debug\CyComponentLibrary.a" -mthumb -march=armv7-m -mfix-cortex-m3-ldrd -Wl,-Map,.\CortexM3\ARM_GCC_484\Debug/PWM_UART_Multitasking.map -T .\Generated_Source\PSoC5\cm3gcc.ld -g -specs=nano.specs "-u _printf_float" "" -Wl,--gc-sections -Wl,--end-group
 cyelftool.exe -C D:\WindowsGitHub\psoc-examples\me235\PWM_UART_Multitasking.cydsn\CortexM3\ARM_GCC_484\Debug\PWM_UART_Multitasking.elf --flash_size 262144 --flash_row_size 256
 cyelftool.exe -S D:\WindowsGitHub\psoc-examples\me235\PWM_UART_Multitasking.cydsn\CortexM3\ARM_GCC_484\Debug\PWM_UART_Multitasking.elf
-Flash used: 8262 of 262144 bytes (3.2 %).
-SRAM used: 2853 of 65536 bytes (4.4 %). Stack: 2048 bytes. Heap: 128 bytes.
---------------- Build Succeeded: 03/14/2018 17:42:18 ---------------
+Flash used: 8734 of 262144 bytes (3.3 %).
+SRAM used: 2861 of 65536 bytes (4.4 %). Stack: 2048 bytes. Heap: 128 bytes.
+--------------- Build Succeeded: 03/14/2018 18:24:14 ---------------

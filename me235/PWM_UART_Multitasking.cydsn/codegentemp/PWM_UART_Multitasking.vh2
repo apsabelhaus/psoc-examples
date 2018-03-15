@@ -2,7 +2,7 @@
 --	Conversion of PWM_UART_Multitasking.v to vh2:
 --
 --	Cypress Semiconductor - WARP Version 6.3 IR 41
---	Tue Mar 13 12:01:19 2018
+--	Wed Mar 14 18:01:06 2018
 --
 
 USE cypress.cypress.all;

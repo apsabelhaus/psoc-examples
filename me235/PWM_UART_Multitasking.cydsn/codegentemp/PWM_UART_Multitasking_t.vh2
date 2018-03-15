@@ -1,5 +1,5 @@
 -- Project:   D:\WindowsGitHub\psoc-examples\me235\PWM_UART_Multitasking.cydsn\PWM_UART_Multitasking.cyprj
--- Generated: 03/13/2018 12:01:24
+-- Generated: 03/14/2018 18:01:13
 -- PSoC Creator  3.1 SP3
 
 ENTITY PWM_UART_Multitasking IS
