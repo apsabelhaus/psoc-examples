@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccTfKp2I.s 			page 1
 
 
    1              		.syntax unified
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
   41      74696E67 
   41      2050574D 
   41      2E0D0A00 
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 2
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccTfKp2I.s 			page 2
 
 
   42              		.section	.text.Interrupt_Handler_UART_Receive,"ax",%progbits
@@ -81,71 +81,46 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
    9:.\uart_helper_fcns.c **** // Code adapted heavily from Cypress' example CE95277 ADC and UART,
   10:.\uart_helper_fcns.c **** // but all re-written by Drew.
   11:.\uart_helper_fcns.c **** 
-  12:.\uart_helper_fcns.c **** // We wrote the declarations in the header file,
-  13:.\uart_helper_fcns.c **** // and define them here.
-  14:.\uart_helper_fcns.c **** // Including this header file in both main.c and here will allow the functions
-  15:.\uart_helper_fcns.c **** // to be accessible both places (one to define them, one to use them).
+  12:.\uart_helper_fcns.c **** #include "uart_helper_fcns.h"
+  13:.\uart_helper_fcns.c **** #include <project.h>
+  14:.\uart_helper_fcns.c **** // stdio.h provides the sprintf and sscanf functions for working with strings.
+  15:.\uart_helper_fcns.c **** #include "stdio.h"
   16:.\uart_helper_fcns.c **** 
-  17:.\uart_helper_fcns.c **** // Unlike in the header files, we don't need to add include guards here.
-  18:.\uart_helper_fcns.c **** // That's because the guards are already present in the .h files themselves.
-  19:.\uart_helper_fcns.c **** #include "uart_helper_fcns.h"
-  20:.\uart_helper_fcns.c **** #include <project.h>
-  21:.\uart_helper_fcns.c **** // stdio.h provides the sprintf and sscanf functions for working with strings.
-  22:.\uart_helper_fcns.c **** #include "stdio.h"
-  23:.\uart_helper_fcns.c **** 
-  24:.\uart_helper_fcns.c **** // We're going to define the size of the character array for the transmission
-  25:.\uart_helper_fcns.c **** // back to the PC. This is in bytes: if a uint8 is one character, we can store
-  26:.\uart_helper_fcns.c **** // a string of this length. E.g. 16 gives us 16 characters, including any integers represented as c
-  27:.\uart_helper_fcns.c **** // This solves exactly the same problem as in the supplement to tutorial 6!!!
-  28:.\uart_helper_fcns.c **** // Drew used 128 here, like with receive, because it's 
-  29:.\uart_helper_fcns.c **** // "big enough." Compare to the size of the data of the PWM, as returned from Readdata(), 
-  30:.\uart_helper_fcns.c **** // and the string of text I put down below.
-  31:.\uart_helper_fcns.c **** // How many bytes (characters) will we expect to need to send back? How many are "taken up" by the 
-  32:.\uart_helper_fcns.c **** #define TRANSMIT_LENGTH 128
-  33:.\uart_helper_fcns.c **** // We're also going to keep a buffer of received characters, since multiple bytes are needed.
-  34:.\uart_helper_fcns.c **** // The size of this here is the number of characters you can type into TeraTerm before pressing ent
-  35:.\uart_helper_fcns.c **** // George suggested 128, which is way many more than you'll need. 
-  36:.\uart_helper_fcns.c **** // Note the example of "make the array larger than you need just in case because it doesn't really 
-  37:.\uart_helper_fcns.c **** #define RECEIVE_LENGTH 128
-  38:.\uart_helper_fcns.c **** 
-  39:.\uart_helper_fcns.c **** // See tutorial 7 supplement for discussion on "static".
-  40:.\uart_helper_fcns.c **** 
-  41:.\uart_helper_fcns.c **** // Also, keep the buffer as a global variable instead of creating it inside the ISR.
-  42:.\uart_helper_fcns.c **** // This is for efficiency, and since we'll need to send back a string of characters with numbers al
-  43:.\uart_helper_fcns.c **** static char transmit_buffer[TRANSMIT_LENGTH];
-  44:.\uart_helper_fcns.c **** // similarly, we want a receive buffer, for taking in multiple charactes as they are sent to the PS
-  45:.\uart_helper_fcns.c **** static char receive_buffer[RECEIVE_LENGTH];
-  46:.\uart_helper_fcns.c **** 
-  47:.\uart_helper_fcns.c **** // Since the UART only sends single bytes, we encounter a problem with setting numerical values.
-  48:.\uart_helper_fcns.c **** // Specifically, the byte send is interpreted as a character, NOT a number.
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 3
-
-
-  49:.\uart_helper_fcns.c **** // See the ASCII table for a bit more intuition: for example, to set a data between 100 and 200, we
-  50:.\uart_helper_fcns.c **** // type in the characters between 'd' and 'weird L bar thing that isn't on Drew's keyboard. 
-  51:.\uart_helper_fcns.c **** // https://www.asciitable.com/
-  52:.\uart_helper_fcns.c **** // That's not OK. Instead, let's take in each character, store it in a buffer.
-  53:.\uart_helper_fcns.c **** // The num_chars_received integer allows us to index into the string buffer (since it's an array of
-  54:.\uart_helper_fcns.c **** static uint8 num_chars_received = 0;
-  55:.\uart_helper_fcns.c **** 
-  56:.\uart_helper_fcns.c **** // In the example that Drew got from George, we used a character to split
-  57:.\uart_helper_fcns.c **** 
-  58:.\uart_helper_fcns.c **** // the data, as recorded in the helpers below. By declaring with global scope, we
-  59:.\uart_helper_fcns.c **** // increase efficiency.
-  60:.\uart_helper_fcns.c **** static uint16 data = 0;
-  61:.\uart_helper_fcns.c **** 
-  62:.\uart_helper_fcns.c **** // We're also going to let people adjust the duty cycle (compare value).
-  63:.\uart_helper_fcns.c **** // So, we need to store a character representing the mode.
-  64:.\uart_helper_fcns.c **** static char mode;
-  65:.\uart_helper_fcns.c **** 
-  66:.\uart_helper_fcns.c **** // Definition of the UART ISR
-  67:.\uart_helper_fcns.c **** // We use the same line for the function definition, with the CY_ISR macro.
-  68:.\uart_helper_fcns.c **** // Compare this to tutorial 6, with "pythagorean"
-  69:.\uart_helper_fcns.c **** CY_ISR( Interrupt_Handler_UART_Receive){
-  51              		.loc 1 69 0
+  17:.\uart_helper_fcns.c **** // We'll store a string for the PSoC-to-PC transmission, with a length of this many characters:
+  18:.\uart_helper_fcns.c **** #define TRANSMIT_LENGTH 128
+  19:.\uart_helper_fcns.c **** // We'll store a string for the PC-to-PSoC transmission, with a length of this many characters:
+  20:.\uart_helper_fcns.c **** #define RECEIVE_LENGTH 128
+  21:.\uart_helper_fcns.c **** 
+  22:.\uart_helper_fcns.c **** // Strings of characters are often stored in "buffers" as arrays of characters.
+  23:.\uart_helper_fcns.c **** static char transmit_buffer[TRANSMIT_LENGTH];
+  24:.\uart_helper_fcns.c **** static char receive_buffer[RECEIVE_LENGTH];
+  25:.\uart_helper_fcns.c **** 
+  26:.\uart_helper_fcns.c **** // We'll keep track of new characters as they're received over the UART, so we need to
+  27:.\uart_helper_fcns.c **** // index into the buffer
+  28:.\uart_helper_fcns.c **** static uint8 num_chars_received = 0;
+  29:.\uart_helper_fcns.c **** 
+  30:.\uart_helper_fcns.c **** // the data, as recorded in the helpers below.
+  31:.\uart_helper_fcns.c **** // This will be either the period or duty cycle
+  32:.\uart_helper_fcns.c **** static uint16 data = 0;
+  33:.\uart_helper_fcns.c **** 
+  34:.\uart_helper_fcns.c **** // We need to store a character representing the mode, "set period" = p or "set duty cycle" = d
+  35:.\uart_helper_fcns.c **** static char mode;
+  36:.\uart_helper_fcns.c **** 
+  37:.\uart_helper_fcns.c **** /**
+  38:.\uart_helper_fcns.c ****  * Definition of the UART ISR
+  39:.\uart_helper_fcns.c ****  * We use the same line for the function definition, with the CY_ISR macro.
+  40:.\uart_helper_fcns.c ****  * Compare this to tutorial 6, with "pythagorean"
+  41:.\uart_helper_fcns.c ****  * This function also repeats characters back to the terminal, so you can see what you're typing.
+  42:.\uart_helper_fcns.c ****  * Compare to the code at the end of tutorial 7
+  43:.\uart_helper_fcns.c ****  */
+  44:.\uart_helper_fcns.c **** CY_ISR( Interrupt_Handler_UART_Receive){
+  51              		.loc 1 44 0
   52              		.cfi_startproc
   53              		@ args = 0, pretend = 0, frame = 8
   54              		@ frame_needed = 1, uses_anonymous_args = 0
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccTfKp2I.s 			page 3
+
+
   55 0000 80B5     		push	{r7, lr}
   56              		.cfi_def_cfa_offset 8
   57              		.cfi_offset 7, -8
@@ -154,34 +129,17 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
   60              		.cfi_def_cfa_offset 16
   61 0004 00AF     		add	r7, sp, #0
   62              		.cfi_def_cfa_register 7
-  70:.\uart_helper_fcns.c ****     // We assume this ISR is called when a byte is received.
-  71:.\uart_helper_fcns.c ****     // See how the IDE doesn't give any errors, as long as we include project.h here.
-  72:.\uart_helper_fcns.c ****     uint8 received_byte = UART_for_USB_GetChar();
-  63              		.loc 1 72 0
+  45:.\uart_helper_fcns.c ****     // We assume this ISR is called when a byte is received.
+  46:.\uart_helper_fcns.c ****     uint8 received_byte = UART_for_USB_GetChar();
+  63              		.loc 1 46 0
   64 0006 FFF7FEFF 		bl	UART_for_USB_GetChar
   65 000a 0346     		mov	r3, r0
   66 000c FB71     		strb	r3, [r7, #7]
-  73:.\uart_helper_fcns.c ****     
-  74:.\uart_helper_fcns.c ****     // In order for this to be clear, let's repeat the character back to the terminal.
-  75:.\uart_helper_fcns.c ****     // This way, it 'looks like' we're typing into the terminal!
-  76:.\uart_helper_fcns.c ****     
-  77:.\uart_helper_fcns.c ****     //DEBUGGING
-  78:.\uart_helper_fcns.c ****     /*
-  79:.\uart_helper_fcns.c ****     UART_for_USB_PutString( "Received a character: ");
-  80:.\uart_helper_fcns.c ****     UART_for_USB_PutChar( received_byte );
-  81:.\uart_helper_fcns.c ****     UART_for_USB_PutString("\r\n");
-  82:.\uart_helper_fcns.c ****     */
-  83:.\uart_helper_fcns.c ****     
-  84:.\uart_helper_fcns.c ****     // Next, we need to deal with what was received, in the following way.
-  85:.\uart_helper_fcns.c ****     // If a new line is received (the \n character, or ASCII values 10 or 12 or 13 depending on if 
-  86:.\uart_helper_fcns.c ****     // then finally set the data.
-  87:.\uart_helper_fcns.c ****     // Otherwise, add to the uint16 we're keeping track of.
-  88:.\uart_helper_fcns.c ****     // Luckily enough, C allows us to "switch" on uint8s, since characters are also numbers via the
-  89:.\uart_helper_fcns.c ****     switch( received_byte )
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 4
-
-
-  67              		.loc 1 89 0
+  47:.\uart_helper_fcns.c ****     
+  48:.\uart_helper_fcns.c ****     // C allows us to "switch" on uint8s, since characters are also numbers via the ASCII table.
+  49:.\uart_helper_fcns.c ****     // either add to the buffer, or finally set the PWM parameters, depending on ...
+  50:.\uart_helper_fcns.c ****     switch( received_byte )
+  67              		.loc 1 50 0
   68 000e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
   69 0010 0D2B     		cmp	r3, #13
   70 0012 09D0     		beq	.L3
@@ -197,128 +155,110 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
   80 0024 0BD0     		beq	.L6
   81 0026 1CE0     		b	.L2
   82              	.L3:
-  90:.\uart_helper_fcns.c ****     {
-  91:.\uart_helper_fcns.c ****         // Students: look up switch-case statements. to understand this more.
-  92:.\uart_helper_fcns.c ****         // We're going to take advantage of the "flow" of switch-case to do the same thing for char
-  93:.\uart_helper_fcns.c ****         // which could all be newlines, by not "break"-ing until the end of the third case.
-  94:.\uart_helper_fcns.c ****         case '\r':
-  95:.\uart_helper_fcns.c ****             // flow downward, no specific code for carriage return
-  96:.\uart_helper_fcns.c ****         case '\n':
-  97:.\uart_helper_fcns.c ****             // This code will run if the received byte is either a carriage return or a newline.
-  98:.\uart_helper_fcns.c ****             // Since the PSoC received a new line...
-  99:.\uart_helper_fcns.c ****             // First, terminate the string. This is for the use of sscanf below.
- 100:.\uart_helper_fcns.c ****             // Print back the newline/carriage return, to complete the "respond back to the termina
- 101:.\uart_helper_fcns.c ****             UART_for_USB_PutString("\r\n");
-  83              		.loc 1 101 0
-  84 0028 1748     		ldr	r0, .L8
-  85 002a FFF7FEFF 		bl	UART_for_USB_PutString
- 102:.\uart_helper_fcns.c ****             receive_buffer[num_chars_received] = '\0';
-  86              		.loc 1 102 0
-  87 002e 174B     		ldr	r3, .L8+4
-  88 0030 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
-  89 0032 174A     		ldr	r2, .L8+8
-  90 0034 0021     		movs	r1, #0
-  91 0036 D154     		strb	r1, [r2, r3]
- 103:.\uart_helper_fcns.c ****             Write_PWM_and_UART();
-  92              		.loc 1 103 0
+  51:.\uart_helper_fcns.c ****     {
+  52:.\uart_helper_fcns.c ****         // Students: look up switch-case statements. to understand this more.
+  53:.\uart_helper_fcns.c ****         case '\r':
+  54:.\uart_helper_fcns.c ****             // flow downward, no specific code for carriage return
+  55:.\uart_helper_fcns.c ****         case '\n':
+  56:.\uart_helper_fcns.c ****             // newline or carraige return received, so finally set the PWM parameters
+  57:.\uart_helper_fcns.c ****             // First, terminate the string. This is for the use of sscanf below.
+  58:.\uart_helper_fcns.c ****             receive_buffer[num_chars_received] = '\0';
+  83              		.loc 1 58 0
+  84 0028 174B     		ldr	r3, .L8
+  85 002a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  86 002c 174A     		ldr	r2, .L8+4
+  87 002e 0021     		movs	r1, #0
+  88 0030 D154     		strb	r1, [r2, r3]
+  59:.\uart_helper_fcns.c ****             // Print back the newline/carriage return, to complete the "respond back to the termina
+  60:.\uart_helper_fcns.c ****             UART_for_USB_PutString("\r\n");
+  89              		.loc 1 60 0
+  90 0032 1748     		ldr	r0, .L8+8
+  91 0034 FFF7FEFF 		bl	UART_for_USB_PutString
+  61:.\uart_helper_fcns.c ****             // Call the helper function to actually set the PWM
+  62:.\uart_helper_fcns.c ****             Write_PWM_and_UART();
+  92              		.loc 1 62 0
   93 0038 FFF7FEFF 		bl	Write_PWM_and_UART
- 104:.\uart_helper_fcns.c ****             // This helper will also reset the data we're tracking, and the num chars received.
- 105:.\uart_helper_fcns.c ****             // By "break"-ing, the next case is not executed.
- 106:.\uart_helper_fcns.c ****             break;
-  94              		.loc 1 106 0
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccTfKp2I.s 			page 4
+
+
+  63:.\uart_helper_fcns.c ****             break;
+  94              		.loc 1 63 0
   95 003c 21E0     		b	.L1
   96              	.L6:
- 107:.\uart_helper_fcns.c ****         case 'x':
- 108:.\uart_helper_fcns.c ****             // Added functionality: if the user types an x, then the PWM stops.
- 109:.\uart_helper_fcns.c ****             UART_for_USB_PutString("\r\nStopping PWM.\r\n");
-  97              		.loc 1 109 0
+  64:.\uart_helper_fcns.c ****         case 'x':
+  65:.\uart_helper_fcns.c ****             // Added functionality: if the user types an x, then the PWM stops.
+  66:.\uart_helper_fcns.c ****             UART_for_USB_PutString("\r\nStopping PWM.\r\n");
+  97              		.loc 1 66 0
   98 003e 1548     		ldr	r0, .L8+12
   99 0040 FFF7FEFF 		bl	UART_for_USB_PutString
- 110:.\uart_helper_fcns.c ****             PWM_Servo_Stop();
- 100              		.loc 1 110 0
+  67:.\uart_helper_fcns.c ****             PWM_Servo_Stop();
+ 100              		.loc 1 67 0
  101 0044 FFF7FEFF 		bl	PWM_Servo_Stop
- 111:.\uart_helper_fcns.c ****             // Reset the buffer. We'll just start writing from the start again.
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 5
-
-
- 112:.\uart_helper_fcns.c ****             num_chars_received = 0;
- 102              		.loc 1 112 0
- 103 0048 104B     		ldr	r3, .L8+4
+  68:.\uart_helper_fcns.c ****             // Reset the buffer. We'll just start writing from the start again.
+  69:.\uart_helper_fcns.c ****             num_chars_received = 0;
+ 102              		.loc 1 69 0
+ 103 0048 0F4B     		ldr	r3, .L8
  104 004a 0022     		movs	r2, #0
  105 004c 1A70     		strb	r2, [r3]
- 113:.\uart_helper_fcns.c ****             break;
- 106              		.loc 1 113 0
+  70:.\uart_helper_fcns.c ****             break;
+ 106              		.loc 1 70 0
  107 004e 18E0     		b	.L1
  108              	.L5:
- 114:.\uart_helper_fcns.c ****         case 'e':
- 115:.\uart_helper_fcns.c ****             // Similarly, type e to enable.
- 116:.\uart_helper_fcns.c ****             UART_for_USB_PutString("\r\nRestarting PWM.\r\n");
- 109              		.loc 1 116 0
+  71:.\uart_helper_fcns.c ****         case 'e':
+  72:.\uart_helper_fcns.c ****             // Similarly, type e to enable.
+  73:.\uart_helper_fcns.c ****             UART_for_USB_PutString("\r\nRestarting PWM.\r\n");
+ 109              		.loc 1 73 0
  110 0050 1148     		ldr	r0, .L8+16
  111 0052 FFF7FEFF 		bl	UART_for_USB_PutString
- 117:.\uart_helper_fcns.c ****             PWM_Servo_Start();
- 112              		.loc 1 117 0
+  74:.\uart_helper_fcns.c ****             PWM_Servo_Start();
+ 112              		.loc 1 74 0
  113 0056 FFF7FEFF 		bl	PWM_Servo_Start
- 118:.\uart_helper_fcns.c ****             // Reset the buffer. We'll just start writing from the start again.
- 119:.\uart_helper_fcns.c ****             num_chars_received = 0;
- 114              		.loc 1 119 0
- 115 005a 0C4B     		ldr	r3, .L8+4
+  75:.\uart_helper_fcns.c ****             // Reset the buffer. We'll just start writing from the start again.
+  76:.\uart_helper_fcns.c ****             num_chars_received = 0;
+ 114              		.loc 1 76 0
+ 115 005a 0B4B     		ldr	r3, .L8
  116 005c 0022     		movs	r2, #0
  117 005e 1A70     		strb	r2, [r3]
- 120:.\uart_helper_fcns.c ****             break;
- 118              		.loc 1 120 0
+  77:.\uart_helper_fcns.c ****             break;
+ 118              		.loc 1 77 0
  119 0060 0FE0     		b	.L1
  120              	.L2:
- 121:.\uart_helper_fcns.c ****         default:
- 122:.\uart_helper_fcns.c ****             // The "default" case is "anything else", which is "store another character."
- 123:.\uart_helper_fcns.c ****             // Add to the received buffer.
- 124:.\uart_helper_fcns.c ****             receive_buffer[num_chars_received] = received_byte;
- 121              		.loc 1 124 0
- 122 0062 0A4B     		ldr	r3, .L8+4
+  78:.\uart_helper_fcns.c ****         default:
+  79:.\uart_helper_fcns.c ****             // The "default" case is "anything else", which is "store another character."
+  80:.\uart_helper_fcns.c ****             // Add to the received buffer.
+  81:.\uart_helper_fcns.c ****             receive_buffer[num_chars_received] = received_byte;
+ 121              		.loc 1 81 0
+ 122 0062 094B     		ldr	r3, .L8
  123 0064 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 124 0066 0A4A     		ldr	r2, .L8+8
+ 124 0066 094A     		ldr	r2, .L8+4
  125 0068 F979     		ldrb	r1, [r7, #7]
  126 006a D154     		strb	r1, [r2, r3]
- 125:.\uart_helper_fcns.c ****             // Respond back to the terminal
- 126:.\uart_helper_fcns.c ****             UART_for_USB_PutChar( received_byte );
- 127              		.loc 1 126 0
+  82:.\uart_helper_fcns.c ****             // Respond back to the terminal
+  83:.\uart_helper_fcns.c ****             UART_for_USB_PutChar( received_byte );
+ 127              		.loc 1 83 0
  128 006c FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
  129 006e 1846     		mov	r0, r3
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccTfKp2I.s 			page 5
+
+
  130 0070 FFF7FEFF 		bl	UART_for_USB_PutChar
- 127:.\uart_helper_fcns.c ****             // We need to increment the counter. i++ does this without an equals sign for assignmen
- 128:.\uart_helper_fcns.c ****             num_chars_received++;
- 131              		.loc 1 128 0
- 132 0074 054B     		ldr	r3, .L8+4
+  84:.\uart_helper_fcns.c ****             // We need to increment the counter. i++ does this without an equals sign for assignmen
+  85:.\uart_helper_fcns.c ****             num_chars_received++;
+ 131              		.loc 1 85 0
+ 132 0074 044B     		ldr	r3, .L8
  133 0076 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
  134 0078 0133     		adds	r3, r3, #1
  135 007a DAB2     		uxtb	r2, r3
- 136 007c 034B     		ldr	r3, .L8+4
+ 136 007c 024B     		ldr	r3, .L8
  137 007e 1A70     		strb	r2, [r3]
- 129:.\uart_helper_fcns.c ****             break;
- 138              		.loc 1 129 0
+  86:.\uart_helper_fcns.c ****             break;
+ 138              		.loc 1 86 0
  139 0080 00BF     		nop
  140              	.L1:
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 6
-
-
- 130:.\uart_helper_fcns.c ****         // end of case statement.
- 131:.\uart_helper_fcns.c ****     }
- 132:.\uart_helper_fcns.c ****     
- 133:.\uart_helper_fcns.c ****     // We're going to assume that the character we receive is an integer, 
- 134:.\uart_helper_fcns.c ****     // representing the data.
- 135:.\uart_helper_fcns.c ****     // For a transmission of 8 bits, we can only set the data between 0 and 255.
- 136:.\uart_helper_fcns.c ****     // This is OK for how we've configured the PWM for our servo: 
- 137:.\uart_helper_fcns.c ****     // our data can only be between 100 and 200 anyway (1 ms for min angle, 2 ms for max angle).
- 138:.\uart_helper_fcns.c ****     // To get better resolution here, you'll need to do a handful of things:
- 139:.\uart_helper_fcns.c ****     // (1) change the clock of the PWM so that we'll need a uint16 to represent 1 ms to 2 ms of "on
- 140:.\uart_helper_fcns.c ****     // (2) receive two bytes (as uint8) from the UART, keep track of the first one
- 141:.\uart_helper_fcns.c ****     // (3) once two are received, combine them into a uint16
- 142:.\uart_helper_fcns.c ****     // (4) write the uint16 to the PWM's data, as with the code below.    
- 143:.\uart_helper_fcns.c ****     
- 144:.\uart_helper_fcns.c ****     
- 145:.\uart_helper_fcns.c ****     
- 146:.\uart_helper_fcns.c **** }
- 141              		.loc 1 146 0
+  87:.\uart_helper_fcns.c ****         // end of case statement.
+  88:.\uart_helper_fcns.c ****     }
+  89:.\uart_helper_fcns.c **** }
+ 141              		.loc 1 89 0
  142 0082 0837     		adds	r7, r7, #8
  143 0084 BD46     		mov	sp, r7
  144              		@ sp needed
@@ -326,9 +266,9 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  146              	.L9:
  147              		.align	2
  148              	.L8:
- 149 0088 00000000 		.word	.LC0
- 150 008c 00010000 		.word	num_chars_received
- 151 0090 80000000 		.word	receive_buffer
+ 149 0088 00010000 		.word	num_chars_received
+ 150 008c 80000000 		.word	receive_buffer
+ 151 0090 00000000 		.word	.LC0
  152 0094 04000000 		.word	.LC1
  153 0098 18000000 		.word	.LC2
  154              		.cfi_endproc
@@ -358,7 +298,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  168 009c 50574D20 		.ascii	"PWM now has a period of: %i \015\012\000"
  168      6E6F7720 
  168      68617320 
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 7
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccTfKp2I.s 			page 6
 
 
  168      61207065 
@@ -386,11 +326,13 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  181              		.type	Write_PWM_and_UART, %function
  182              	Write_PWM_and_UART:
  183              	.LFB57:
- 147:.\uart_helper_fcns.c **** 
- 148:.\uart_helper_fcns.c **** // Helper function that does the writing to the PWM and UART.
- 149:.\uart_helper_fcns.c **** // makes the ISR code easier to understand.
- 150:.\uart_helper_fcns.c **** void Write_PWM_and_UART(){
- 184              		.loc 1 150 0
+  90:.\uart_helper_fcns.c **** 
+  91:.\uart_helper_fcns.c **** /**
+  92:.\uart_helper_fcns.c ****  * Helper function that does the writing to the PWM.
+  93:.\uart_helper_fcns.c ****  * makes the ISR code easier to understand.
+  94:.\uart_helper_fcns.c ****  */
+  95:.\uart_helper_fcns.c **** void Write_PWM_and_UART(){
+ 184              		.loc 1 95 0
  185              		.cfi_startproc
  186              		@ args = 0, pretend = 0, frame = 8
  187              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -404,53 +346,45 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  195              		.cfi_def_cfa_offset 24
  196 0004 00AF     		add	r7, sp, #0
  197              		.cfi_def_cfa_register 7
- 151:.\uart_helper_fcns.c ****     // OK, so now, we have a string in the receive buffer of the form "(p/d):somenumber".
- 152:.\uart_helper_fcns.c ****     // To help you out, reply with the string that was received:
- 153:.\uart_helper_fcns.c ****     /*
- 154:.\uart_helper_fcns.c ****     UART_for_USB_PutString("Received the string: ");
- 155:.\uart_helper_fcns.c ****     UART_for_USB_PutString( receive_buffer );
- 156:.\uart_helper_fcns.c ****     UART_for_USB_PutString("\r\n");
- 157:.\uart_helper_fcns.c ****     */
- 158:.\uart_helper_fcns.c ****     
- 159:.\uart_helper_fcns.c ****     // Read in both the mode (p or d) and the integer afterward
- 160:.\uart_helper_fcns.c ****     // The %c specified is for a single character
- 161:.\uart_helper_fcns.c ****     // The %hu specifier is for unsigned shorts (16 bit integers)
- 162:.\uart_helper_fcns.c ****     // A good resource on scanf and printf specifiers is https://www.tutorialspoint.com/c_standard_
- 163:.\uart_helper_fcns.c ****     // Let's receive back the number of integers returned from sscanf
- 164:.\uart_helper_fcns.c ****     int num_var_filled;
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 8
-
-
- 165:.\uart_helper_fcns.c ****     // actually scan in the character and integer
- 166:.\uart_helper_fcns.c ****     num_var_filled = sscanf( receive_buffer, "%c : %hu", &mode, &data);
- 198              		.loc 1 166 0
+  96:.\uart_helper_fcns.c ****     // OK, so now, we have a string in the receive buffer,
+  97:.\uart_helper_fcns.c ****     // ideally of the form "(p/d) : somenumber".
+  98:.\uart_helper_fcns.c ****     
+  99:.\uart_helper_fcns.c ****     // Read in both the mode (p or d) and the integer afterward. Need to check if both were read in
+ 100:.\uart_helper_fcns.c ****     int num_var_filled;
+ 101:.\uart_helper_fcns.c ****     // actually scan in the character and integer. See documentation for the sscanf function.
+ 102:.\uart_helper_fcns.c ****     // sscanf requires the address-of (&) for the variable to be written.
+ 103:.\uart_helper_fcns.c ****     num_var_filled = sscanf( receive_buffer, "%c : %hu", &mode, &data);
+ 198              		.loc 1 103 0
  199 0006 2948     		ldr	r0, .L17
  200 0008 2949     		ldr	r1, .L17+4
  201 000a 2A4A     		ldr	r2, .L17+8
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccTfKp2I.s 			page 7
+
+
  202 000c 2A4B     		ldr	r3, .L17+12
  203 000e FFF7FEFF 		bl	sscanf
  204 0012 7860     		str	r0, [r7, #4]
- 167:.\uart_helper_fcns.c ****     // Need to check: was anything received? Equivalently, did sscanf find exactly one character, a
- 168:.\uart_helper_fcns.c ****     if( num_var_filled != 2){
- 205              		.loc 1 168 0
+ 104:.\uart_helper_fcns.c ****     // Need to check: was anything received? Equivalently, did sscanf find exactly one character, a
+ 105:.\uart_helper_fcns.c ****     if( num_var_filled != 2){
+ 205              		.loc 1 105 0
  206 0014 7B68     		ldr	r3, [r7, #4]
  207 0016 022B     		cmp	r3, #2
  208 0018 05D0     		beq	.L11
- 169:.\uart_helper_fcns.c ****         UART_for_USB_PutString("Error! incorrect data. Did you type a number after a (p or d), a co
- 209              		.loc 1 169 0
+ 106:.\uart_helper_fcns.c ****         UART_for_USB_PutString("Error! incorrect data. Did you type a number after a (p or d), a co
+ 209              		.loc 1 106 0
  210 001a 2848     		ldr	r0, .L17+16
  211 001c FFF7FEFF 		bl	UART_for_USB_PutString
- 170:.\uart_helper_fcns.c ****         data = 0;
- 212              		.loc 1 170 0
+ 107:.\uart_helper_fcns.c ****         data = 0;
+ 212              		.loc 1 107 0
  213 0020 254B     		ldr	r3, .L17+12
  214 0022 0022     		movs	r2, #0
  215 0024 1A80     		strh	r2, [r3]	@ movhi
  216              	.L11:
- 171:.\uart_helper_fcns.c ****     }
- 172:.\uart_helper_fcns.c ****     
- 173:.\uart_helper_fcns.c ****     // Depending on the mode, write either the data or the duty cycle:
- 174:.\uart_helper_fcns.c ****     switch( mode )
- 217              		.loc 1 174 0
+ 108:.\uart_helper_fcns.c ****     }
+ 109:.\uart_helper_fcns.c ****     
+ 110:.\uart_helper_fcns.c ****     // Depending on the mode, write either the period or the duty cycle:
+ 111:.\uart_helper_fcns.c ****     switch( mode )
+ 217              		.loc 1 111 0
  218 0026 234B     		ldr	r3, .L17+8
  219 0028 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
  220 002a 642B     		cmp	r3, #100
@@ -458,67 +392,65 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  222 002e 702B     		cmp	r3, #112
  223 0030 1FD1     		bne	.L16
  224              	.LBB2:
- 175:.\uart_helper_fcns.c ****     {
- 176:.\uart_helper_fcns.c ****         case 'p':
- 177:.\uart_helper_fcns.c ****             // Now, set the data, 
- 178:.\uart_helper_fcns.c ****             PWM_Servo_WritePeriod( data );
- 225              		.loc 1 178 0
+ 112:.\uart_helper_fcns.c ****     {
+ 113:.\uart_helper_fcns.c ****         case 'p':
+ 114:.\uart_helper_fcns.c ****             // Now, set the period to "data"
+ 115:.\uart_helper_fcns.c ****             PWM_Servo_WritePeriod( data );
+ 225              		.loc 1 115 0
  226 0032 214B     		ldr	r3, .L17+12
  227 0034 1B88     		ldrh	r3, [r3]
  228 0036 1846     		mov	r0, r3
  229 0038 FFF7FEFF 		bl	PWM_Servo_WritePeriod
- 179:.\uart_helper_fcns.c ****             // and send back the data that was just written, for confirmation.
- 180:.\uart_helper_fcns.c ****             // In C, to concatenate a number (integer) and a string (characters), you need to...
- 181:.\uart_helper_fcns.c ****             // (1) store the result, as confirmed by the PWM component.
- 182:.\uart_helper_fcns.c ****             uint16 period_written = PWM_Servo_ReadPeriod();
- 230              		.loc 1 182 0
+ 116:.\uart_helper_fcns.c ****             // and send back the data that was just written, for confirmation:
+ 117:.\uart_helper_fcns.c ****             // read back from the PWM, and send a message with the period inserted into the string
+ 118:.\uart_helper_fcns.c ****             uint16 period_written = PWM_Servo_ReadPeriod();
+ 230              		.loc 1 118 0
  231 003c FFF7FEFF 		bl	PWM_Servo_ReadPeriod
  232 0040 0346     		mov	r3, r0
  233 0042 7B80     		strh	r3, [r7, #2]	@ movhi
- 183:.\uart_helper_fcns.c ****             // (2) Concatenate this data with a string of characters describing what we did
- 184:.\uart_helper_fcns.c ****             // Requires stdio.h (standard input/output) for the sprintf function.
- 185:.\uart_helper_fcns.c ****             sprintf( transmit_buffer, "PWM now has a period of: %i \r\n", period_written);
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 9
-
-
- 234              		.loc 1 185 0
+ 119:.\uart_helper_fcns.c ****             sprintf( transmit_buffer, "PWM now has a period of: %i \r\n", period_written);
+ 234              		.loc 1 119 0
  235 0044 7B88     		ldrh	r3, [r7, #2]
  236 0046 1E48     		ldr	r0, .L17+20
  237 0048 1E49     		ldr	r1, .L17+24
  238 004a 1A46     		mov	r2, r3
  239 004c FFF7FEFF 		bl	sprintf
- 186:.\uart_helper_fcns.c ****             break;
- 240              		.loc 1 186 0
+ 120:.\uart_helper_fcns.c ****             break;
+ 240              		.loc 1 120 0
  241 0050 1DE0     		b	.L15
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccTfKp2I.s 			page 8
+
+
  242              	.L13:
- 187:.\uart_helper_fcns.c ****         case 'd':
- 188:.\uart_helper_fcns.c ****             // Instead, set the compare value, the duty cycle in clock ticks.
- 189:.\uart_helper_fcns.c ****             PWM_Servo_WriteCompare( data );
- 243              		.loc 1 189 0
+ 121:.\uart_helper_fcns.c ****         case 'd':
+ 122:.\uart_helper_fcns.c ****             // Set the compare value (the duty cycle, as the number of clock ticks) to "data"
+ 123:.\uart_helper_fcns.c ****             PWM_Servo_WriteCompare( data );
+ 243              		.loc 1 123 0
  244 0052 194B     		ldr	r3, .L17+12
  245 0054 1B88     		ldrh	r3, [r3]
  246 0056 1846     		mov	r0, r3
  247 0058 FFF7FEFF 		bl	PWM_Servo_WriteCompare
- 190:.\uart_helper_fcns.c ****             // Like with the period:
- 191:.\uart_helper_fcns.c ****             uint16 duty_written = PWM_Servo_ReadCompare();
- 248              		.loc 1 191 0
+ 124:.\uart_helper_fcns.c ****             // Like with the period:
+ 125:.\uart_helper_fcns.c ****             uint16 duty_written = PWM_Servo_ReadCompare();
+ 248              		.loc 1 125 0
  249 005c FFF7FEFF 		bl	PWM_Servo_ReadCompare
  250 0060 0346     		mov	r3, r0
  251 0062 3B80     		strh	r3, [r7]	@ movhi
- 192:.\uart_helper_fcns.c ****             sprintf( transmit_buffer, "PWM now has a duty cycle (in clock ticks) of: %i \r\n", duty
- 252              		.loc 1 192 0
+ 126:.\uart_helper_fcns.c ****             sprintf( transmit_buffer, "PWM now has a duty cycle (in clock ticks) of: %i \r\n", duty
+ 252              		.loc 1 126 0
  253 0064 3B88     		ldrh	r3, [r7]
  254 0066 1648     		ldr	r0, .L17+20
  255 0068 1749     		ldr	r1, .L17+28
  256 006a 1A46     		mov	r2, r3
  257 006c FFF7FEFF 		bl	sprintf
- 193:.\uart_helper_fcns.c ****             break;
- 258              		.loc 1 193 0
+ 127:.\uart_helper_fcns.c ****             break;
+ 258              		.loc 1 127 0
  259 0070 0DE0     		b	.L15
  260              	.L16:
- 194:.\uart_helper_fcns.c ****         default:
- 195:.\uart_helper_fcns.c ****             sprintf( transmit_buffer, "Error! You didn't type a p or d. \r\n");
- 261              		.loc 1 195 0
+ 128:.\uart_helper_fcns.c ****         default:
+ 129:.\uart_helper_fcns.c ****             // Print an error message if any other character besides a p or d was typed
+ 130:.\uart_helper_fcns.c ****             sprintf( transmit_buffer, "Error! You didn't type a p or d. \r\n");
+ 261              		.loc 1 130 0
  262 0072 134A     		ldr	r2, .L17+20
  263 0074 154B     		ldr	r3, .L17+32
  264 0076 1446     		mov	r4, r2
@@ -529,51 +461,47 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  269 0080 0FC4     		stmia	r4!, {r0, r1, r2, r3}
  270 0082 2B68     		ldr	r3, [r5]
  271 0084 2360     		str	r3, [r4]
- 196:.\uart_helper_fcns.c ****             mode = 0;
- 272              		.loc 1 196 0
+ 131:.\uart_helper_fcns.c ****             // just in case
+ 132:.\uart_helper_fcns.c ****             mode = 0;
+ 272              		.loc 1 132 0
  273 0086 0B4B     		ldr	r3, .L17+8
  274 0088 0022     		movs	r2, #0
  275 008a 1A70     		strb	r2, [r3]
- 197:.\uart_helper_fcns.c ****             break;
- 276              		.loc 1 197 0
+ 133:.\uart_helper_fcns.c ****             break;
+ 276              		.loc 1 133 0
  277 008c 00BF     		nop
  278              	.L15:
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 10
-
-
  279              	.LBE2:
- 198:.\uart_helper_fcns.c ****     }
- 199:.\uart_helper_fcns.c ****     
- 200:.\uart_helper_fcns.c ****     // sscanf requires the address-of (&) for the variable to be written.
- 201:.\uart_helper_fcns.c ****     
- 202:.\uart_helper_fcns.c ****     
- 203:.\uart_helper_fcns.c ****     // (3) send the byte back to your PC
- 204:.\uart_helper_fcns.c ****     UART_for_USB_PutString( transmit_buffer );    
- 280              		.loc 1 204 0
+ 134:.\uart_helper_fcns.c ****     } 
+ 135:.\uart_helper_fcns.c ****     
+ 136:.\uart_helper_fcns.c ****     // send the byte back to your PC so you know what you set
+ 137:.\uart_helper_fcns.c ****     UART_for_USB_PutString( transmit_buffer );    
+ 280              		.loc 1 137 0
  281 008e 0C48     		ldr	r0, .L17+20
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccTfKp2I.s 			page 9
+
+
  282 0090 FFF7FEFF 		bl	UART_for_USB_PutString
- 205:.\uart_helper_fcns.c ****     // to make this easier to read, send another newline.
- 206:.\uart_helper_fcns.c ****     UART_for_USB_PutString("\r\n");
- 283              		.loc 1 206 0
+ 138:.\uart_helper_fcns.c ****     // to make this easier to read, send another newline.
+ 139:.\uart_helper_fcns.c ****     UART_for_USB_PutString("\r\n");
+ 283              		.loc 1 139 0
  284 0094 0E48     		ldr	r0, .L17+36
  285 0096 FFF7FEFF 		bl	UART_for_USB_PutString
- 207:.\uart_helper_fcns.c ****     // (4) Send another little string prompting the next input.
- 208:.\uart_helper_fcns.c ****     //UART_for_USB_PutString( " by typing p: then a new data, between 100 and 200 (min and max data
- 209:.\uart_helper_fcns.c ****     // Reset the indexing into the array
- 210:.\uart_helper_fcns.c ****     num_chars_received = 0;
- 286              		.loc 1 210 0
+ 140:.\uart_helper_fcns.c ****     // Reset the indexing into the array
+ 141:.\uart_helper_fcns.c ****     num_chars_received = 0;
+ 286              		.loc 1 141 0
  287 009a 0E4B     		ldr	r3, .L17+40
  288 009c 0022     		movs	r2, #0
  289 009e 1A70     		strb	r2, [r3]
- 211:.\uart_helper_fcns.c ****     // and just in case let's do the data too.
- 212:.\uart_helper_fcns.c ****     data = 0;
- 290              		.loc 1 212 0
+ 142:.\uart_helper_fcns.c ****     // and just in case let's do the data too.
+ 143:.\uart_helper_fcns.c ****     data = 0;
+ 290              		.loc 1 143 0
  291 00a0 054B     		ldr	r3, .L17+12
  292 00a2 0022     		movs	r2, #0
  293 00a4 1A80     		strh	r2, [r3]	@ movhi
- 213:.\uart_helper_fcns.c ****     // Note that we don't have to reset the buffer here, since sscanf only reads up until the first
- 214:.\uart_helper_fcns.c **** }
- 294              		.loc 1 214 0
+ 144:.\uart_helper_fcns.c ****     // Note that we don't have to reset the buffer here, since sscanf only reads up until the first
+ 145:.\uart_helper_fcns.c **** }
+ 294              		.loc 1 145 0
  295 00a6 0837     		adds	r7, r7, #8
  296 00a8 BD46     		mov	sp, r7
  297              		@ sp needed
@@ -598,9 +526,6 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  316              		.text
  317              	.Letext0:
  318              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\3.1\\psoc creator\\import\\gnu_cs\\arm\\4
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 11
-
-
  319              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\3.1\\psoc creator\\import\\gnu_cs\\arm\\4
  320              		.file 4 ".\\Generated_Source\\PSoC5/cytypes.h"
  321              		.file 5 ".\\Generated_Source\\PSoC5/core_cm3.h"
@@ -613,6 +538,9 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  328 000b 01       		.uleb128 0x1
  329 000c 65000000 		.4byte	.LASF26
  330 0010 01       		.byte	0x1
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccTfKp2I.s 			page 10
+
+
  331 0011 1F020000 		.4byte	.LASF27
  332 0015 E1000000 		.4byte	.LASF28
  333 0019 00000000 		.4byte	.Ldebug_ranges0+0
@@ -658,9 +586,6 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  373 0068 04       		.uleb128 0x4
  374 0069 04       		.byte	0x4
  375 006a 05       		.byte	0x5
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 12
-
-
  376 006b 696E7400 		.ascii	"int\000"
  377 006f 02       		.uleb128 0x2
  378 0070 04       		.byte	0x4
@@ -673,6 +598,9 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  385 007d 41000000 		.4byte	0x41
  386 0081 03       		.uleb128 0x3
  387 0082 10020000 		.4byte	.LASF11
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccTfKp2I.s 			page 11
+
+
  388 0086 04       		.byte	0x4
  389 0087 A1       		.byte	0xa1
  390 0088 2C000000 		.4byte	0x2c
@@ -700,7 +628,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  412 00b3 05       		.uleb128 0x5
  413 00b4 51010000 		.4byte	.LASF29
  414 00b8 01       		.byte	0x1
- 415 00b9 45       		.byte	0x45
+ 415 00b9 2C       		.byte	0x2c
  416 00ba 00000000 		.4byte	.LFB56
  417 00be 9C000000 		.4byte	.LFE56-.LFB56
  418 00c2 01       		.uleb128 0x1
@@ -709,7 +637,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  421 00c8 06       		.uleb128 0x6
  422 00c9 D4010000 		.4byte	.LASF17
  423 00cd 01       		.byte	0x1
- 424 00ce 48       		.byte	0x48
+ 424 00ce 2E       		.byte	0x2e
  425 00cf 81000000 		.4byte	0x81
  426 00d3 02       		.uleb128 0x2
  427 00d4 91       		.byte	0x91
@@ -718,10 +646,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  430 00d7 07       		.uleb128 0x7
  431 00d8 52000000 		.4byte	.LASF30
  432 00dc 01       		.byte	0x1
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 13
-
-
- 433 00dd 96       		.byte	0x96
+ 433 00dd 5F       		.byte	0x5f
  434 00de 00000000 		.4byte	.LFB57
  435 00e2 D8000000 		.4byte	.LFE57-.LFB57
  436 00e6 01       		.uleb128 0x1
@@ -730,9 +655,12 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  439 00ec 06       		.uleb128 0x6
  440 00ed C5010000 		.4byte	.LASF18
  441 00f1 01       		.byte	0x1
- 442 00f2 A4       		.byte	0xa4
+ 442 00f2 64       		.byte	0x64
  443 00f3 68000000 		.4byte	0x68
  444 00f7 02       		.uleb128 0x2
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccTfKp2I.s 			page 12
+
+
  445 00f8 91       		.byte	0x91
  446 00f9 6C       		.sleb128 -20
  447 00fa 08       		.uleb128 0x8
@@ -741,7 +669,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  450 0103 06       		.uleb128 0x6
  451 0104 0A000000 		.4byte	.LASF19
  452 0108 01       		.byte	0x1
- 453 0109 B6       		.byte	0xb6
+ 453 0109 76       		.byte	0x76
  454 010a 8C000000 		.4byte	0x8c
  455 010e 02       		.uleb128 0x2
  456 010f 91       		.byte	0x91
@@ -749,7 +677,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  458 0111 06       		.uleb128 0x6
  459 0112 37000000 		.4byte	.LASF20
  460 0116 01       		.byte	0x1
- 461 0117 BF       		.byte	0xbf
+ 461 0117 7D       		.byte	0x7d
  462 0118 8C000000 		.4byte	0x8c
  463 011c 02       		.uleb128 0x2
  464 011d 91       		.byte	0x91
@@ -766,7 +694,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  475 0131 06       		.uleb128 0x6
  476 0132 34020000 		.4byte	.LASF21
  477 0136 01       		.byte	0x1
- 478 0137 2B       		.byte	0x2b
+ 478 0137 17       		.byte	0x17
  479 0138 21010000 		.4byte	0x121
  480 013c 05       		.uleb128 0x5
  481 013d 03       		.byte	0x3
@@ -774,18 +702,15 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  483 0142 06       		.uleb128 0x6
  484 0143 35010000 		.4byte	.LASF22
  485 0147 01       		.byte	0x1
- 486 0148 2D       		.byte	0x2d
+ 486 0148 18       		.byte	0x18
  487 0149 21010000 		.4byte	0x121
  488 014d 05       		.uleb128 0x5
  489 014e 03       		.byte	0x3
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 14
-
-
  490 014f 80000000 		.4byte	receive_buffer
  491 0153 06       		.uleb128 0x6
  492 0154 70010000 		.4byte	.LASF23
  493 0158 01       		.byte	0x1
- 494 0159 36       		.byte	0x36
+ 494 0159 1C       		.byte	0x1c
  495 015a 81000000 		.4byte	0x81
  496 015e 05       		.uleb128 0x5
  497 015f 03       		.byte	0x3
@@ -793,7 +718,10 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  499 0164 06       		.uleb128 0x6
  500 0165 26000000 		.4byte	.LASF24
  501 0169 01       		.byte	0x1
- 502 016a 3C       		.byte	0x3c
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccTfKp2I.s 			page 13
+
+
+ 502 016a 20       		.byte	0x20
  503 016b 8C000000 		.4byte	0x8c
  504 016f 05       		.uleb128 0x5
  505 0170 03       		.byte	0x3
@@ -801,7 +729,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  507 0175 06       		.uleb128 0x6
  508 0176 C0010000 		.4byte	.LASF25
  509 017a 01       		.byte	0x1
- 510 017b 40       		.byte	0x40
+ 510 017b 23       		.byte	0x23
  511 017c A5000000 		.4byte	0xa5
  512 0180 05       		.uleb128 0x5
  513 0181 03       		.byte	0x3
@@ -838,9 +766,6 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  544 0013 02       		.uleb128 0x2
  545 0014 24       		.uleb128 0x24
  546 0015 00       		.byte	0
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 15
-
-
  547 0016 0B       		.uleb128 0xb
  548 0017 0B       		.uleb128 0xb
  549 0018 3E       		.uleb128 0x3e
@@ -853,6 +778,9 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  556 001f 16       		.uleb128 0x16
  557 0020 00       		.byte	0
  558 0021 03       		.uleb128 0x3
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccTfKp2I.s 			page 14
+
+
  559 0022 0E       		.uleb128 0xe
  560 0023 3A       		.uleb128 0x3a
  561 0024 0B       		.uleb128 0xb
@@ -898,9 +826,6 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  601 004d 13       		.uleb128 0x13
  602 004e 00       		.byte	0
  603 004f 00       		.byte	0
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 16
-
-
  604 0050 06       		.uleb128 0x6
  605 0051 34       		.uleb128 0x34
  606 0052 00       		.byte	0
@@ -913,6 +838,9 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  613 0059 49       		.uleb128 0x49
  614 005a 13       		.uleb128 0x13
  615 005b 02       		.uleb128 0x2
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccTfKp2I.s 			page 15
+
+
  616 005c 18       		.uleb128 0x18
  617 005d 00       		.byte	0
  618 005e 00       		.byte	0
@@ -958,9 +886,6 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  658 0087 00       		.byte	0
  659 0088 00       		.byte	0
  660 0089 0A       		.uleb128 0xa
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 17
-
-
  661 008a 21       		.uleb128 0x21
  662 008b 00       		.byte	0
  663 008c 49       		.uleb128 0x49
@@ -973,6 +898,9 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  670 0093 34       		.uleb128 0x34
  671 0094 00       		.byte	0
  672 0095 03       		.uleb128 0x3
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccTfKp2I.s 			page 16
+
+
  673 0096 0E       		.uleb128 0xe
  674 0097 3A       		.uleb128 0x3a
  675 0098 0B       		.uleb128 0xb
@@ -1018,10 +946,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  715 0014 00000000 		.4byte	0
  716              		.section	.debug_line,"",%progbits
  717              	.Ldebug_line0:
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 18
-
-
- 718 0000 B3010000 		.section	.debug_str,"MS",%progbits,1
+ 718 0000 AA010000 		.section	.debug_str,"MS",%progbits,1
  718      02005D01 
  718      00000201 
  718      FB0E0D00 
@@ -1033,6 +958,9 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  721              	.LASF19:
  722 000a 70657269 		.ascii	"period_written\000"
  722      6F645F77 
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccTfKp2I.s 			page 17
+
+
  722      72697474 
  722      656E00
  723              	.LASF14:
@@ -1078,9 +1006,6 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  740 00cb 30202D66 		.ascii	"0 -ffunction-sections\000"
  740      66756E63 
  740      74696F6E 
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 19
-
-
  740      2D736563 
  740      74696F6E 
  741              	.LASF28:
@@ -1093,6 +1018,9 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  743      7461736B 
  743      696E672E 
  743      63796473 
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccTfKp2I.s 			page 18
+
+
  743      6E00
  744              	.LASF3:
  745 0122 73686F72 		.ascii	"short unsigned int\000"
@@ -1138,9 +1066,6 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  759      00
  760              	.LASF7:
  761 01a9 6C6F6E67 		.ascii	"long long unsigned int\000"
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 20
-
-
  761      206C6F6E 
  761      6720756E 
  761      7369676E 
@@ -1153,6 +1078,9 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccMThKV7.s 			page 1
  765      7661725F 
  765      66696C6C 
  765      656400
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccTfKp2I.s 			page 19
+
+
  766              	.LASF17:
  767 01d4 72656365 		.ascii	"received_byte\000"
  767      69766564 

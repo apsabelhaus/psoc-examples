@@ -12,7 +12,6 @@
 
 int main()
 {
-    
     // Start the interrupt for the UART
     CyGlobalIntEnable;
     Interrupt_UART_Receive_StartEx( Interrupt_Handler_UART_Receive );
@@ -32,7 +31,7 @@ int main()
     
     for(;;)
     {
-        /* Place your application code here. */
+        // Nothing to do - all interrupt driven!
     }
 }
 

@@ -1,5 +1,6 @@
---------------- Build Started: 03/14/2018 18:36:20 Project: PWM_UART_Multitasking, Configuration: ARM GCC 4.8.4 Debug ---------------
+--------------- Build Started: 03/14/2018 20:25:58 Project: PWM_UART_Multitasking, Configuration: ARM GCC 4.8.4 Debug ---------------
 The code generation step is up to date.
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -Wno-main -I. -I.\Generated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_484\Debug/main.lst -g -D DEBUG -Wall -ffunction-sections -O0 -c .\main.c -o .\CortexM3\ARM_GCC_484\Debug\main.o
 arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -Wno-main -I. -I.\Generated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_484\Debug/uart_helper_fcns.lst -g -D DEBUG -Wall -ffunction-sections -O0 -c .\uart_helper_fcns.c -o .\CortexM3\ARM_GCC_484\Debug\uart_helper_fcns.o
 arm-none-eabi-ar.exe -rs .\CortexM3\ARM_GCC_484\Debug\PWM_UART_Multitasking.a .\CortexM3\ARM_GCC_484\Debug\cyfitter_cfg.o .\CortexM3\ARM_GCC_484\Debug\PWM_Servo.o .\CortexM3\ARM_GCC_484\Debug\PWM_Servo_PM.o .\CortexM3\ARM_GCC_484\Debug\Clock_PWM.o .\CortexM3\ARM_GCC_484\Debug\Pin_Servo_Control.o .\CortexM3\ARM_GCC_484\Debug\CyBootAsmGnu.o .\CortexM3\ARM_GCC_484\Debug\CyDmac.o .\CortexM3\ARM_GCC_484\Debug\CyFlash.o .\CortexM3\ARM_GCC_484\Debug\CyLib.o .\CortexM3\ARM_GCC_484\Debug\cyPm.o .\CortexM3\ARM_GCC_484\Debug\CySpc.o .\CortexM3\ARM_GCC_484\Debug\cyutils.o .\CortexM3\ARM_GCC_484\Debug\UART_for_USB.o .\CortexM3\ARM_GCC_484\Debug\UART_for_USB_PM.o .\CortexM3\ARM_GCC_484\Debug\UART_for_USB_INT.o .\CortexM3\ARM_GCC_484\Debug\UART_for_USB_BOOT.o .\CortexM3\ARM_GCC_484\Debug\Interrupt_UART_Receive.o .\CortexM3\ARM_GCC_484\Debug\UART_for_USB_IntClock.o
 arm-none-eabi-ar.exe: creating .\CortexM3\ARM_GCC_484\Debug\PWM_UART_Multitasking.a
@@ -8,4 +9,4 @@ cyelftool.exe -C D:\WindowsGitHub\psoc-examples\me235\PWM_UART_Multitasking.cyds
 cyelftool.exe -S D:\WindowsGitHub\psoc-examples\me235\PWM_UART_Multitasking.cydsn\CortexM3\ARM_GCC_484\Debug\PWM_UART_Multitasking.elf
 Flash used: 8694 of 262144 bytes (3.3 %).
 SRAM used: 2861 of 65536 bytes (4.4 %). Stack: 2048 bytes. Heap: 128 bytes.
---------------- Build Succeeded: 03/14/2018 18:36:22 ---------------
+--------------- Build Succeeded: 03/14/2018 20:26:00 ---------------

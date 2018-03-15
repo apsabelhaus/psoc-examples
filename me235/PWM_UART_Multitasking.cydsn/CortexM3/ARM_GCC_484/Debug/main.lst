@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\andre\AppData\Local\Temp\cc9Uqrt3.s 			page 1
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 1
 
 
    1              		.syntax unified
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\cc9Uqrt3.s 			page 1
   33      20323030 
   34 00e8 0A00     		.ascii	"\012\000"
   35 00ea 0000     		.align	2
-ARM GAS  C:\Users\andre\AppData\Local\Temp\cc9Uqrt3.s 			page 2
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 2
 
 
   36              	.LC4:
@@ -101,60 +101,59 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\cc9Uqrt3.s 			page 1
   55              		.cfi_offset 14, -4
   56 0002 00AF     		add	r7, sp, #0
   57              		.cfi_def_cfa_register 7
-  15:.\main.c      ****     
-  16:.\main.c      ****     // Start the interrupt for the UART
-  17:.\main.c      ****     CyGlobalIntEnable;
-  58              		.loc 1 17 0
-  59              	@ 17 ".\main.c" 1
+  15:.\main.c      ****     // Start the interrupt for the UART
+  16:.\main.c      ****     CyGlobalIntEnable;
+  58              		.loc 1 16 0
+  59              	@ 16 ".\main.c" 1
   60 0004 62B6     		CPSIE   i
   61              	@ 0 "" 2
-  18:.\main.c      ****     Interrupt_UART_Receive_StartEx( Interrupt_Handler_UART_Receive );
-  62              		.loc 1 18 0
+  17:.\main.c      ****     Interrupt_UART_Receive_StartEx( Interrupt_Handler_UART_Receive );
+  62              		.loc 1 17 0
   63              		.thumb
   64 0006 0B48     		ldr	r0, .L3
   65 0008 FFF7FEFF 		bl	Interrupt_UART_Receive_StartEx
-  19:.\main.c      ****     
-  20:.\main.c      ****     // Start the UART itself
-  21:.\main.c      ****     UART_for_USB_Start();
-  66              		.loc 1 21 0
+  18:.\main.c      ****     
+  19:.\main.c      ****     // Start the UART itself
+  20:.\main.c      ****     UART_for_USB_Start();
+  66              		.loc 1 20 0
   67 000c FFF7FEFF 		bl	UART_for_USB_Start
-ARM GAS  C:\Users\andre\AppData\Local\Temp\cc9Uqrt3.s 			page 3
+  21:.\main.c      ****     
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 3
 
 
-  22:.\main.c      ****     
-  23:.\main.c      ****     // Start the PWM component
-  24:.\main.c      ****     PWM_Servo_Start();
-  68              		.loc 1 24 0
+  22:.\main.c      ****     // Start the PWM component
+  23:.\main.c      ****     PWM_Servo_Start();
+  68              		.loc 1 23 0
   69 0010 FFF7FEFF 		bl	PWM_Servo_Start
-  25:.\main.c      ****     
-  26:.\main.c      ****     // Send an initial message over the UART / USB com port
-  27:.\main.c      ****     UART_for_USB_PutString("\r\n\r\nPWM on. Use one of the following commands:\r\n");
-  70              		.loc 1 27 0
+  24:.\main.c      ****     
+  25:.\main.c      ****     // Send an initial message over the UART / USB com port
+  26:.\main.c      ****     UART_for_USB_PutString("\r\n\r\nPWM on. Use one of the following commands:\r\n");
+  70              		.loc 1 26 0
   71 0014 0848     		ldr	r0, .L3+4
   72 0016 FFF7FEFF 		bl	UART_for_USB_PutString
-  28:.\main.c      ****     UART_for_USB_PutString("Set the duty cycle, as number of clock ticks, by typing d : then the nu
-  73              		.loc 1 28 0
+  27:.\main.c      ****     UART_for_USB_PutString("Set the duty cycle, as number of clock ticks, by typing d : then the nu
+  73              		.loc 1 27 0
   74 001a 0848     		ldr	r0, .L3+8
   75 001c FFF7FEFF 		bl	UART_for_USB_PutString
-  29:.\main.c      ****     UART_for_USB_PutString("Set the period by typing p : then a new period. \r\n");
-  76              		.loc 1 29 0
+  28:.\main.c      ****     UART_for_USB_PutString("Set the period by typing p : then a new period. \r\n");
+  76              		.loc 1 28 0
   77 0020 0748     		ldr	r0, .L3+12
   78 0022 FFF7FEFF 		bl	UART_for_USB_PutString
-  30:.\main.c      ****     UART_for_USB_PutString("For example, p : 2000 sets the period to 2000. \r\n");
-  79              		.loc 1 30 0
+  29:.\main.c      ****     UART_for_USB_PutString("For example, p : 2000 sets the period to 2000. \r\n");
+  79              		.loc 1 29 0
   80 0026 0748     		ldr	r0, .L3+16
   81 0028 FFF7FEFF 		bl	UART_for_USB_PutString
-  31:.\main.c      ****     UART_for_USB_PutString("Or, x stops the PWM, and e re-enables the PWM. \r\n\r\n");
-  82              		.loc 1 31 0
+  30:.\main.c      ****     UART_for_USB_PutString("Or, x stops the PWM, and e re-enables the PWM. \r\n\r\n");
+  82              		.loc 1 30 0
   83 002c 0648     		ldr	r0, .L3+20
   84 002e FFF7FEFF 		bl	UART_for_USB_PutString
   85              	.L2:
-  32:.\main.c      ****     
-  33:.\main.c      ****     for(;;)
-  34:.\main.c      ****     {
-  35:.\main.c      ****         /* Place your application code here. */
-  36:.\main.c      ****     }
-  86              		.loc 1 36 0 discriminator 1
+  31:.\main.c      ****     
+  32:.\main.c      ****     for(;;)
+  33:.\main.c      ****     {
+  34:.\main.c      ****         // Nothing to do - all interrupt driven!
+  35:.\main.c      ****     }
+  86              		.loc 1 35 0 discriminator 1
   87 0032 FEE7     		b	.L2
   88              	.L4:
   89              		.align	2
@@ -178,10 +177,10 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\cc9Uqrt3.s 			page 1
  107 0000 C0000000 		.4byte	0xc0
  108 0004 0400     		.2byte	0x4
  109 0006 00000000 		.4byte	.Ldebug_abbrev0
-ARM GAS  C:\Users\andre\AppData\Local\Temp\cc9Uqrt3.s 			page 4
-
-
  110 000a 04       		.byte	0x4
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 4
+
+
  111 000b 01       		.uleb128 0x1
  112 000c FC000000 		.4byte	.LASF15
  113 0010 01       		.byte	0x1
@@ -238,10 +237,10 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\cc9Uqrt3.s 			page 1
  164 0076 03       		.uleb128 0x3
  165 0077 78010000 		.4byte	.LASF10
  166 007b 03       		.byte	0x3
-ARM GAS  C:\Users\andre\AppData\Local\Temp\cc9Uqrt3.s 			page 5
-
-
  167 007c 41       		.byte	0x41
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 5
+
+
  168 007d 41000000 		.4byte	0x41
  169 0081 02       		.uleb128 0x2
  170 0082 04       		.byte	0x4
@@ -298,10 +297,10 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\cc9Uqrt3.s 			page 1
  221 0011 00       		.byte	0
  222 0012 00       		.byte	0
  223 0013 02       		.uleb128 0x2
-ARM GAS  C:\Users\andre\AppData\Local\Temp\cc9Uqrt3.s 			page 6
-
-
  224 0014 24       		.uleb128 0x24
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 6
+
+
  225 0015 00       		.byte	0
  226 0016 0B       		.uleb128 0xb
  227 0017 0B       		.uleb128 0xb
@@ -358,10 +357,10 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\cc9Uqrt3.s 			page 1
  278 004b 19       		.uleb128 0x19
  279 004c 00       		.byte	0
  280 004d 00       		.byte	0
-ARM GAS  C:\Users\andre\AppData\Local\Temp\cc9Uqrt3.s 			page 7
-
-
  281 004e 06       		.uleb128 0x6
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 7
+
+
  282 004f 34       		.uleb128 0x34
  283 0050 00       		.byte	0
  284 0051 03       		.uleb128 0x3
@@ -418,10 +417,10 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\cc9Uqrt3.s 			page 1
  328      7400
  329              	.LASF3:
  330 000e 73686F72 		.ascii	"short unsigned int\000"
-ARM GAS  C:\Users\andre\AppData\Local\Temp\cc9Uqrt3.s 			page 8
-
-
  330      7420756E 
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 8
+
+
  330      7369676E 
  330      65642069 
  330      6E7400
@@ -478,10 +477,10 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\cc9Uqrt3.s 			page 1
  352              	.LASF19:
  353 00c9 49544D5F 		.ascii	"ITM_RxBuffer\000"
  353      52784275 
-ARM GAS  C:\Users\andre\AppData\Local\Temp\cc9Uqrt3.s 			page 9
-
-
  353      66666572 
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 9
+
+
  353      00
  354              	.LASF0:
  355 00d6 7369676E 		.ascii	"signed char\000"
