@@ -73,7 +73,6 @@ CY_ISR( Interrupt_Handler_UART_Receive){
     
     // In order for this to be clear, let's repeat the character back to the terminal.
     // This way, it 'looks like' we're typing into the terminal!
-    UART_for_USB_PutChar( received_byte );
     
     //DEBUGGING
     /*
@@ -98,6 +97,8 @@ CY_ISR( Interrupt_Handler_UART_Receive){
             // This code will run if the received byte is either a carriage return or a newline.
             // Since the PSoC received a new line...
             // First, terminate the string. This is for the use of sscanf below.
+            // Print back the newline/carriage return, to complete the "respond back to the terminal" code
+            UART_for_USB_PutString("\r\n");
             receive_buffer[num_chars_received] = '\0';
             Write_PWM_and_UART();
             // This helper will also reset the data we're tracking, and the num chars received.
@@ -121,6 +122,8 @@ CY_ISR( Interrupt_Handler_UART_Receive){
             // The "default" case is "anything else", which is "store another character."
             // Add to the received buffer.
             receive_buffer[num_chars_received] = received_byte;
+            // Respond back to the terminal
+            UART_for_USB_PutChar( received_byte );
             // We need to increment the counter. i++ does this without an equals sign for assignment
             num_chars_received++;
             break;
@@ -146,25 +149,26 @@ CY_ISR( Interrupt_Handler_UART_Receive){
 // makes the ISR code easier to understand.
 void Write_PWM_and_UART(){
     // OK, so now, we have a string in the receive buffer of the form "(p/d):somenumber".
-    // Get the mode:
-    //sscanf( receive_buffer, "%c:", &mode);
-    //DEBUGGING
-    //UART_for_USB_PutChar(mode);
+    // To help you out, reply with the string that was received:
+    /*
+    UART_for_USB_PutString("Received the string: ");
+    UART_for_USB_PutString( receive_buffer );
+    UART_for_USB_PutString("\r\n");
+    */
     
-    // Read in the integer after the p:
+    // Read in both the mode (p or d) and the integer afterward
+    // The %c specified is for a single character
     // The %hu specifier is for unsigned shorts (16 bit integers)
+    // A good resource on scanf and printf specifiers is https://www.tutorialspoint.com/c_standard_library/c_function_sscanf.htm
     // Let's receive back the number of integers returned from sscanf
     int num_var_filled;
+    // actually scan in the character and integer
     num_var_filled = sscanf( receive_buffer, "%c : %hu", &mode, &data);
-    // Need to check: was anything received? Equivalently, did sscanf find exactly one uint16?
+    // Need to check: was anything received? Equivalently, did sscanf find exactly one character, and one uint16?
     if( num_var_filled != 2){
         UART_for_USB_PutString("Error! incorrect data. Did you type a number after a (p or d), a colon, and the spaces between?\r\n");
         data = 0;
     }
-    // DEBUGGING
-    UART_for_USB_PutString("Received the string: ");
-    UART_for_USB_PutString( receive_buffer );
-    UART_for_USB_PutString("\r\n");
     
     // Depending on the mode, write either the data or the duty cycle:
     switch( mode )
