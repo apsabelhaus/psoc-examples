@@ -26,7 +26,7 @@
 // a string of this length. E.g. 16 gives us 16 characters, including any integers represented as characters.
 // This solves exactly the same problem as in the supplement to tutorial 6!!!
 // Drew used 128 here, like with receive, because it's 
-// "big enough." Compare to the size of the data of the PWM, as returned from Readdata(), 
+// "big enough." Compare to the size of the data of the PWM, as returned from ReadPeriod() for example, 
 // and the string of text I put down below.
 // How many bytes (characters) will we expect to need to send back? How many are "taken up" by the PWM data?
 #define TRANSMIT_LENGTH 128
@@ -38,41 +38,39 @@
 
 // See tutorial 7 supplement for discussion on "static".
 
-// Also, keep the buffer as a global variable instead of creating it inside the ISR.
-// This is for efficiency, and since we'll need to send back a string of characters with numbers also inside it.
-static char transmit_buffer[TRANSMIT_LENGTH];
-// similarly, we want a receive buffer, for taking in multiple charactes as they are sent to the PSoC.
-static char receive_buffer[RECEIVE_LENGTH];
-
 // Since the UART only sends single bytes, we encounter a problem with setting numerical values.
-// Specifically, the byte send is interpreted as a character, NOT a number.
+// Specifically, the byte sent is interpreted as a character, NOT a number.
 // See the ASCII table for a bit more intuition: for example, to set a data between 100 and 200, we'd need to 
 // type in the characters between 'd' and 'weird L bar thing that isn't on Drew's keyboard. 
 // https://www.asciitable.com/
-// That's not OK. Instead, let's take in each character, store it in a buffer.
+// That's not OK. Instead, let's take in the numbers as characters, not try to re-interpret them, and store them in a buffer.
 // The num_chars_received integer allows us to index into the string buffer (since it's an array of char).
 static uint8 num_chars_received = 0;
 
-// In the example that Drew got from George, we used a character to split
+// Also, keep the buffer as a global variable instead of creating it inside the ISR.
+// This is for efficiency, and since we'll need to send back a string of characters with numbers also inside it.
+static char transmit_buffer[TRANSMIT_LENGTH];
+// similarly, we want a receive buffer, for taking in multiple characters as they are sent to the PSoC.
+static char receive_buffer[RECEIVE_LENGTH];
 
 // the data, as recorded in the helpers below. By declaring with global scope, we
-// increase efficiency.
+// increase efficiency. Used for both period and duty cycle.
 static uint16 data = 0;
 
 // We're also going to let people adjust the duty cycle (compare value).
 // So, we need to store a character representing the mode.
 static char mode;
 
-// Definition of the UART ISR
-// We use the same line for the function definition, with the CY_ISR macro.
-// Compare this to tutorial 6, with "pythagorean"
+/**
+ * Definition of the UART ISR
+ * We use the same line for the function definition, with the CY_ISR macro.
+ * Compare this to tutorial 6, with "pythagorean"
+ * This function also repeats characters back to the terminal, so you can see what you're typing.
+ */
 CY_ISR( Interrupt_Handler_UART_Receive){
     // We assume this ISR is called when a byte is received.
     // See how the IDE doesn't give any errors, as long as we include project.h here.
     uint8 received_byte = UART_for_USB_GetChar();
-    
-    // In order for this to be clear, let's repeat the character back to the terminal.
-    // This way, it 'looks like' we're typing into the terminal!
     
     //DEBUGGING
     /*
@@ -82,7 +80,7 @@ CY_ISR( Interrupt_Handler_UART_Receive){
     */
     
     // Next, we need to deal with what was received, in the following way.
-    // If a new line is received (the \n character, or ASCII values 10 or 12 or 13 depending on if your computer is Windows/Linux/Mac),
+    // If a new line is received (the \n character, or ASCII values 10 or 13 depending on if your computer is Windows/Linux/Mac),
     // then finally set the data.
     // Otherwise, add to the uint16 we're keeping track of.
     // Luckily enough, C allows us to "switch" on uint8s, since characters are also numbers via the ASCII table.
@@ -99,7 +97,12 @@ CY_ISR( Interrupt_Handler_UART_Receive){
             // First, terminate the string. This is for the use of sscanf below.
             // Print back the newline/carriage return, to complete the "respond back to the terminal" code
             UART_for_USB_PutString("\r\n");
+            // From George: strings in C are arrays of characters, and require an "end string" character at the end, 
+            // so these library functions can know "how many characters are in the string."
+            // So, append the end string character, which is:
             receive_buffer[num_chars_received] = '\0';
+            // Call the helper function to actually parse the whole received string, now
+            // that a newline has been received.
             Write_PWM_and_UART();
             // This helper will also reset the data we're tracking, and the num chars received.
             // By "break"-ing, the next case is not executed.
@@ -129,27 +132,18 @@ CY_ISR( Interrupt_Handler_UART_Receive){
             break;
         // end of case statement.
     }
-    
-    // We're going to assume that the character we receive is an integer, 
-    // representing the data.
-    // For a transmission of 8 bits, we can only set the data between 0 and 255.
-    // This is OK for how we've configured the PWM for our servo: 
-    // our data can only be between 100 and 200 anyway (1 ms for min angle, 2 ms for max angle).
-    // To get better resolution here, you'll need to do a handful of things:
-    // (1) change the clock of the PWM so that we'll need a uint16 to represent 1 ms to 2 ms of "on"
-    // (2) receive two bytes (as uint8) from the UART, keep track of the first one
-    // (3) once two are received, combine them into a uint16
-    // (4) write the uint16 to the PWM's data, as with the code below.    
-    
-    
-    
 }
 
-// Helper function that does the writing to the PWM and UART.
-// makes the ISR code easier to understand.
+/**
+ *Helper function that does the writing to the PWM and UART.
+ * makes the ISR code easier to understand.
+ */
 void Write_PWM_and_UART(){
-    // OK, so now, we have a string in the receive buffer of the form "(p/d):somenumber".
-    // To help you out, reply with the string that was received:
+    // OK, so now, we have a string in the receive buffer,
+    // ideally of the form "(p/d) : somenumber".
+    
+    // If you need help seeing what was stored, uncomment
+    // the following lines to reply with the string that was received:
     /*
     UART_for_USB_PutString("Received the string: ");
     UART_for_USB_PutString( receive_buffer );
@@ -160,9 +154,10 @@ void Write_PWM_and_UART(){
     // The %c specified is for a single character
     // The %hu specifier is for unsigned shorts (16 bit integers)
     // A good resource on scanf and printf specifiers is https://www.tutorialspoint.com/c_standard_library/c_function_sscanf.htm
-    // Let's receive back the number of integers returned from sscanf
+    // Let's also check: did we store both a char and a uint16? Check the number of 'things' pulled out of the string.
     int num_var_filled;
-    // actually scan in the character and integer
+    // actually scan in the character and integer. See documentation for the sscanf function.
+    // sscanf requires the address-of (&) for the variable to be written.
     num_var_filled = sscanf( receive_buffer, "%c : %hu", &mode, &data);
     // Need to check: was anything received? Equivalently, did sscanf find exactly one character, and one uint16?
     if( num_var_filled != 2){
@@ -170,11 +165,11 @@ void Write_PWM_and_UART(){
         data = 0;
     }
     
-    // Depending on the mode, write either the data or the duty cycle:
+    // Depending on the mode, write either the period or the duty cycle:
     switch( mode )
     {
         case 'p':
-            // Now, set the data, 
+            // Now, set the period, 
             PWM_Servo_WritePeriod( data );
             // and send back the data that was just written, for confirmation.
             // In C, to concatenate a number (integer) and a string (characters), you need to...
@@ -192,20 +187,16 @@ void Write_PWM_and_UART(){
             sprintf( transmit_buffer, "PWM now has a duty cycle (in clock ticks) of: %i \r\n", duty_written);
             break;
         default:
+            // Print an error message if any other character besides a p or d was typed
             sprintf( transmit_buffer, "Error! You didn't type a p or d. \r\n");
             mode = 0;
             break;
-    }
+    } 
     
-    // sscanf requires the address-of (&) for the variable to be written.
-    
-    
-    // (3) send the byte back to your PC
+    // send the byte back to your PC so you know what you set
     UART_for_USB_PutString( transmit_buffer );    
     // to make this easier to read, send another newline.
     UART_for_USB_PutString("\r\n");
-    // (4) Send another little string prompting the next input.
-    //UART_for_USB_PutString( " by typing p: then a new data, between 100 and 200 (min and max data for a servo on a 100 kHz clock).\r\n");
     // Reset the indexing into the array
     num_chars_received = 0;
     // and just in case let's do the data too.
