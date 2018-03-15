@@ -67,6 +67,13 @@ CY_ISR( Interrupt_Handler_UART_Receive){
     // See how the IDE doesn't give any errors, as long as we include project.h here.
     uint8 received_byte = UART_for_USB_GetChar();
     
+    //DEBUGGING
+    /*
+    UART_for_USB_PutString( "Received a character: ");
+    UART_for_USB_PutChar( received_byte );
+    UART_for_USB_PutString("\r\n");
+    */
+    
     // Next, we need to deal with what was received, in the following way.
     // If a new line is received (the \n character, or ASCII values 10 or 12 or 13 depending on if your computer is Windows/Linux/Mac),
     // then finally set the period.
@@ -87,6 +94,20 @@ CY_ISR( Interrupt_Handler_UART_Receive){
             Write_PWM_and_UART();
             // This helper will also reset the period we're tracking, and the num chars received.
             // By "break"-ing, the next case is not executed.
+            break;
+        case 'x':
+            // Added functionality: if the user types an x, then the PWM stops.
+            UART_for_USB_PutString("Stopping PWM.\r\n");
+            PWM_Servo_Stop();
+            // Reset the buffer. We'll just start writing from the start again.
+            num_chars_received = 0;
+            break;
+        case 'e':
+            // Similarly, type e to enable.
+            UART_for_USB_PutString("Restarting PWM.\r\n");
+            PWM_Servo_Start();
+            // Reset the buffer. We'll just start writing from the start again.
+            num_chars_received = 0;
             break;
         default:
             // The "default" case is "anything else", which is "store another character."
@@ -117,9 +138,15 @@ CY_ISR( Interrupt_Handler_UART_Receive){
 // makes the ISR code easier to understand.
 void Write_PWM_and_UART(){
     // OK, so now, we have a string in the receive buffer of the form "p:somenumber".
+    
     // Read in the integer after the p:
-    sscanf( receive_buffer, "p:%d", &period);
-    // TO-DO: checking on output of sscanf to confirm the user wrote a p:
+    // The %hu specifier is for unsigned shorts (16 bit integers)
+    sscanf( receive_buffer, "p:%hu", &period);
+    // DEBUGGING
+    UART_for_USB_PutString("Received the string: ");
+    UART_for_USB_PutString( receive_buffer );
+    UART_for_USB_PutString("\r\n");
+    
     // sscanf requires the address-of (&) for the variable to be written.
     // Now, set the period, 
     PWM_Servo_WritePeriod( period );
@@ -135,6 +162,10 @@ void Write_PWM_and_UART(){
     UART_for_USB_PutString( transmit_buffer );    
     // (4) Send another little string prompting the next input.
     UART_for_USB_PutString( "Set the period by typing p: then a new period, between 100 and 200 (min and max period for a servo on a 100 kHz clock).\r\n");
+    // Reset the indexing into the array
+    num_chars_received = 0;
+    // and just in case let's do the period too.
+    period = 0;
     // Note that we don't have to reset the buffer here, since sscanf only reads up until the first '\0'.
 }
 

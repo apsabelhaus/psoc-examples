@@ -24,7 +24,7 @@ int main()
     PWM_Servo_Start();
     
     // Send an initial message over the UART / USB com port
-    UART_for_USB_PutString("PWM on. Please set the period: \r\n");
+    UART_for_USB_PutString("\r\nPWM on. Set the period by typing p: then a new period. \r\n");
     
     for(;;)
     {
