@@ -38,7 +38,7 @@
 // 1) Parses the command received
 // 2) Sets the PWM block parameters
 // 3) Sends a response back over UART, with the new settings confirmed.
-CY_ISR( Interrupt_Handler_UART_Receive);
+CY_ISR( Interrupt_Handler_UART_Receive );
 
 // Another helper that does the writing to the PWM and UART upon receipt of a newline,
 // making the ISR cleaner.

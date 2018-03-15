@@ -111,17 +111,31 @@ void Write_PWM_and_UART(){
     switch( mode )
     {
         case 'p':
-            // Now, set the period to "data"
-            PWM_Servo_WritePeriod( data );
-            // and send back the data that was just written, for confirmation:
+            /**
+             * TUTORIAL 8, TASK 6:
+             * Write the period of the PWM.
+             * At this point in the code, the variable "data" will store your PWM period as a uint16.
+             * hint: look at the API for the PWM component... something about writing and period.
+             */
+        
+            ///////////////// PUT YOUR CODE HERE
+        
+            // send back the data that was just written, for confirmation:
             // read back from the PWM, and send a message with the period inserted into the string
             uint16 period_written = PWM_Servo_ReadPeriod();
             sprintf( transmit_buffer, "PWM now has a period of: %i \r\n", period_written);
             break;
         case 'd':
-            // Set the compare value (the duty cycle, as the number of clock ticks) to "data"
-            PWM_Servo_WriteCompare( data );
-            // Like with the period:
+            /**
+             * TUTORIAL 8, TASK 7:
+             * Write the duty cycle of the PWM. This is also called the "compare" value.
+             * At this point in the code, the variable "data" will store your PWM duty cycle as a uint16.
+             * hint: look at the API for the PWM component... something about writing and compare value.
+             */
+            
+            ///////////////// PUT YOUR CODE HERE
+            
+            // as with the period, send back what we just did:
             uint16 duty_written = PWM_Servo_ReadCompare();
             sprintf( transmit_buffer, "PWM now has a duty cycle (in clock ticks) of: %i \r\n", duty_written);
             break;
