@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 1
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEkU0sw.s 			page 1
 
 
    1              		.syntax unified
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 1
   25:.\Generated_Source\PSoC5/UART_for_USB_PM.c **** {
   26:.\Generated_Source\PSoC5/UART_for_USB_PM.c ****     /* enableState - disabled */
   27:.\Generated_Source\PSoC5/UART_for_USB_PM.c ****     0u,
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 2
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEkU0sw.s 			page 2
 
 
   28:.\Generated_Source\PSoC5/UART_for_USB_PM.c **** };
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 1
   53              		.thumb_func
   54              		.type	UART_for_USB_RestoreConfig, %function
   55              	UART_for_USB_RestoreConfig:
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 3
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEkU0sw.s 			page 3
 
 
   56              	.LFB1:
@@ -178,7 +178,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 1
   77              		.global	UART_for_USB_Sleep
   78              		.thumb
   79              		.thumb_func
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 4
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEkU0sw.s 			page 4
 
 
   80              		.type	UART_for_USB_Sleep, %function
@@ -238,7 +238,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 1
  101 0012 074B     		ldr	r3, .L6+4
  102 0014 0122     		movs	r2, #1
  103 0016 1A70     		strb	r2, [r3]
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 5
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEkU0sw.s 			page 5
 
 
  104 0018 02E0     		b	.L5
@@ -298,7 +298,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 1
  151:.\Generated_Source\PSoC5/UART_for_USB_PM.c **** * Summary:
  152:.\Generated_Source\PSoC5/UART_for_USB_PM.c **** *  This is the preferred API to restore the component to the state when 
  153:.\Generated_Source\PSoC5/UART_for_USB_PM.c **** *  UART_for_USB_Sleep() was called. The UART_for_USB_Wakeup() function
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 6
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEkU0sw.s 			page 6
 
 
  154:.\Generated_Source\PSoC5/UART_for_USB_PM.c **** *  calls the UART_for_USB_RestoreConfig() function to restore the 
@@ -358,7 +358,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 1
  156              	.L8:
  185:.\Generated_Source\PSoC5/UART_for_USB_PM.c ****     }
  186:.\Generated_Source\PSoC5/UART_for_USB_PM.c **** }
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 7
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEkU0sw.s 			page 7
 
 
  157              		.loc 1 186 0
@@ -381,33 +381,33 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 1
  174 0006 00000000 		.4byte	.Ldebug_abbrev0
  175 000a 04       		.byte	0x4
  176 000b 01       		.uleb128 0x1
- 177 000c A5010000 		.4byte	.LASF20
+ 177 000c BE010000 		.4byte	.LASF20
  178 0010 01       		.byte	0x1
  179 0011 3B000000 		.4byte	.LASF21
- 180 0015 9A000000 		.4byte	.LASF22
+ 180 0015 13010000 		.4byte	.LASF22
  181 0019 00000000 		.4byte	.Ldebug_ranges0+0
  182 001d 00000000 		.4byte	0
  183 0021 00000000 		.4byte	.Ldebug_line0
  184 0025 02       		.uleb128 0x2
  185 0026 01       		.byte	0x1
  186 0027 06       		.byte	0x6
- 187 0028 6E010000 		.4byte	.LASF0
+ 187 0028 87010000 		.4byte	.LASF0
  188 002c 02       		.uleb128 0x2
  189 002d 01       		.byte	0x1
  190 002e 08       		.byte	0x8
- 191 002f F4000000 		.4byte	.LASF1
+ 191 002f C6000000 		.4byte	.LASF1
  192 0033 02       		.uleb128 0x2
  193 0034 02       		.byte	0x2
  194 0035 05       		.byte	0x5
- 195 0036 9B010000 		.4byte	.LASF2
+ 195 0036 B4010000 		.4byte	.LASF2
  196 003a 02       		.uleb128 0x2
  197 003b 02       		.byte	0x2
  198 003c 07       		.byte	0x7
- 199 003d 5B010000 		.4byte	.LASF3
+ 199 003d 74010000 		.4byte	.LASF3
  200 0041 02       		.uleb128 0x2
  201 0042 04       		.byte	0x4
  202 0043 05       		.byte	0x5
- 203 0044 38010000 		.4byte	.LASF4
+ 203 0044 0A010000 		.4byte	.LASF4
  204 0048 02       		.uleb128 0x2
  205 0049 04       		.byte	0x4
  206 004a 07       		.byte	0x7
@@ -418,7 +418,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 1
  211 0052 00000000 		.4byte	.LASF6
  212 0056 02       		.uleb128 0x2
  213 0057 08       		.byte	0x8
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 8
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEkU0sw.s 			page 8
 
 
  214 0058 07       		.byte	0x7
@@ -439,15 +439,15 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 1
  229 0076 02       		.uleb128 0x2
  230 0077 04       		.byte	0x4
  231 0078 04       		.byte	0x4
- 232 0079 7A010000 		.4byte	.LASF9
+ 232 0079 93010000 		.4byte	.LASF9
  233 007d 02       		.uleb128 0x2
  234 007e 08       		.byte	0x8
  235 007f 04       		.byte	0x4
- 236 0080 41010000 		.4byte	.LASF10
+ 236 0080 6D010000 		.4byte	.LASF10
  237 0084 02       		.uleb128 0x2
  238 0085 01       		.byte	0x1
  239 0086 08       		.byte	0x8
- 240 0087 DB000000 		.4byte	.LASF11
+ 240 0087 AD000000 		.4byte	.LASF11
  241 008b 05       		.uleb128 0x5
  242 008c 66000000 		.4byte	.LASF13
  243 0090 02       		.byte	0x2
@@ -458,9 +458,9 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 1
  248 009c 02       		.uleb128 0x2
  249 009d 04       		.byte	0x4
  250 009e 07       		.byte	0x7
- 251 009f 21020000 		.4byte	.LASF14
+ 251 009f 3A020000 		.4byte	.LASF14
  252 00a3 07       		.uleb128 0x7
- 253 00a4 02010000 		.4byte	.LASF23
+ 253 00a4 D4000000 		.4byte	.LASF23
  254 00a8 01       		.byte	0x1
  255 00a9 03       		.byte	0x3
  256 00aa 45       		.byte	0x45
@@ -473,15 +473,15 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 1
  263 00ba 00       		.byte	0
  264 00bb 00       		.byte	0
  265 00bc 04       		.uleb128 0x4
- 266 00bd 80010000 		.4byte	.LASF15
+ 266 00bd 99010000 		.4byte	.LASF15
  267 00c1 03       		.byte	0x3
  268 00c2 4D       		.byte	0x4d
  269 00c3 A3000000 		.4byte	0xa3
  270 00c7 09       		.uleb128 0x9
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 9
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEkU0sw.s 			page 9
 
 
- 271 00c8 2A020000 		.4byte	.LASF16
+ 271 00c8 43020000 		.4byte	.LASF16
  272 00cc 01       		.byte	0x1
  273 00cd 36       		.byte	0x36
  274 00ce 00000000 		.4byte	.LFB0
@@ -489,7 +489,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 1
  276 00d6 01       		.uleb128 0x1
  277 00d7 9C       		.byte	0x9c
  278 00d8 09       		.uleb128 0x9
- 279 00d9 1D010000 		.4byte	.LASF17
+ 279 00d9 EF000000 		.4byte	.LASF17
  280 00dd 01       		.byte	0x1
  281 00de 57       		.byte	0x57
  282 00df 00000000 		.4byte	.LFB1
@@ -497,7 +497,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 1
  284 00e7 01       		.uleb128 0x1
  285 00e8 9C       		.byte	0x9c
  286 00e9 0A       		.uleb128 0xa
- 287 00ea 48010000 		.4byte	.LASF18
+ 287 00ea 9A000000 		.4byte	.LASF18
  288 00ee 01       		.byte	0x1
  289 00ef 78       		.byte	0x78
  290 00f0 00000000 		.4byte	.LFB2
@@ -505,7 +505,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 1
  292 00f8 01       		.uleb128 0x1
  293 00f9 9C       		.byte	0x9c
  294 00fa 0A       		.uleb128 0xa
- 295 00fb E0000000 		.4byte	.LASF19
+ 295 00fb B2000000 		.4byte	.LASF19
  296 00ff 01       		.byte	0x1
  297 0100 AC       		.byte	0xac
  298 0101 00000000 		.4byte	.LFB3
@@ -538,7 +538,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 1
  325 000c 17       		.uleb128 0x17
  326 000d 11       		.uleb128 0x11
  327 000e 01       		.uleb128 0x1
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 10
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEkU0sw.s 			page 10
 
 
  328 000f 10       		.uleb128 0x10
@@ -598,7 +598,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 1
  382 0045 00       		.byte	0
  383 0046 49       		.uleb128 0x49
  384 0047 13       		.uleb128 0x13
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 11
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEkU0sw.s 			page 11
 
 
  385 0048 00       		.byte	0
@@ -658,7 +658,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 1
  439 007f 00       		.byte	0
  440 0080 0A       		.uleb128 0xa
  441 0081 2E       		.uleb128 0x2e
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 12
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEkU0sw.s 			page 12
 
 
  442 0082 00       		.byte	0
@@ -718,7 +718,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 1
  496 0034 00000000 		.4byte	0
  497              		.section	.debug_ranges,"",%progbits
  498              	.Ldebug_ranges0:
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 13
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEkU0sw.s 			page 13
 
 
  499 0000 00000000 		.4byte	.LFB0
@@ -778,111 +778,111 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 1
  527      7400
  528              	.LASF7:
  529 0083 6C6F6E67 		.ascii	"long long unsigned int\000"
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 14
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEkU0sw.s 			page 14
 
 
  529      206C6F6E 
  529      6720756E 
  529      7369676E 
  529      65642069 
- 530              	.LASF22:
- 531 009a 443A5C57 		.ascii	"D:\\WindowsGitHub\\psoc-examples\\me235\\PWM_UART_M"
- 531      696E646F 
- 531      77734769 
- 531      74487562 
- 531      5C70736F 
- 532 00c9 756C7469 		.ascii	"ultitasking.cydsn\000"
- 532      7461736B 
- 532      696E672E 
- 532      63796473 
- 532      6E00
- 533              	.LASF11:
- 534 00db 63686172 		.ascii	"char\000"
- 534      00
- 535              	.LASF19:
- 536 00e0 55415254 		.ascii	"UART_for_USB_Wakeup\000"
- 536      5F666F72 
- 536      5F555342 
- 536      5F57616B 
- 536      65757000 
- 537              	.LASF1:
- 538 00f4 756E7369 		.ascii	"unsigned char\000"
- 538      676E6564 
- 538      20636861 
- 538      7200
- 539              	.LASF23:
- 540 0102 55415254 		.ascii	"UART_for_USB_backupStruct_\000"
- 540      5F666F72 
- 540      5F555342 
- 540      5F626163 
- 540      6B757053 
- 541              	.LASF17:
- 542 011d 55415254 		.ascii	"UART_for_USB_RestoreConfig\000"
- 542      5F666F72 
- 542      5F555342 
- 542      5F526573 
- 542      746F7265 
- 543              	.LASF4:
- 544 0138 6C6F6E67 		.ascii	"long int\000"
- 544      20696E74 
- 544      00
- 545              	.LASF10:
- 546 0141 646F7562 		.ascii	"double\000"
- 546      6C6500
- 547              	.LASF18:
- 548 0148 55415254 		.ascii	"UART_for_USB_Sleep\000"
- 548      5F666F72 
- 548      5F555342 
- 548      5F536C65 
- 548      657000
+ 530              	.LASF18:
+ 531 009a 55415254 		.ascii	"UART_for_USB_Sleep\000"
+ 531      5F666F72 
+ 531      5F555342 
+ 531      5F536C65 
+ 531      657000
+ 532              	.LASF11:
+ 533 00ad 63686172 		.ascii	"char\000"
+ 533      00
+ 534              	.LASF19:
+ 535 00b2 55415254 		.ascii	"UART_for_USB_Wakeup\000"
+ 535      5F666F72 
+ 535      5F555342 
+ 535      5F57616B 
+ 535      65757000 
+ 536              	.LASF1:
+ 537 00c6 756E7369 		.ascii	"unsigned char\000"
+ 537      676E6564 
+ 537      20636861 
+ 537      7200
+ 538              	.LASF23:
+ 539 00d4 55415254 		.ascii	"UART_for_USB_backupStruct_\000"
+ 539      5F666F72 
+ 539      5F555342 
+ 539      5F626163 
+ 539      6B757053 
+ 540              	.LASF17:
+ 541 00ef 55415254 		.ascii	"UART_for_USB_RestoreConfig\000"
+ 541      5F666F72 
+ 541      5F555342 
+ 541      5F526573 
+ 541      746F7265 
+ 542              	.LASF4:
+ 543 010a 6C6F6E67 		.ascii	"long int\000"
+ 543      20696E74 
+ 543      00
+ 544              	.LASF22:
+ 545 0113 443A5C73 		.ascii	"D:\\synct\\Teaching\\ME 135 S18\\Tutorials\\T8\\ske"
+ 545      796E6374 
+ 545      5C546561 
+ 545      6368696E 
+ 545      675C4D45 
+ 546 0140 6C65746F 		.ascii	"leton_code\\me235\\PWM_UART_Multitasking.cydsn\000"
+ 546      6E5F636F 
+ 546      64655C6D 
+ 546      65323335 
+ 546      5C50574D 
+ 547              	.LASF10:
+ 548 016d 646F7562 		.ascii	"double\000"
+ 548      6C6500
  549              	.LASF3:
- 550 015b 73686F72 		.ascii	"short unsigned int\000"
+ 550 0174 73686F72 		.ascii	"short unsigned int\000"
  550      7420756E 
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccT2B8fv.s 			page 15
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccEkU0sw.s 			page 15
 
 
  550      7369676E 
  550      65642069 
  550      6E7400
  551              	.LASF0:
- 552 016e 7369676E 		.ascii	"signed char\000"
+ 552 0187 7369676E 		.ascii	"signed char\000"
  552      65642063 
  552      68617200 
  553              	.LASF9:
- 554 017a 666C6F61 		.ascii	"float\000"
+ 554 0193 666C6F61 		.ascii	"float\000"
  554      7400
  555              	.LASF15:
- 556 0180 55415254 		.ascii	"UART_for_USB_BACKUP_STRUCT\000"
+ 556 0199 55415254 		.ascii	"UART_for_USB_BACKUP_STRUCT\000"
  556      5F666F72 
  556      5F555342 
  556      5F424143 
  556      4B55505F 
  557              	.LASF2:
- 558 019b 73686F72 		.ascii	"short int\000"
+ 558 01b4 73686F72 		.ascii	"short int\000"
  558      7420696E 
  558      7400
  559              	.LASF20:
- 560 01a5 474E5520 		.ascii	"GNU C 4.8.4 20140526 (release) [ARM/embedded-4_8-br"
+ 560 01be 474E5520 		.ascii	"GNU C 4.8.4 20140526 (release) [ARM/embedded-4_8-br"
  560      4320342E 
  560      382E3420 
  560      32303134 
  560      30353236 
- 561 01d8 616E6368 		.ascii	"anch revision 211358] -mcpu=cortex-m3 -mthumb -g -O"
+ 561 01f1 616E6368 		.ascii	"anch revision 211358] -mcpu=cortex-m3 -mthumb -g -O"
  561      20726576 
  561      6973696F 
  561      6E203231 
  561      31333538 
- 562 020b 30202D66 		.ascii	"0 -ffunction-sections\000"
+ 562 0224 30202D66 		.ascii	"0 -ffunction-sections\000"
  562      66756E63 
  562      74696F6E 
  562      2D736563 
  562      74696F6E 
  563              	.LASF14:
- 564 0221 73697A65 		.ascii	"sizetype\000"
+ 564 023a 73697A65 		.ascii	"sizetype\000"
  564      74797065 
  564      00
  565              	.LASF16:
- 566 022a 55415254 		.ascii	"UART_for_USB_SaveConfig\000"
+ 566 0243 55415254 		.ascii	"UART_for_USB_SaveConfig\000"
  566      5F666F72 
  566      5F555342 
  566      5F536176 

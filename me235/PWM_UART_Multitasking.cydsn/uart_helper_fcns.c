@@ -37,11 +37,11 @@ static char mode;
 /**
  * Definition of the UART ISR
  * We use the same line for the function definition, with the CY_ISR macro.
- * Compare this to tutorial 6, with "pythagorean"
+ * Compare this to tutorial 6, with "pythagorean", and T7 with the timer.
  * This function also repeats characters back to the terminal, so you can see what you're typing.
  * Compare to the code at the end of tutorial 7
  */
-CY_ISR( Interrupt_Handler_UART_Receive){
+CY_ISR( Interrupt_Handler_UART_Receive ){
     // We assume this ISR is called when a byte is received.
     uint8 received_byte = UART_for_USB_GetChar();
     
@@ -51,9 +51,9 @@ CY_ISR( Interrupt_Handler_UART_Receive){
     {
         // Students: look up switch-case statements. to understand this more.
         case '\r':
-            // flow downward, no specific code for carriage return
+            // flow downward, no specific lines of code for carriage return
         case '\n':
-            // newline or carraige return received, so finally set the PWM parameters
+            // newline or carriage return received, so finally set the PWM parameters
             // First, terminate the string. This is for the use of sscanf below.
             receive_buffer[num_chars_received] = '\0';
             // Print back the newline/carriage return, to complete the "respond back to the terminal" code
@@ -70,7 +70,7 @@ CY_ISR( Interrupt_Handler_UART_Receive){
             break;
         case 'e':
             // Similarly, type e to enable.
-            UART_for_USB_PutString("\r\nRestarting PWM.\r\n");
+            UART_for_USB_PutString("\r\nEnabling PWM.\r\n");
             PWM_Servo_Start();
             // Reset the buffer. We'll just start writing from the start again.
             num_chars_received = 0;
@@ -111,10 +111,14 @@ void Write_PWM_and_UART(){
     switch( mode )
     {
         case 'p':
+        {
             /**
-             * TUTORIAL 8, TASK 6:
+             * TUTORIAL 8, CODING TASK 2:
              * Write the period of the PWM.
-             * At this point in the code, the variable "data" will store your PWM period as a uint16.
+             * Drew has declared a variable named "data" in line 32 of this file:
+             * static uint16 data = 0;
+             * and has stored the PWM period in this variable on line 103 (the sscanf function call)
+             * Set the period ("write") of the PWM to the value in "data".
              * hint: look at the API for the PWM component... something about writing and period.
              */
         
@@ -125,11 +129,17 @@ void Write_PWM_and_UART(){
             uint16 period_written = PWM_Servo_ReadPeriod();
             sprintf( transmit_buffer, "PWM now has a period of: %i \r\n", period_written);
             break;
+        }
         case 'd':
+        {
             /**
-             * TUTORIAL 8, TASK 7:
-             * Write the duty cycle of the PWM. This is also called the "compare" value.
-             * At this point in the code, the variable "data" will store your PWM duty cycle as a uint16.
+             * TUTORIAL 8, CODING TASK 3:
+             * Write the duty cycle of the PWM. This is also called the "compare" value, and is in units of clock ticks,
+             * where the actual pulse width is implied by the frequency of the clock component on the schematic.
+             * Drew has declared a variable named "data" in line 32 of this file:
+             * static uint16 data = 0;
+             * and has stored the duty cycle in this variable on line 103 (the sscanf function call)
+             * Set the compare value ("write") of the PWM to the value in "data".
              * hint: look at the API for the PWM component... something about writing and compare value.
              */
             
@@ -139,12 +149,15 @@ void Write_PWM_and_UART(){
             uint16 duty_written = PWM_Servo_ReadCompare();
             sprintf( transmit_buffer, "PWM now has a duty cycle (in clock ticks) of: %i \r\n", duty_written);
             break;
+        }
         default:
+        {
             // Print an error message if any other character besides a p or d was typed
             sprintf( transmit_buffer, "Error! You didn't type a p or d. \r\n");
             // just in case
             mode = 0;
             break;
+        }
     } 
     
     // send the byte back to your PC so you know what you set
@@ -153,7 +166,7 @@ void Write_PWM_and_UART(){
     UART_for_USB_PutString("\r\n");
     // Reset the indexing into the array
     num_chars_received = 0;
-    // and just in case let's do the data too.
+    // and just in case let's do the "data" too.
     data = 0;
     // Note that we don't have to reset the buffer here, since sscanf only reads up until the first '\0'.
 }

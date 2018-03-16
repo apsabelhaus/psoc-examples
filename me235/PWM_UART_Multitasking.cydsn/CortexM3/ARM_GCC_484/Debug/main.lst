@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 1
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXvS15y.s 			page 1
 
 
    1              		.syntax unified
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 1
   33      20323030 
   34 00e8 0A00     		.ascii	"\012\000"
   35 00ea 0000     		.align	2
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 2
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXvS15y.s 			page 2
 
 
   36              	.LC4:
@@ -101,59 +101,73 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 1
   55              		.cfi_offset 14, -4
   56 0002 00AF     		add	r7, sp, #0
   57              		.cfi_def_cfa_register 7
-  15:.\main.c      ****     // Start the interrupt for the UART
+  15:.\main.c      ****     // enable all interrupts on the PSoC
   16:.\main.c      ****     CyGlobalIntEnable;
   58              		.loc 1 16 0
   59              	@ 16 ".\main.c" 1
   60 0004 62B6     		CPSIE   i
   61              	@ 0 "" 2
-  17:.\main.c      ****     Interrupt_UART_Receive_StartEx( Interrupt_Handler_UART_Receive );
-  62              		.loc 1 17 0
+  17:.\main.c      ****     
+  18:.\main.c      ****     /**
+  19:.\main.c      ****      * TUTORIAL 8, CODING TASK 1:
+  20:.\main.c      ****      * Start the PWM component, now that you've added it, configured its settings, and assigned its
+  21:.\main.c      ****      */
+  22:.\main.c      ****     
+  23:.\main.c      ****     ///////////////// PUT YOUR CODE HERE
+  24:.\main.c      ****     PWM_Servo_Start();
+  62              		.loc 1 24 0
   63              		.thumb
-  64 0006 0B48     		ldr	r0, .L3
-  65 0008 FFF7FEFF 		bl	Interrupt_UART_Receive_StartEx
-  18:.\main.c      ****     
-  19:.\main.c      ****     // Start the UART itself
-  20:.\main.c      ****     UART_for_USB_Start();
-  66              		.loc 1 20 0
-  67 000c FFF7FEFF 		bl	UART_for_USB_Start
-  21:.\main.c      ****     
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 3
+  64 0006 FFF7FEFF 		bl	PWM_Servo_Start
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXvS15y.s 			page 3
 
 
-  22:.\main.c      ****     // Start the PWM component
-  23:.\main.c      ****     PWM_Servo_Start();
-  68              		.loc 1 23 0
-  69 0010 FFF7FEFF 		bl	PWM_Servo_Start
-  24:.\main.c      ****     
-  25:.\main.c      ****     // Send an initial message over the UART / USB com port
-  26:.\main.c      ****     UART_for_USB_PutString("\r\n\r\nPWM on. Use one of the following commands:\r\n");
-  70              		.loc 1 26 0
+  25:.\main.c      ****     
+  26:.\main.c      ****     /**
+  27:.\main.c      ****      * TUTORIAL 8, CODING TASK 4: 
+  28:.\main.c      ****      * start the interrupt for the UART, setting the handler (ISR) to Interrupt_Handler_UART_Receiv
+  29:.\main.c      ****      * hint: see tutorial 7. The function you want to use is ...StartEx( ), with Interrupt_Handler_
+  30:.\main.c      ****      * The interrupt is named Interrupt_UART_Receive on the schematic.
+  31:.\main.c      ****      */
+  32:.\main.c      ****     
+  33:.\main.c      ****     ////////////////// PUT YOUR CODE HERE
+  34:.\main.c      ****     Interrupt_UART_Receive_StartEx( Interrupt_Handler_UART_Receive );
+  65              		.loc 1 34 0
+  66 000a 0A48     		ldr	r0, .L3
+  67 000c FFF7FEFF 		bl	Interrupt_UART_Receive_StartEx
+  35:.\main.c      ****     
+  36:.\main.c      ****     // Start the UART 
+  37:.\main.c      ****     UART_for_USB_Start();
+  68              		.loc 1 37 0
+  69 0010 FFF7FEFF 		bl	UART_for_USB_Start
+  38:.\main.c      ****     
+  39:.\main.c      ****     // Send an initial message over the UART / USB com port
+  40:.\main.c      ****     UART_for_USB_PutString("\r\n\r\nPWM on. Use one of the following commands:\r\n");
+  70              		.loc 1 40 0
   71 0014 0848     		ldr	r0, .L3+4
   72 0016 FFF7FEFF 		bl	UART_for_USB_PutString
-  27:.\main.c      ****     UART_for_USB_PutString("Set the duty cycle, as number of clock ticks, by typing d : then the nu
-  73              		.loc 1 27 0
+  41:.\main.c      ****     UART_for_USB_PutString("Set the duty cycle, as number of clock ticks, by typing d : then the nu
+  73              		.loc 1 41 0
   74 001a 0848     		ldr	r0, .L3+8
   75 001c FFF7FEFF 		bl	UART_for_USB_PutString
-  28:.\main.c      ****     UART_for_USB_PutString("Set the period by typing p : then a new period. \r\n");
-  76              		.loc 1 28 0
+  42:.\main.c      ****     UART_for_USB_PutString("Set the period by typing p : then a new period. \r\n");
+  76              		.loc 1 42 0
   77 0020 0748     		ldr	r0, .L3+12
   78 0022 FFF7FEFF 		bl	UART_for_USB_PutString
-  29:.\main.c      ****     UART_for_USB_PutString("For example, p : 2000 sets the period to 2000. \r\n");
-  79              		.loc 1 29 0
+  43:.\main.c      ****     UART_for_USB_PutString("For example, p : 2000 sets the period to 2000. \r\n");
+  79              		.loc 1 43 0
   80 0026 0748     		ldr	r0, .L3+16
   81 0028 FFF7FEFF 		bl	UART_for_USB_PutString
-  30:.\main.c      ****     UART_for_USB_PutString("Or, x stops the PWM, and e re-enables the PWM. \r\n\r\n");
-  82              		.loc 1 30 0
+  44:.\main.c      ****     UART_for_USB_PutString("Or, x stops the PWM, and e re-enables the PWM. \r\n\r\n");
+  82              		.loc 1 44 0
   83 002c 0648     		ldr	r0, .L3+20
   84 002e FFF7FEFF 		bl	UART_for_USB_PutString
   85              	.L2:
-  31:.\main.c      ****     
-  32:.\main.c      ****     for(;;)
-  33:.\main.c      ****     {
-  34:.\main.c      ****         // Nothing to do - all interrupt driven!
-  35:.\main.c      ****     }
-  86              		.loc 1 35 0 discriminator 1
+  45:.\main.c      ****     
+  46:.\main.c      ****     for(;;)
+  47:.\main.c      ****     {
+  48:.\main.c      ****         // Nothing to do - all interrupt driven!
+  49:.\main.c      ****     }
+  86              		.loc 1 49 0 discriminator 1
   87 0032 FEE7     		b	.L2
   88              	.L4:
   89              		.align	2
@@ -164,6 +178,9 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 1
   94 0040 84000000 		.word	.LC2
   95 0044 B8000000 		.word	.LC3
   96 0048 EC000000 		.word	.LC4
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXvS15y.s 			page 4
+
+
   97              		.cfi_endproc
   98              	.LFE56:
   99              		.size	main, .-main
@@ -178,42 +195,39 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 1
  108 0004 0400     		.2byte	0x4
  109 0006 00000000 		.4byte	.Ldebug_abbrev0
  110 000a 04       		.byte	0x4
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 4
-
-
  111 000b 01       		.uleb128 0x1
- 112 000c FC000000 		.4byte	.LASF15
+ 112 000c 15010000 		.4byte	.LASF15
  113 0010 01       		.byte	0x1
- 114 0011 B9000000 		.4byte	.LASF16
- 115 0015 5C000000 		.4byte	.LASF17
+ 114 0011 45000000 		.4byte	.LASF16
+ 115 0015 81000000 		.4byte	.LASF17
  116 0019 00000000 		.4byte	.Ldebug_ranges0+0
  117 001d 00000000 		.4byte	0
  118 0021 00000000 		.4byte	.Ldebug_line0
  119 0025 02       		.uleb128 0x2
  120 0026 01       		.byte	0x1
  121 0027 06       		.byte	0x6
- 122 0028 D6000000 		.4byte	.LASF0
+ 122 0028 EF000000 		.4byte	.LASF0
  123 002c 02       		.uleb128 0x2
  124 002d 01       		.byte	0x1
  125 002e 08       		.byte	0x8
- 126 002f 9D000000 		.4byte	.LASF1
+ 126 002f 65000000 		.4byte	.LASF1
  127 0033 02       		.uleb128 0x2
  128 0034 02       		.byte	0x2
  129 0035 05       		.byte	0x5
- 130 0036 F2000000 		.4byte	.LASF2
+ 130 0036 0B010000 		.4byte	.LASF2
  131 003a 02       		.uleb128 0x2
  132 003b 02       		.byte	0x2
  133 003c 07       		.byte	0x7
  134 003d 0E000000 		.4byte	.LASF3
  135 0041 03       		.uleb128 0x3
- 136 0042 E2000000 		.4byte	.LASF9
+ 136 0042 FB000000 		.4byte	.LASF9
  137 0046 02       		.byte	0x2
  138 0047 37       		.byte	0x37
  139 0048 4C000000 		.4byte	0x4c
  140 004c 02       		.uleb128 0x2
  141 004d 04       		.byte	0x4
  142 004e 05       		.byte	0x5
- 143 004f B0000000 		.4byte	.LASF4
+ 143 004f 78000000 		.4byte	.LASF4
  144 0053 02       		.uleb128 0x2
  145 0054 04       		.byte	0x4
  146 0055 07       		.byte	0x7
@@ -224,8 +238,11 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 1
  151 005d 00000000 		.4byte	.LASF6
  152 0061 02       		.uleb128 0x2
  153 0062 08       		.byte	0x8
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXvS15y.s 			page 5
+
+
  154 0063 07       		.byte	0x7
- 155 0064 45000000 		.4byte	.LASF7
+ 155 0064 4E000000 		.4byte	.LASF7
  156 0068 04       		.uleb128 0x4
  157 0069 04       		.byte	0x4
  158 006a 05       		.byte	0x5
@@ -235,29 +252,26 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 1
  162 0071 07       		.byte	0x7
  163 0072 21000000 		.4byte	.LASF8
  164 0076 03       		.uleb128 0x3
- 165 0077 78010000 		.4byte	.LASF10
+ 165 0077 91010000 		.4byte	.LASF10
  166 007b 03       		.byte	0x3
  167 007c 41       		.byte	0x41
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 5
-
-
  168 007d 41000000 		.4byte	0x41
  169 0081 02       		.uleb128 0x2
  170 0082 04       		.byte	0x4
  171 0083 04       		.byte	0x4
- 172 0084 EC000000 		.4byte	.LASF11
+ 172 0084 05010000 		.4byte	.LASF11
  173 0088 02       		.uleb128 0x2
  174 0089 08       		.byte	0x8
  175 008a 04       		.byte	0x4
- 176 008b C2000000 		.4byte	.LASF12
+ 176 008b DB000000 		.4byte	.LASF12
  177 008f 02       		.uleb128 0x2
  178 0090 01       		.byte	0x1
  179 0091 08       		.byte	0x8
- 180 0092 AB000000 		.4byte	.LASF13
+ 180 0092 73000000 		.4byte	.LASF13
  181 0096 02       		.uleb128 0x2
  182 0097 04       		.byte	0x4
  183 0098 07       		.byte	0x7
- 184 0099 80010000 		.4byte	.LASF14
+ 184 0099 99010000 		.4byte	.LASF14
  185 009d 05       		.uleb128 0x5
  186 009e 2E000000 		.4byte	.LASF18
  187 00a2 01       		.byte	0x1
@@ -268,7 +282,7 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 1
  192 00b0 01       		.uleb128 0x1
  193 00b1 9C       		.byte	0x9c
  194 00b2 06       		.uleb128 0x6
- 195 00b3 C9000000 		.4byte	.LASF19
+ 195 00b3 E2000000 		.4byte	.LASF19
  196 00b7 04       		.byte	0x4
  197 00b8 1606     		.2byte	0x616
  198 00ba BE000000 		.4byte	0xbe
@@ -284,6 +298,9 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 1
  208 0004 0E       		.uleb128 0xe
  209 0005 13       		.uleb128 0x13
  210 0006 0B       		.uleb128 0xb
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXvS15y.s 			page 6
+
+
  211 0007 03       		.uleb128 0x3
  212 0008 0E       		.uleb128 0xe
  213 0009 1B       		.uleb128 0x1b
@@ -298,9 +315,6 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 1
  222 0012 00       		.byte	0
  223 0013 02       		.uleb128 0x2
  224 0014 24       		.uleb128 0x24
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 6
-
-
  225 0015 00       		.byte	0
  226 0016 0B       		.uleb128 0xb
  227 0017 0B       		.uleb128 0xb
@@ -344,6 +358,9 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 1
  265 003d 3A       		.uleb128 0x3a
  266 003e 0B       		.uleb128 0xb
  267 003f 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXvS15y.s 			page 7
+
+
  268 0040 0B       		.uleb128 0xb
  269 0041 49       		.uleb128 0x49
  270 0042 13       		.uleb128 0x13
@@ -358,9 +375,6 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 1
  279 004c 00       		.byte	0
  280 004d 00       		.byte	0
  281 004e 06       		.uleb128 0x6
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 7
-
-
  282 004f 34       		.uleb128 0x34
  283 0050 00       		.byte	0
  284 0051 03       		.uleb128 0x3
@@ -404,8 +418,11 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 1
  322 0008 00000000 		.4byte	0
  323 000c 00000000 		.4byte	0
  324              		.section	.debug_line,"",%progbits
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXvS15y.s 			page 8
+
+
  325              	.Ldebug_line0:
- 326 0000 67010000 		.section	.debug_str,"MS",%progbits,1
+ 326 0000 69010000 		.section	.debug_str,"MS",%progbits,1
  326      02004401 
  326      00000201 
  326      FB0E0D00 
@@ -418,9 +435,6 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 1
  329              	.LASF3:
  330 000e 73686F72 		.ascii	"short unsigned int\000"
  330      7420756E 
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 8
-
-
  330      7369676E 
  330      65642069 
  330      6E7400
@@ -438,86 +452,86 @@ ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 1
  336      69676E65 
  336      6420696E 
  336      7400
- 337              	.LASF7:
- 338 0045 6C6F6E67 		.ascii	"long long unsigned int\000"
- 338      206C6F6E 
- 338      6720756E 
- 338      7369676E 
- 338      65642069 
- 339              	.LASF17:
- 340 005c 443A5C57 		.ascii	"D:\\WindowsGitHub\\psoc-examples\\me235\\PWM_UART_M"
- 340      696E646F 
- 340      77734769 
- 340      74487562 
- 340      5C70736F 
- 341 008b 756C7469 		.ascii	"ultitasking.cydsn\000"
- 341      7461736B 
- 341      696E672E 
- 341      63796473 
- 341      6E00
- 342              	.LASF1:
- 343 009d 756E7369 		.ascii	"unsigned char\000"
- 343      676E6564 
- 343      20636861 
- 343      7200
- 344              	.LASF13:
- 345 00ab 63686172 		.ascii	"char\000"
- 345      00
- 346              	.LASF4:
- 347 00b0 6C6F6E67 		.ascii	"long int\000"
- 347      20696E74 
- 347      00
- 348              	.LASF16:
- 349 00b9 2E5C6D61 		.ascii	".\\main.c\000"
- 349      696E2E63 
- 349      00
+ 337              	.LASF16:
+ 338 0045 2E5C6D61 		.ascii	".\\main.c\000"
+ 338      696E2E63 
+ 338      00
+ 339              	.LASF7:
+ 340 004e 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 340      206C6F6E 
+ 340      6720756E 
+ 340      7369676E 
+ 340      65642069 
+ 341              	.LASF1:
+ 342 0065 756E7369 		.ascii	"unsigned char\000"
+ 342      676E6564 
+ 342      20636861 
+ 342      7200
+ 343              	.LASF13:
+ 344 0073 63686172 		.ascii	"char\000"
+ 344      00
+ 345              	.LASF4:
+ 346 0078 6C6F6E67 		.ascii	"long int\000"
+ 346      20696E74 
+ 346      00
+ 347              	.LASF17:
+ 348 0081 443A5C73 		.ascii	"D:\\synct\\Teaching\\ME 135 S18\\Tutorials\\T8\\ske"
+ 348      796E6374 
+ 348      5C546561 
+ARM GAS  C:\Users\andre\AppData\Local\Temp\ccXvS15y.s 			page 9
+
+
+ 348      6368696E 
+ 348      675C4D45 
+ 349 00ae 6C65746F 		.ascii	"leton_code\\me235\\PWM_UART_Multitasking.cydsn\000"
+ 349      6E5F636F 
+ 349      64655C6D 
+ 349      65323335 
+ 349      5C50574D 
  350              	.LASF12:
- 351 00c2 646F7562 		.ascii	"double\000"
+ 351 00db 646F7562 		.ascii	"double\000"
  351      6C6500
  352              	.LASF19:
- 353 00c9 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 353 00e2 49544D5F 		.ascii	"ITM_RxBuffer\000"
  353      52784275 
  353      66666572 
-ARM GAS  C:\Users\andre\AppData\Local\Temp\ccChtmte.s 			page 9
-
-
  353      00
  354              	.LASF0:
- 355 00d6 7369676E 		.ascii	"signed char\000"
+ 355 00ef 7369676E 		.ascii	"signed char\000"
  355      65642063 
  355      68617200 
  356              	.LASF9:
- 357 00e2 5F5F696E 		.ascii	"__int32_t\000"
+ 357 00fb 5F5F696E 		.ascii	"__int32_t\000"
  357      7433325F 
  357      7400
  358              	.LASF11:
- 359 00ec 666C6F61 		.ascii	"float\000"
+ 359 0105 666C6F61 		.ascii	"float\000"
  359      7400
  360              	.LASF2:
- 361 00f2 73686F72 		.ascii	"short int\000"
+ 361 010b 73686F72 		.ascii	"short int\000"
  361      7420696E 
  361      7400
  362              	.LASF15:
- 363 00fc 474E5520 		.ascii	"GNU C 4.8.4 20140526 (release) [ARM/embedded-4_8-br"
+ 363 0115 474E5520 		.ascii	"GNU C 4.8.4 20140526 (release) [ARM/embedded-4_8-br"
  363      4320342E 
  363      382E3420 
  363      32303134 
  363      30353236 
- 364 012f 616E6368 		.ascii	"anch revision 211358] -mcpu=cortex-m3 -mthumb -g -O"
+ 364 0148 616E6368 		.ascii	"anch revision 211358] -mcpu=cortex-m3 -mthumb -g -O"
  364      20726576 
  364      6973696F 
  364      6E203231 
  364      31333538 
- 365 0162 30202D66 		.ascii	"0 -ffunction-sections\000"
+ 365 017b 30202D66 		.ascii	"0 -ffunction-sections\000"
  365      66756E63 
  365      74696F6E 
  365      2D736563 
  365      74696F6E 
  366              	.LASF10:
- 367 0178 696E7433 		.ascii	"int32_t\000"
+ 367 0191 696E7433 		.ascii	"int32_t\000"
  367      325F7400 
  368              	.LASF14:
- 369 0180 73697A65 		.ascii	"sizetype\000"
+ 369 0199 73697A65 		.ascii	"sizetype\000"
  369      74797065 
  369      00
  370              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.8.4 20140526 (release) [ARM/embedded-4_8-br

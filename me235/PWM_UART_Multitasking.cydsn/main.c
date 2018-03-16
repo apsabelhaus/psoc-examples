@@ -16,22 +16,23 @@ int main()
     CyGlobalIntEnable;
     
     /**
-     * TUTORIAL 8, TASK 1: 
+     * TUTORIAL 8, CODING TASK 1:
+     * Start the PWM component, now that you've added it, configured its settings, and assigned its output pin.
+     */
+    
+    ///////////////// PUT YOUR CODE HERE
+    
+    /**
+     * TUTORIAL 8, CODING TASK 4: 
      * start the interrupt for the UART, setting the handler (ISR) to Interrupt_Handler_UART_Receive
-     * hint: see tutorial 7, or look a the two "start" functions in the API for interrupts.
+     * hint: see tutorial 7. The function you want to use is ...StartEx( ), with Interrupt_Handler_UART_Receive as the argument.
+     * The interrupt is named Interrupt_UART_Receive on the schematic.
      */
     
     ////////////////// PUT YOUR CODE HERE
     
     // Start the UART 
     UART_for_USB_Start();
-    
-    /**
-     * TUTORIAL 8, TASK 5:
-     * Start the PWM component, now that you've added it, configured its settings, and assigned its output pin.
-     */
-    
-    ///////////////// PUT YOUR CODE HERE
     
     // Send an initial message over the UART / USB com port
     UART_for_USB_PutString("\r\n\r\nPWM on. Use one of the following commands:\r\n");

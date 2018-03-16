@@ -1,15 +1,15 @@
-Loading plugins phase: Elapsed time ==> 0s.165ms
+Loading plugins phase: Elapsed time ==> 0s.163ms
 Initializing data phase: Elapsed time ==> 0s.000ms
 <CYPRESSTAG name="CyDsfit arguments...">
-cydsfit arguments: -.fdsnotice -.fdswarpdepfile=warp_dependencies.txt -.fdselabdepfile=elab_dependencies.txt -.fdsbldfile=generated_files.txt -p D:\WindowsGitHub\psoc-examples\me235\PWM_UART_Multitasking.cydsn\PWM_UART_Multitasking.cyprj -d CY8C5888LTI-LP097 -s D:\WindowsGitHub\psoc-examples\me235\PWM_UART_Multitasking.cydsn\Generated_Source\PSoC5 -- -yv2 -q10 -ygs -o2 -v3 -.fftcfgtype=LE</CYPRESSTAG>
+cydsfit arguments: -.fdsnotice -.fdswarpdepfile=warp_dependencies.txt -.fdselabdepfile=elab_dependencies.txt -.fdsbldfile=generated_files.txt -p D:\synct\Teaching\ME 135 S18\Tutorials\T8\T8testing\me235\PWM_UART_Multitasking.cydsn\PWM_UART_Multitasking.cyprj -d CY8C5888LTI-LP097 -s D:\synct\Teaching\ME 135 S18\Tutorials\T8\T8testing\me235\PWM_UART_Multitasking.cydsn\Generated_Source\PSoC5 -- -yv2 -q10 -ygs -o2 -v3 -.fftcfgtype=LE</CYPRESSTAG>
 <CYPRESSTAG name="Design elaboration results...">
 ADD: sdb.M0025: error: No input on Instance "Pin_Servo_Control", terminal "y_0".
- * D:\WindowsGitHub\psoc-examples\me235\PWM_UART_Multitasking.cydsn\TopDesign\TopDesign.cysch (Signal: Net_270)
- * D:\WindowsGitHub\psoc-examples\me235\PWM_UART_Multitasking.cydsn\TopDesign\TopDesign.cysch (Shape_7.2)
+ * D:\synct\Teaching\ME 135 S18\Tutorials\T8\T8testing\me235\PWM_UART_Multitasking.cydsn\TopDesign\TopDesign.cysch (Signal: Net_270)
+ * D:\synct\Teaching\ME 135 S18\Tutorials\T8\T8testing\me235\PWM_UART_Multitasking.cydsn\TopDesign\TopDesign.cysch (Shape_7.2)
 
 ADD: sdb.M0050: error: Terminal "y_0" requires connection when it is visible.
- * D:\WindowsGitHub\psoc-examples\me235\PWM_UART_Multitasking.cydsn\TopDesign\TopDesign.cysch (Signal: Net_270)
- * D:\WindowsGitHub\psoc-examples\me235\PWM_UART_Multitasking.cydsn\TopDesign\TopDesign.cysch (Shape_7.2)
+ * D:\synct\Teaching\ME 135 S18\Tutorials\T8\T8testing\me235\PWM_UART_Multitasking.cydsn\TopDesign\TopDesign.cysch (Signal: Net_270)
+ * D:\synct\Teaching\ME 135 S18\Tutorials\T8\T8testing\me235\PWM_UART_Multitasking.cydsn\TopDesign\TopDesign.cysch (Shape_7.2)
 
 </CYPRESSTAG>
-Elaboration phase: Elapsed time ==> 1s.278ms
+Elaboration phase: Elapsed time ==> 1s.226ms
